@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ImageSlideshow from "./components/ImageSlideshow";
 import type { Metadata } from "next";
+import styles from './page.module.css';
 
 export const metadata: Metadata = {
   title: "Bread Modular - Affordable Modular Synth Platform",
@@ -23,104 +24,102 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[auto_1fr_20px] min-h-screen p-0 pt-10 sm:p-10 pb-20 gap-16 font-[family-name:var(--font-geist-sans)]">
-      <div className="max-w-[1024px] w-full mx-auto">
+    <div className={styles.container}>
+      <div className={styles.header}>
         {/* Header */}
-        <header className="flex flex-col sm:flex-row justify-between items-center w-full gap-8 sm:gap-0" role="banner">
-          <Link href="/" className="text-lg font-medium" aria-label="Bread Modular Home">
+        <header className={styles.headerContent} role="banner">
+          <Link href="/" className={styles.logo} aria-label="Bread Modular Home">
             <Image 
               src="/images/bread-modular-logo.png"
               alt="Bread Modular Logo"
               width={250}
               height={67}
-              className="object-contain w-auto h-auto"
+              style={{ objectFit: 'contain', width: 'auto', height: 'auto' }}
             />
           </Link>
-          <nav aria-label="Main navigation">
-            <ul className="flex gap-8">
-              <li><Link href="/modules" className="hover:opacity-70">MODULES</Link></li>
-              <li><Link href="/docs" className="hover:opacity-70">DOCS</Link></li>
-              <li><Link href="/contact" className="hover:opacity-70">CONTACT</Link></li>
+          <nav className={styles.nav} aria-label="Main navigation">
+            <ul>
+              <li><Link href="/modules">MODULES</Link></li>
+              <li><Link href="/docs">DOCS</Link></li>
+              <li><Link href="/contact">CONTACT</Link></li>
             </ul>
           </nav>
         </header>
-        <div className="w-full h-px bg-neutral-200 mt-8" role="separator"></div>
+        <div className={styles.separator} role="separator"></div>
       </div>
 
       {/* Main Content */}
-      <main className="flex flex-col gap-8 items-center max-w-[1024px] mx-auto w-full" role="main">
-        <section aria-label="Product showcase slideshow" className="w-full">
+      <main className={styles.main} role="main">
+        <section aria-label="Product showcase slideshow" className={styles.slideshowSection}>
           <ImageSlideshow />
         </section>
-        <section aria-label="Hero section">
-          <div className="space-y-5 mt-8 mb-16 text-center">
-            <h1 className="text-3xl font-medium leading-[1.3] sm:leading-[1.3] sm:text-5xl">AN AFFORDABLE<br />MODULAR SYNTH PLATFORM</h1>
-          </div>
+        <section aria-label="Hero section" className={styles.heroSection}>
+          <h1 className={styles.heroTitle}>AN AFFORDABLE<br />MODULAR SYNTH PLATFORM</h1>
         </section>
-        <section id="key-features" aria-label="Key features" className="flex flex-col gap-16 w-full">
-          <article className="flex flex-col gap-6 p-10 bg-neutral-50">
-            <div className="flex flex-col gap-8">
+        <section id="key-features" aria-label="Key features" className={styles.featuresSection}>
+          <article className={styles.featureArticle}>
+            <div className={styles.featureContent}>
               <div>
-                <h2 className="text-3xl mb-3"><span className="font-bold">Minimalistic</span> Design</h2>
-                <p className="text-xl text-neutral-600">We use modern electronics with minimalistic design to keep the cost down.</p>
+                <h2 className={styles.featureHeader}><span style={{ fontWeight: 'bold' }}>Minimalistic</span> Design</h2>
+                <p className={styles.featureText}>We use modern electronics with minimalistic design to keep the cost down.</p>
                 <Link 
                   href="/how" 
-                  className="inline-block text-sm underline decoration-1 hover:opacity-80 transition-opacity mt-2"
+                  className={styles.featureLink}
                   aria-label="Learn more about our minimalistic design"
                 >
                   SEE HOW
                 </Link>
               </div>
-              <div className="w-full h-48 bg-neutral-200 flex items-center justify-center">
-                <p className="text-sm text-neutral-400">Module Image</p>
+              <div className={styles.featureImage}>
+                <p className={styles.featureImageText}>Module Image</p>
               </div>
             </div>
           </article>
 
-          <article className="flex flex-col gap-6 p-10 bg-neutral-50">
-            <div className="flex flex-col gap-8">
+          <article className={styles.featureArticle}>
+            <div className={styles.featureContent}>
               <div>
-                <h2 className="text-3xl mb-3"><span className="font-bold">Open Source</span> From Day One</h2>
-                <p className="text-xl text-neutral-600">Everything is Open Source including schematics, PCB design & code.</p>
+                <h2 className={styles.featureHeader}><span style={{ fontWeight: 'bold' }}>Open Source</span> From Day One</h2>
+                <p className={styles.featureText}>Everything is Open Source including schematics, PCB design & code.</p>
                 <Link 
                   href="/how" 
-                  className="inline-block text-sm underline decoration-1 hover:opacity-80 transition-opacity mt-2"
+                  className={styles.featureLink}
                   aria-label="Learn more about our open source policy"
                 >
                   LEARN MORE
                 </Link>
               </div>
-              <div className="w-full h-48 bg-neutral-200 flex items-center justify-center">
-                <p className="text-sm text-neutral-400">Circuit Image</p>
+              <div className={styles.featureImage}>
+                <p className={styles.featureImageText}>Circuit Image</p>
               </div>
             </div>
           </article>
 
-          <article className="flex flex-col gap-6 p-10 bg-neutral-50">
-            <div className="flex flex-col gap-8">
+          <article className={styles.featureArticle}>
+            <div className={styles.featureContent}>
               <div>
-                <h2 className="text-3xl mb-3"><span className="font-bold">Modern</span> Capabitlies</h2>
-                <p className="text-xl text-neutral-600">We use proven analog designs while leveraging modern features like<br/>Modular MIDI & USB-C Power.</p>
+                <h2 className={styles.featureHeader}><span style={{ fontWeight: 'bold' }}>Modern</span> Capabitlies</h2>
+                <p className={styles.featureText}>We use proven analog designs while leveraging modern features like<br/>Modular MIDI & USB-C Power.</p>
                 <Link 
                   href="/how" 
-                  className="inline-block text-sm underline decoration-1 hover:opacity-80 transition-opacity mt-2"
+                  className={styles.featureLink}
                   aria-label="Explore the modern capabilities of Bread Modular"
                 >
                   EXPLORE FEATURES
                 </Link>
               </div>
-              <div className="w-full h-48 bg-neutral-200 flex items-center justify-center">
-                <p className="text-sm text-neutral-400">Interface Image</p>
+              <div className={styles.featureImage}>
+                <p className={styles.featureImageText}>Interface Image</p>
               </div>
             </div>
           </article>
         </section>
 
         {/* CTA Button */}
-        <section aria-label="Call to action" className="mt-8 mb-16">
+        <section aria-label="Call to action" className={styles.ctaSection}>
           <Link 
             href="/get-started" 
-            className="inline-block bg-black text-white px-12 py-6 text-xl hover:opacity-90 transition-opacity"
+            className={styles.ctaButton}
             role="button"
             aria-label="Get started with Bread Modular"
           >
@@ -129,21 +128,19 @@ export default function Home() {
         </section>
 
         {/* Social Links */}
-        <section aria-label="Social media links" className="w-full max-w-xl mx-auto text-center">
-          <div className="w-full h-px bg-neutral-200 mb-16" role="separator"></div>
-          <h2 className="text-3xl sm:text-4xl mb-8">FIND US ON SOCIALS</h2>
-          <nav aria-label="Social media navigation">
-            <div className="flex flex-col gap-1">
-              <Link href="https://instagram.com/breadmodular" className="hover:opacity-70" aria-label="Follow us on Instagram for updates">
-                INSTAGRAM FOR UPDATES
-              </Link>
-              <Link href="https://youtube.com/breadmodular" className="hover:opacity-70" aria-label="Watch our tutorials on YouTube">
-                YOUTUBE FOR TUTORIALS
-              </Link>
-              <Link href="https://discord.gg/breadmodular" className="hover:opacity-70" aria-label="Join our Discord community for discussions">
-                DISCORD FOR DISCUSSIONS
-              </Link>
-            </div>
+        <section aria-label="Social media links" className={styles.socialSection}>
+          <div className={styles.socialSeparator} role="separator"></div>
+          <h2 className={styles.socialTitle}>FIND US ON SOCIALS</h2>
+          <nav className={styles.socialNav} aria-label="Social media navigation">
+            <Link href="https://instagram.com/breadmodular" className={styles.socialLink} aria-label="Follow us on Instagram for updates">
+              INSTAGRAM FOR UPDATES
+            </Link>
+            <Link href="https://youtube.com/breadmodular" className={styles.socialLink} aria-label="Watch our tutorials on YouTube">
+              YOUTUBE FOR TUTORIALS
+            </Link>
+            <Link href="https://discord.gg/breadmodular" className={styles.socialLink} aria-label="Join our Discord community for discussions">
+              DISCORD FOR DISCUSSIONS
+            </Link>
           </nav>
         </section>
       </main>

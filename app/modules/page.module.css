@@ -1,0 +1,157 @@
+.container {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr 20px;
+  padding: 40px 0 80px;
+  gap: 64px;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding: 40px 40px 80px;
+  }
+}
+
+.header {
+  max-width: 1024px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.headerContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 32px;
+}
+
+@media (min-width: 640px) {
+  .headerContent {
+    flex-direction: row;
+    gap: 0;
+  }
+}
+
+.logo {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.nav ul {
+  display: flex;
+  gap: 32px;
+}
+
+.nav a:hover {
+  opacity: 0.7;
+}
+
+.separator {
+  width: 100%;
+  height: 1px;
+  background: var(--neutral-200);
+  margin-top: 32px;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  align-items: center;
+  max-width: 1024px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 16px;
+}
+
+@media (min-width: 640px) {
+  .main {
+    padding: 0;
+  }
+}
+
+.featuredModule {
+  width: 100%;
+}
+
+.moduleCard {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  background: #fafafa;
+  overflow: hidden;
+}
+
+.moduleCard:hover .moduleImage {
+  transform: scale(1.05);
+}
+
+.moduleImage {
+  transition: transform 0.5s;
+}
+
+.moduleContent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 24px;
+}
+
+.moduleTitle {
+  font-size: 1.875rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.moduleDescription {
+  font-size: 1.125rem;
+  color: #e5e7eb;
+}
+
+.moduleGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .moduleGrid {
+    gap: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .moduleGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.moduleDouble {
+  grid-column: span 2;
+}
+
+.moduleTriple {
+  grid-column: span 2;
+}
+
+@media (min-width: 1024px) {
+  .moduleTriple {
+    grid-column: span 3;
+  }
+}
+
+.smallModuleTitle {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.smallModuleDescription {
+  font-size: 0.875rem;
+  color: #e5e7eb;
+} 
