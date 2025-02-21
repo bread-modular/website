@@ -60,7 +60,7 @@ export default function Home() {
           <article className={styles.featureArticle}>
             <div className={styles.featureContent}>
               <div>
-                <h2 className={styles.featureHeader}><span style={{ fontWeight: 'bold' }}>Minimalistic</span> Design</h2>
+                <h2 className={styles.featureHeader}><span style={{ fontWeight: 'bold' }}>Minimal</span> Design</h2>
                 <p className={styles.featureText}>We use modern electronics with minimalistic design to keep the cost down.</p>
                 <Link 
                   href="/how" 
@@ -135,7 +135,7 @@ export default function Home() {
             <Link href="https://instagram.com/breadmodular" className={styles.socialLink} aria-label="Follow us on Instagram for updates">
               INSTAGRAM FOR UPDATES
             </Link>
-            <Link href="https://youtube.com/breadmodular" className={styles.socialLink} aria-label="Watch our tutorials on YouTube">
+            <Link href="https://youtube.com/@breadmodular" className={styles.socialLink} aria-label="Watch our tutorials on YouTube">
               YOUTUBE FOR TUTORIALS
             </Link>
             <Link href="https://discord.gg/breadmodular" className={styles.socialLink} aria-label="Join our Discord community for discussions">
