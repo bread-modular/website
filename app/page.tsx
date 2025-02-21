@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[auto_1fr_20px] min-h-screen p-10 pb-20 gap-16 font-[family-name:var(--font-geist-sans)]">
+    <div className="grid grid-rows-[auto_1fr_20px] min-h-screen p-0 pt-10 sm:p-10 pb-20 gap-16 font-[family-name:var(--font-geist-sans)]">
       <div className="max-w-[1024px] w-full mx-auto">
         {/* Header */}
         <header className="flex flex-col sm:flex-row justify-between items-center w-full gap-8 sm:gap-0" role="banner">
@@ -54,7 +54,7 @@ export default function Home() {
         </section>
         <section aria-label="Hero section">
           <div className="space-y-5 mt-8 mb-16 text-center">
-            <h1 className="text-5xl font-medium leading-[1.2]">AN AFFORDABLE<br />MODULAR SYNTH PLATFORM</h1>
+            <h1 className="text-3xl font-medium leading-[1.3] sm:leading-[1.3] sm:text-5xl">AN AFFORDABLE<br />MODULAR SYNTH PLATFORM</h1>
           </div>
         </section>
         <section id="key-features" aria-label="Key features" className="flex flex-col gap-16 w-full">
