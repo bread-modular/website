@@ -25,13 +25,15 @@ export default function ModulesPage() {
           <section className={styles.featuredModule} aria-label="Featured module">
             <Link href={`/modules/${featuredModule.id}`}>
               <article className={styles.moduleCard}>
-                <Image
-                  src={featuredModule.image}
-                  alt={featuredModule.title}
-                  fill
-                  className={styles.moduleImage}
-                  sizes="(max-width: 768px) 100vw, 1024px"
-                />
+                <div className={styles.moduleImageContainer}>
+                  <Image
+                    src={featuredModule.image}
+                    alt={featuredModule.title}
+                    fill
+                    className={styles.moduleImage}
+                    sizes="(max-width: 768px) 100vw, 1024px"
+                  />
+                </div>
                 <div className={styles.moduleContent}>
                   <h2 className={styles.moduleTitle}>{featuredModule.title}</h2>
                   <p className={styles.moduleDescription}>{featuredModule.description}</p>
@@ -53,13 +55,15 @@ export default function ModulesPage() {
               }`}
             >
               <article className={styles.moduleCard}>
-                <Image
-                  src={module.image}
-                  alt={module.title}
-                  fill
-                  className={styles.moduleImage}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
+                <div className={styles.moduleImageContainer}>
+                  <Image
+                    src={module.image}
+                    alt={module.title}
+                    fill
+                    className={styles.moduleImage}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                </div>
                 <div className={styles.moduleContent}>
                   <h2 className={styles.smallModuleTitle}>{module.title}</h2>
                   <p className={styles.smallModuleDescription}>{module.description}</p>
