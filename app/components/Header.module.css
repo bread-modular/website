@@ -10,7 +10,7 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  gap: 32px;
+  gap: 10px;
 }
 
 @media (min-width: 640px) {

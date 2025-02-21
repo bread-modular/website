@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import ImageSlideshow from "./components/ImageSlideshow";
 import Header from "./components/Header";
 import type { Metadata } from "next";

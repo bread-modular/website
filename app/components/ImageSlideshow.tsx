@@ -30,9 +30,10 @@ function BaseImage() {
         src={slides[0].src}
         alt={slides[0].alt}
         fill
-        sizes="(max-width: 768px) 100vw, 1024px"
+        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 1024px"
         className={styles.image}
         priority
+        quality={100}
         onError={(e) => {
           console.error('Error loading image:', slides[0].src, e);
         }}
@@ -71,11 +72,12 @@ export default function ImageSlideshow() {
                 src={slide.src}
                 alt={slide.alt}
                 fill
-                sizes="(max-width: 768px) 100vw, 1024px"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 1024px"
                 className={`${styles.image} ${
                   index === currentSlide ? styles.visible : styles.hidden
                 }`}
                 priority={index === 0}
+                quality={100}
                 onError={(e) => {
                   console.error('Error loading image:', slide.src, e);
                 }}
