@@ -131,7 +131,7 @@ export default function Home() {
         {/* Social Links */}
         <section aria-label="Social media links" className="w-full max-w-xl mx-auto text-center">
           <div className="w-full h-px bg-neutral-200 mb-16" role="separator"></div>
-          <h2 className="text-4xl mb-8">FIND US ON SOCIALS</h2>
+          <h2 className="text-3xl sm:text-4xl mb-8">FIND US ON SOCIALS</h2>
           <nav aria-label="Social media navigation">
             <div className="flex flex-col gap-1">
               <Link href="https://instagram.com/breadmodular" className="hover:opacity-70" aria-label="Follow us on Instagram for updates">
