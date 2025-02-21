@@ -33,7 +33,7 @@ function BaseImage() {
         className="object-cover"
         priority
         onError={(e) => {
-          console.error('Error loading image:', slides[0].src);
+          console.error('Error loading image:', slides[0].src, e);
         }}
       />
     </div>
@@ -76,7 +76,7 @@ export default function ImageSlideshow() {
                 }`}
                 priority={index === 0}
                 onError={(e) => {
-                  console.error('Error loading image:', slide.src);
+                  console.error('Error loading image:', slide.src, e);
                 }}
               />
             </div>
