@@ -4,10 +4,10 @@ description: 18-step CV/Gate sequencer with pattern memory
 image: /images/modules/placeholder-double.svg
 price: 25
 versions:
-  - name: PCB
+  - name: Semi Assembled
+    price: 15
+  - name: Fully Assembled
     price: 20
-  - name: Assembled
-    price: 25
 size: double
 ---
 

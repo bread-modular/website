@@ -3,9 +3,9 @@ title: Kick
 description: Analog kick drum module with deep, punchy sound
 image: /images/modules/placeholder-base.svg
 versions:
-  - name: PCB
-    price: 10
-  - name: Assembled
+  - name: Semi Assembled
     price: 15
+  - name: Fully Assembled
+    price: 20
 size: base
 --- 

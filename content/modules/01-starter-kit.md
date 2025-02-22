@@ -4,9 +4,9 @@ description: Everything you need to get started with Bread Modular
 image: /images/modules/placeholder-triple.svg
 price: 20
 versions:
-  - name: PCB
+  - name: Semi Assembled
     price: 15
-  - name: Assembled
+  - name: Fully Assembled
     price: 20
 featured: true
 size: triple

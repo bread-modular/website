@@ -67,43 +67,57 @@
   color: var(--neutral-600);
 }
 
-.versions {
+.diyLink {
+  display: inline-block;
+  font-size: 0.8rem;
+  padding: 8px 32px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #000;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.diyLink:hover {
+  background: #fff;
+  color: #000;
+  opacity: 0.9;
+}
+
+.buySection {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.versions h2 {
+.buyHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.buyHeader > span {
   font-size: 1rem;
-  font-weight: 500;
+  color: var(--neutral-600);
+  white-space: nowrap;
 }
 
-.versionButtons {
-  display: flex;
-  gap: 8px;
-}
-
-.versionButton {
-  padding: 8px 16px;
+.versionSelect {
+  padding: 8px 12px;
   border: 1px solid var(--neutral-200);
-  background: white;
-  cursor: pointer;
+  font-size: 1rem;
+  min-width: 120px;
+  background: var(--background);
 }
 
-.versionButton:hover {
-  border-color: black;
+.versionSelect:hover {
+  border-color: var(--foreground);
 }
 
-.versionButton.active {
-  background: black;
-  color: white;
-  border-color: black;
-}
-
-.pricing {
+.buyOptions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+  gap: 18px;
   align-items: center;
 }
 
@@ -113,30 +127,19 @@
 }
 
 .buyButton {
-  padding: 12px 32px;
-  background: black;
-  color: white;
-  border: none;
-  font-size: 1rem;
+  padding: 8px 32px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #000;
+  font-size: 0.8rem;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .buyButton:hover {
-  opacity: 0.9;
-}
-
-.diyButton {
-  padding: 12px 32px;
-  background: white;
-  color: black;
-  border: 1px solid black;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.diyButton:hover {
-  background: black;
-  color: white;
+  background: #fff;
+  color: #000;
+  border: 1px solid #000;
 }
 
 .markdownContent {

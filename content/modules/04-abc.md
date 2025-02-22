@@ -3,11 +3,6 @@ title: ABC
 description: 18-step CV/Gate sequencer with pattern memory
 image: /images/modules/placeholder-double.svg
 price: 25
-versions:
-  - name: PCB
-    price: 20
-  - name: Assembled
-    price: 25
 size: base
 ---
 
