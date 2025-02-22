@@ -1,8 +1,8 @@
-import Link from "next/link";
-import Image from "next/image";
-import { modules } from "../config/modules";
-import Header from "../components/Header";
-import type { Metadata } from "next";
+import Image from 'next/image';
+import Link from 'next/link';
+import Header from '@/app/components/Header';
+import { getAllModules } from '@/lib/modules';
+import type { Metadata } from 'next';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -10,15 +10,15 @@ export const metadata: Metadata = {
   description: "Explore our range of affordable, open-source modular synthesizer modules.",
 };
 
-export default function ModulesPage() {
+export default async function ModulesPage() {
+  const modules = await getAllModules();
   const featuredModule = modules.find(m => m.featured);
   const regularModules = modules.filter(m => !m.featured);
 
   return (
     <div className={styles.container}>
       <Header />
-
-      {/* Main Content */}
+      
       <main className={styles.main} role="main">
         {/* Featured Module */}
         {featuredModule && (
@@ -47,7 +47,7 @@ export default function ModulesPage() {
         <section aria-label="All modules" className={styles.moduleGrid}>
           {regularModules.map((module) => (
             <Link 
-              key={module.id} 
+              key={module.id}
               href={`/modules/${module.id}`}
               className={`${
                 module.size === 'double' ? styles.moduleDouble : 

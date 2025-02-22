@@ -1,7 +1,7 @@
 .container {
   min-height: 100vh;
   display: grid;
-  grid-template-rows: auto 1fr 20px;
+  grid-template-rows: auto 1fr;
   padding: 40px 0 80px;
   gap: 64px;
 }
@@ -72,6 +72,70 @@
   }
 }
 
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid var(--neutral-200);
+  transition: border-color 0.2s;
+}
+
+.card:hover {
+  border-color: black;
+}
+
+.double {
+  grid-column: span 2;
+}
+
+.triple {
+  grid-column: span 3;
+}
+
+.imageContainer {
+  position: relative;
+  aspect-ratio: 4/3;
+}
+
+.moduleImage {
+  object-fit: cover;
+}
+
+.info {
+  padding: 16px;
+}
+
+.info h2 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.info p {
+  font-size: 1rem;
+  color: var(--neutral-600);
+  line-height: 1.5;
+}
+
 .featuredModule {
   width: 100%;
 }
@@ -95,10 +159,6 @@
 
 .moduleImageContainer:hover {
   border: 1px solid #595959;
-}
-
-.moduleImage {
-  object-fit: cover;
 }
 
 .moduleContent {
