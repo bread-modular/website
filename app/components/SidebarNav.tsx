@@ -2,50 +2,44 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import styles from '../docs/[category]/[slug]/page.module.css';
+import type { DocCategory, Doc } from '@/lib/docs';
+import styles from './SidebarNav.module.css';
 
-interface SidebarNavProps {
-  categories: any[];
-  currentDoc: any;
+interface Props {
+  categories: DocCategory[];
+  currentDoc: Doc;
 }
 
-export default function SidebarNav({ categories, currentDoc }: SidebarNavProps) {
+export default function SidebarNav({ categories, currentDoc }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
-  
-  const currentCategory = categories.find(
-    (cat) => cat.slug === currentDoc.categorySlug
-  );
 
   return (
     <aside className={styles.sidebar}>
       <div className={styles.mobileToggle}>
         <button 
-          onClick={() => setIsExpanded(!isExpanded)} 
           className={styles.expandButton}
+          onClick={() => setIsExpanded(!isExpanded)}
         >
-          {currentCategory?.name} - {currentDoc.title}
-          <span className={`${styles.arrow} ${isExpanded ? styles.up : styles.down}`}>
-            ▼
-          </span>
+          {currentDoc.categoryName} - {currentDoc.title}
+          <span className={`${styles.arrow} ${isExpanded ? styles.up : ''}`}>▼</span>
         </button>
       </div>
-      
       <div className={`${styles.sidebarContent} ${isExpanded ? styles.expanded : ''}`}>
         {categories.map((category) => (
           <div key={category.slug} className={styles.category}>
             <h3 className={styles.categoryTitle}>{category.name}</h3>
             <ul className={styles.docList}>
-              {category.docs.map((d) => (
-                <li key={d.slug}>
+              {category.docs.map((doc) => (
+                <li key={doc.slug}>
                   <Link
-                    href={`/docs/${category.slug}/${d.slug}`}
+                    href={`/docs/${category.slug}/${doc.slug}`}
                     className={`${styles.docLink} ${
-                      d.slug === currentDoc.slug && category.slug === currentDoc.categorySlug
+                      doc.slug === currentDoc.slug && category.slug === currentDoc.categorySlug
                         ? styles.active
                         : ''
                     }`}
                   >
-                    {d.title}
+                    {doc.title}
                   </Link>
                 </li>
               ))}

@@ -20,6 +20,7 @@ export interface Doc {
   summary: string;
   slug: string;
   categorySlug: string;
+  categoryName: string;
   contentHtml: string;
 }
 
@@ -97,6 +98,9 @@ export const getDoc = cache(async (categorySlug: string, docSlug: string): Promi
       summary: data.summary,
       slug: docSlug,
       categorySlug,
+      categoryName: categorySlug.split('-').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join(' '),
       contentHtml
     };
   } catch (error) {
