@@ -3,11 +3,7 @@ title: Starter Kit
 description: Everything you need to get started with Bread Modular
 image: /images/modules/placeholder-triple.svg
 price: 20
-versions:
-  - name: Semi Assembled
-    price: 15
-  - name: Fully Assembled
-    price: 20
+checkoutLink: https://buy.stripe.com/eVa14l1rs0elg245kk
 featured: true
 size: triple
 ---

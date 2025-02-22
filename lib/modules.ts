@@ -18,6 +18,7 @@ export interface ModuleSpec {
   description: string;
   image: string;
   versions: ModuleVersion[];
+  checkoutLink?: string;
   featured?: boolean;
   size?: 'base' | 'double' | 'triple';
 }
@@ -69,6 +70,7 @@ export const getModuleData = cache(async (id: string): Promise<Module | null> =>
       description: data.description,
       image: data.image,
       versions: data.versions || [],
+      checkoutLink: data.checkoutLink,  
       featured: data.featured,
       size: data.size,
       contentHtml,

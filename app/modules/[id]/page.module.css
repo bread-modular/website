@@ -143,6 +143,7 @@
 }
 
 .markdownWrapper {
+  border-top: 1px solid #eee;
   max-width: 800px;
   width: 100%;
 }
