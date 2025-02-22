@@ -33,7 +33,7 @@ The Starter Kit is your gateway to the world of modular synthesis. This essentia
 
 Watch our detailed assembly guide to build your Starter Kit:
 
-[embed]https://youtube.com/watch?v=starter-kit-assembly[/embed]
+[embed]https://youtu.be/eTam3B5scmY?si=GE7rhzr-yVQW_e_H[/embed]
 
 ## Technical Specifications
 

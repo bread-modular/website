@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Header from '@/app/components/Header';
 import { getModuleData } from '@/lib/modules';
 import PricingSection from './PricingSection';
+import MarkdownContent from '@/app/components/MarkdownContent';
 import styles from './page.module.css';
 
 export default async function ModulePage({ params }: {params: Promise<{ id: string }>}) {
@@ -39,7 +40,9 @@ export default async function ModulePage({ params }: {params: Promise<{ id: stri
           </div>
         </div>
 
-        <div className={styles.markdownContent} dangerouslySetInnerHTML={{ __html: moduleData.contentHtml }} />
+        <div className={styles.markdownWrapper}>
+          <MarkdownContent content={moduleData.contentHtml} />
+        </div>
       </main>
     </div>
   );

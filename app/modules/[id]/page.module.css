@@ -142,27 +142,12 @@
   border: 1px solid #000;
 }
 
-.markdownContent {
-  font-size: 1.125rem;
-  line-height: 1.6;
+.markdownWrapper {
+  max-width: 800px;
+  width: 100%;
 }
 
-.markdownContent h2 {
-  font-size: 1.5rem;
-  font-weight: 500;
-  margin: 2rem 0 1rem;
+.differenceLink {
+  font-size: 0.7rem;
+  border-bottom: 1px solid #888;
 }
-
-.markdownContent p {
-  margin: 1rem 0;
-}
-
-.markdownContent ul {
-  margin: 1rem 0;
-  padding-left: 1.5rem;
-  list-style-type: disc;
-}
-
-.markdownContent li {
-  margin: 0.5rem 0;
-} 

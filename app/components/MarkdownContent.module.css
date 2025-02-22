@@ -1,0 +1,24 @@
+.content {
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
+.content h2 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 2rem 0 1rem;
+}
+
+.content p {
+  margin: 1rem 0;
+}
+
+.content ul {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+  list-style-type: disc;
+}
+
+.content li {
+  margin: 0.5rem 0;
+} 
