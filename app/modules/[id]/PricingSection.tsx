@@ -31,7 +31,7 @@ export default function PricingSection({ versions }: Props) {
             </option>
           ))}
         </select>
-        <a href="#" className={styles.differenceLink}>{"What's the difference?"}</a>
+        <a href="#" className={styles.differenceLink}>{"difference?"}</a>
       </div>
       <div className={styles.buyOptions}>
         <div className={styles.price}>${selectedVersion.price}</div>
