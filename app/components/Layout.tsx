@@ -1,4 +1,5 @@
 import Header from '@/app/components/Header';
+import Footer from '@/app/components/Footer';
 import styles from './Layout.module.css';
 
 interface Props {
@@ -12,6 +13,7 @@ export default function Layout({ children }: Props) {
       <main className={styles.main}>
         {children}
       </main>
+      <Footer />
     </div>
   );
 } 
