@@ -3,8 +3,6 @@ title: Starter Kit Guide
 summary: Everything you need to know about the Bread Modular Starter Kit.
 ---
 
-# Starter Kit Guide
-
 The Starter Kit is the perfect way to begin your journey with Bread Modular. It includes all the essential components and features you need to start making music.
 
 ## Components

@@ -3,8 +3,6 @@ title: Installation Guide
 summary: Learn how to set up your workspace and install the necessary tools for Bread Modular.
 ---
 
-# Installation Guide
-
 Before you start building your Bread Modular synthesizer, you'll need to set up your workspace with the right tools.
 
 ## Required Tools

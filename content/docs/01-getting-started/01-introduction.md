@@ -3,9 +3,9 @@ title: Introduction to Bread Modular
 summary: Learn about Bread Modular's philosophy and how to get started with modular synthesis.
 ---
 
-# Introduction to Bread Modular
-
 Welcome to Bread Modular! This guide will help you understand our philosophy and get started with modular synthesis.
+
+[embed]https://youtu.be/eTam3B5scmY?si=GE7rhzr-yVQW_e_H[/embed]
 
 ## Our Philosophy
 
