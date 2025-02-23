@@ -25,11 +25,11 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <Layout>
-      <section aria-label="Product showcase slideshow" className={styles.slideshowSection}>
-        <ImageSlideshow />
-      </section>
       <section aria-label="Hero section" className={styles.heroSection}>
         <h1 className={styles.heroTitle}>AN AFFORDABLE<br />MODULAR SYNTH PLATFORM</h1>
+      </section>
+      <section aria-label="Product showcase slideshow" className={styles.slideshowSection}>
+        <ImageSlideshow />
       </section>
       <section id="key-features" aria-label="Key features" className={styles.featuresSection}>
         <article className={styles.featureArticle}>

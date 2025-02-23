@@ -6,19 +6,24 @@ import styles from './ImageSlideshow.module.css';
 
 const slides = [
   {
-    src: "/images/home-slide/01.JPEG",
-    alt: "Bread Modular Synthesizer - Modern and minimalistic design",
-    description: "A sleek and modern modular synthesizer with clean design"
+    src: "/images/home-slide/01.jpg",
+    alt: "A Bread Modular base with a set of modules",
+    description: "A Bread Modular base with a set of modules"
   },
   {
-    src: "/images/home-slide/02.JPEG",
-    alt: "Bread Modular Interface - USB-C and MIDI connectivity",
-    description: "Advanced connectivity options including USB-C and MIDI"
+    src: "/images/home-slide/02.jpg",
+    alt: "What a fully patched Bread Modular setup looks like",
+    description: "What a fully patched Bread Modular setup looks like"
   },
   {
-    src: "/images/home-slide/03.JPEG",
-    alt: "Bread Modular Components - Open source hardware",
-    description: "High-quality electronic components and open source design"
+    src: "/images/home-slide/03.jpg",
+    alt: "Bread Modular can be powered via USB-C for portability",
+    description: "Bread Modular can be powered via USB-C for portability"
+  },
+  {
+    src: "/images/home-slide/04.jpg",
+    alt: "Bread Modular connects with other instruments via MIDI and Audio",
+    description: "Bread Modular connects with other instruments via MIDI and Audio"
   }
 ];
 

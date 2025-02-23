@@ -17,6 +17,11 @@
   .heroTitle {
     font-size: 3rem;
   }
+
+  .heroSection {
+    margin: 100px 0 64px;
+    text-align: center;
+  }
 }
 
 .featuresSection {
