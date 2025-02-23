@@ -3,7 +3,7 @@
 }
 
 .heroSection {
-  margin: 32px 0 64px;
+  margin: 32px 0 0 0;
   text-align: center;
 }
 
@@ -54,6 +54,7 @@
 .featureText {
   font-size: 1.25rem;
   color: var(--neutral-600);
+  line-height: 1.4;
 }
 
 .featureLink {
