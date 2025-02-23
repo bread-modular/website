@@ -35,8 +35,8 @@ export default function Home() {
         <article className={styles.featureArticle}>
           <div className={styles.featureContent}>
             <div>
-              <h2 className={styles.featureHeader}><span style={{ fontWeight: 'bold' }}>Minimal</span> Design</h2>
-              <p className={styles.featureText}>We use modern electronics with minimalistic design to keep the cost down.</p>
+              <h2 className={styles.featureHeader}><span style={{ fontWeight: 'bold' }}>Minimalistic</span> Design</h2>
+              <p className={styles.featureText}>We combine modern electronics with minimalistic design to reduce costs.</p>
               <Link 
                 href="/how" 
                 className={styles.featureLink}
@@ -54,8 +54,8 @@ export default function Home() {
         <article className={styles.featureArticle}>
           <div className={styles.featureContent}>
             <div>
-              <h2 className={styles.featureHeader}><span style={{ fontWeight: 'bold' }}>Open Source</span> From Day One</h2>
-              <p className={styles.featureText}>Everything is Open Source including schematics, PCB design & code.</p>
+              <h2 className={styles.featureHeader}><span style={{ fontWeight: 'bold' }}>Open Source</span> from Day One</h2>
+              <p className={styles.featureText}>Everything is open source, including schematics, PCB designs, and code.</p>
               <Link 
                 href="/how" 
                 className={styles.featureLink}
@@ -73,8 +73,8 @@ export default function Home() {
         <article className={styles.featureArticle}>
           <div className={styles.featureContent}>
             <div>
-              <h2 className={styles.featureHeader}><span style={{ fontWeight: 'bold' }}>Modern</span> Capabitlies</h2>
-              <p className={styles.featureText}>We use proven analog designs while leveraging modern features like<br/>Modular MIDI & USB-C Power.</p>
+              <h2 className={styles.featureHeader}><span style={{ fontWeight: 'bold' }}>Modern</span> Capabilities</h2>
+              <p className={styles.featureText}>We use proven analog designs while leveraging modern features like modular MIDI and USB-C power.</p>
               <Link 
                 href="/how" 
                 className={styles.featureLink}
