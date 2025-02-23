@@ -4,6 +4,7 @@ import Layout from '@/app/components/Layout';
 import { getModuleData } from '@/lib/modules';
 import PricingSection from './PricingSection';
 import MarkdownContent from '@/app/components/MarkdownContent';
+import ModuleNav from '@/app/components/ModuleNav';
 import styles from './page.module.css';
 import { Metadata } from 'next';
 
@@ -52,6 +53,7 @@ export default async function ModulePage({ params }: {params: Promise<{ id: stri
 
   return (
     <Layout>
+      <ModuleNav currentModuleId={id} />
       <div className={styles.content}>
         <div className={styles.infoSection}>
           <h1>{moduleData.title}</h1>

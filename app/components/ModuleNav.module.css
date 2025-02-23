@@ -1,0 +1,53 @@
+.nav {
+  max-width: 1024px;
+  width: 90vw;
+  border-bottom: 1px solid var(--neutral-200);
+  background: var(--background);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin-top: -60px;
+}
+
+.container {
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.scroll {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 12px 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none; 
+}
+
+.link {
+  color: var(--neutral-600);
+  text-decoration: none;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  padding: 4px 0;
+}
+
+@media (min-width: 768px) {
+  .link {
+    font-size: 0.9rem;
+  }
+}
+
+.link:hover {
+  color: var(--foreground);
+}
+
+.active {
+  color: var(--foreground);
+  font-weight: 500;
+  border-bottom: 2px solid var(--foreground);
+} 
