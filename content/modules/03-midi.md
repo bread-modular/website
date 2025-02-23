@@ -1,6 +1,6 @@
 ---
-title: Kick
-description: Analog kick drum module with deep, punchy sound
+title: MIDI
+description: MIDI host module and 8 channel MIDI router.
 image: /images/modules/midi.jpg
 versions:
   - name: Semi Assembled

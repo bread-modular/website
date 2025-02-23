@@ -1,6 +1,6 @@
 ---
 title: Starter Kit
-description: Everything you need to get started with Bread Modular
+description: Everything you need to get started with Bread Modular.
 image: /images/modules/starter-kit.jpg
 price: 20
 checkoutLink: https://buy.stripe.com/eVa14l1rs0elg245kk

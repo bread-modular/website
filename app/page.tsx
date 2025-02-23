@@ -26,7 +26,7 @@ export default function Home() {
   return (
     <Layout>
       <section aria-label="Hero section" className={styles.heroSection}>
-        <h1 className={styles.heroTitle}>AN AFFORDABLE<br />MODULAR SYNTH PLATFORM</h1>
+        <h1 className={styles.heroTitle}>AFFORDABLE<br />MODULAR SYNTH PLATFORM</h1>
       </section>
       <section aria-label="Product showcase slideshow" className={styles.slideshowSection}>
         <ImageSlideshow />
