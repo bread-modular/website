@@ -19,7 +19,6 @@ export default function Header() {
           <ul>
             <li><Link href="/modules">MODULES</Link></li>
             <li><Link href="/docs">DOCS</Link></li>
-            <li><Link href="/contact">CONTACT</Link></li>
           </ul>
         </nav>
       </header>
