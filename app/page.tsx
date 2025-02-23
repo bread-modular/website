@@ -1,5 +1,5 @@
 import Link from "next/link";
-import ImageSlideshow from "./components/ImageSlideshow";
+import ImageSlideshow from "./components/media/ImageSlideshow";
 import Layout from "./components/Layout";
 import type { Metadata } from "next";
 import styles from './page.module.css';

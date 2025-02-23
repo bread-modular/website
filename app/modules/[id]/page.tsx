@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Layout from '@/app/components/Layout';
 import { getModuleData } from '@/lib/modules';
 import PricingSection from './PricingSection';
-import MarkdownContent from '@/app/components/MarkdownContent';
+import MarkdownContent from '@/app/components/media/MarkdownContent';
 import ModuleNav from '@/app/components/ModuleNav';
 import styles from './page.module.css';
 import { Metadata } from 'next';

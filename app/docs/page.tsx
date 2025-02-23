@@ -1,7 +1,7 @@
 import { getDocCategories, getDoc } from '@/lib/docs';
 import Layout from '@/app/components/Layout';
-import MarkdownContent from '@/app/components/MarkdownContent';
-import SidebarNav from '@/app/components/SidebarNav';
+import MarkdownContent from '@/app/components/media/MarkdownContent';
+import SidebarNav from '@/app/components/DocsSidebarNav';
 import styles from './[category]/[slug]/page.module.css';
 import type { Metadata } from 'next';
 

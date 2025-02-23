@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { getAllModules } from '@/lib/modules';
-import styles from './ModuleNav.module.css';
+import styles from './DocsModuleNav.module.css';
 import ScrollManager from './ModuleNavScrollManager';
 
 export default async function ModuleNav({ currentModuleId }: { currentModuleId: string }) {

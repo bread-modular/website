@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation';
 import Layout from '@/app/components/Layout';
-import MarkdownContent from '@/app/components/MarkdownContent';
+import MarkdownContent from '@/app/components/media/MarkdownContent';
 import { getDoc, getDocCategories } from '@/lib/docs';
 import styles from './page.module.css';
-import SidebarNav from '@/app/components/SidebarNav';
+import DocsSidebarNav from '@/app/components/DocsSidebarNav';
 import { Metadata } from 'next';
 
 interface Props {
@@ -56,7 +56,7 @@ export default async function DocPage({ params }: Props) {
   return (
     <Layout>
       <div className={styles.container}>
-        <SidebarNav categories={categories} currentDoc={doc} />
+        <DocsSidebarNav categories={categories} currentDoc={doc} />
         <main className={styles.content}>
           <h1>{doc.title}</h1>
           <div className={styles.markdownWrapper}>

@@ -3,14 +3,14 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import type { DocCategory, Doc } from '@/lib/docs';
-import styles from './SidebarNav.module.css';
+import styles from './DocsSidebarNav.module.css';
 
 interface Props {
   categories: DocCategory[];
   currentDoc: Doc;
 }
 
-export default function SidebarNav({ categories, currentDoc }: Props) {
+export default function DocsSidebarNav({ categories, currentDoc }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
