@@ -1,7 +1,7 @@
 ---
 title: ABC
 description: 18-step CV/Gate sequencer with pattern memory
-image: /images/modules/placeholder-double.svg
+image: /images/modules/noise.jpg
 price: 25
 size: base
 ---

@@ -1,7 +1,7 @@
 ---
 title: Sequencer
 description: 18-step CV/Gate sequencer with pattern memory
-image: /images/modules/placeholder-double.svg
+image: /images/modules/starter-kit.jpg
 price: 25
 versions:
   - name: Semi Assembled
