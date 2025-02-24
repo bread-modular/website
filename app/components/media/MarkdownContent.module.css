@@ -13,16 +13,6 @@
   margin: 1rem 0;
 }
 
-.content ul {
-  margin: 1rem 0;
-  padding-left: 1.5rem;
-  list-style-type: disc;
-}
-
-.content li {
-  margin: 0.5rem 0;
-}
-
 .content a {
   color: #0077ff;
   text-decoration: none;
@@ -46,6 +36,21 @@
 
 .content ol li {
   margin: 0.5rem 0;
+}
+
+.content ul {
+  padding-left: 50px;
+  list-style-type: disc;
+}
+
+.content ul li {
+  margin: 0.5rem 0;
+}
+
+.content img {
+  max-width: 100%;
+  height: auto;
+  margin: 1.5rem 0;
 }
 
 
