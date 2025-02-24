@@ -25,10 +25,3 @@ This is an analog waveform generator with configurable frequency ranges.
 
 * **FREQ**: Acts as the cutoff frequency of the low-pass filter
 * **FINE**: Fine-tunes the above-mentioned frequency
-
-## Programming
-
-This module can be programmed via the UDPI interface. We will provide a guide on how to do it soon.
-
-
-
