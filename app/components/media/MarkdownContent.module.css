@@ -39,5 +39,17 @@
   font-size: 1rem;
 }
 
+.content ol {
+  padding-left: 50px;
+  list-style-type: decimal;
+}
+
+.content ol li {
+  margin: 0.5rem 0;
+}
+
+
+
+
 
 
