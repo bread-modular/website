@@ -21,7 +21,7 @@ This is a minimalistic base for 12 Bread Modular modules. It features:
 
 The base is designed to be cascaded with multiple bases to create a larger setup. When you do this, you can communicate between modules across the bases as one system.
 
-We can easily do this by connecting grounds via the 3.5mm jack sockets available on the bottom left of the base. You can use any Eurorack patch cable to do this.
+You can easily do this by connecting grounds via the 3.5mm jack sockets available on the bottom left of the base. You can use any Eurorack patch cable to do this.
 
 ## Mounting Options
 

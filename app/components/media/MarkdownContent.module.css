@@ -21,4 +21,23 @@
 
 .content li {
   margin: 0.5rem 0;
-} 
+}
+
+.content a {
+  color: #0077ff;
+  text-decoration: none;
+}
+
+.content a:hover {
+  border-bottom: 1px solid #0077ff;
+}
+
+.content blockquote {
+  background-color: #f6f6f6;
+  padding: 8px 40px;
+  border-left: 6px solid #06a523;
+  font-size: 1rem;
+}
+
+
+
