@@ -38,12 +38,13 @@ Following modules are included in the Starter Kit:
 * [8bit](/modules/8bit)
 * [V2CA](/modules/v2ca)
 
-### Accessories
+### Extras
 
+* **UPDI Programmer** - to update the firmwares of various modules including 8-bit, midi, mco, noise, hihat
 * 10 x 10cm patch cables
 * 05 x 20cm patch cables
 
-### Size
+## Size
 
 Once connected with all the modules, it will be the same size as a Elektron Digitakt. But it's weight about 300 grams (10.6 oz) which is much lighter than the Digitakt.
 
