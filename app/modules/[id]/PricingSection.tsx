@@ -6,20 +6,24 @@ import styles from './page.module.css';
 
 interface Props {
   versions: ModuleVersion[];
-  checkoutLink?: string;
+  checkout?: {
+    link: string;
+    price: number;
+  };
 }
 
-export default function PricingSection({ versions, checkoutLink }: Props) {
+export default function PricingSection({ versions, checkout }: Props) {
   const [selectedVersion, setSelectedVersion] = useState(versions[0]);
 
-  if (checkoutLink) {
+  if (checkout) {
     return (
       <div className={styles.buySection}>
         <div className={styles.buyHeader}>
           <span>OR</span>
         </div>
         <div className={styles.buyOptions}>
-          <a href={checkoutLink} className={styles.buyButton}>BUY NOW</a>
+          <div className={styles.price}>${checkout.price}</div>
+          <a href={checkout.link} className={styles.buyButton}>BUY NOW</a>
         </div>
       </div>
     );

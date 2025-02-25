@@ -63,7 +63,7 @@ export default async function ModulePage({ params }: {params: Promise<{ id: stri
             <a href="#" className={styles.diyLink}>BUILD IT YOURSELF</a>
           </div>
 
-          <PricingSection versions={moduleData.versions} checkoutLink={moduleData.checkoutLink} />
+          <PricingSection versions={moduleData.versions} checkout={moduleData.checkout} />
         </div>
         <div className={styles.imageSection}>
           <Image
