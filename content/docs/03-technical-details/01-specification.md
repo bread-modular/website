@@ -65,7 +65,7 @@ Refer to the "Common Parts" section for recommendations on socket components.
 * SMT Components: Use surface-mount components to optimize space.
 * THT Components: Prefer through-hole components for input-related parts (see the "Common Parts" section).
 
-Components can be placed on both sides of the PCB. Certain built-in modules utilize the back side for larger components, such as Vactrols. However, placing components on the back side may prevent the module from fitting into a breadboard, necessitating the use of a base module.
+Components can be placed on both sides of the PCB. Certain built-in modules utilize the back side for larger components, such as Vactrols. However, placing components on the back side may prevent the module from fitting into a breadboard, necessitating the use of a [base](/modules/base) module.
 
 ## Sample Design Files
 
