@@ -48,3 +48,11 @@ Vactrols are occasionally used as voltage-controlled resistors in electronic des
 * **VTL5C3:** Available at [Synthrotek](https://store.synthrotek.com/VTL5C3-Vactrol-Optocoupler_p_792.html) (fast shipping)
 * **VTL5C3 (AliExpress):** Same as above, but [cheaper](https://www.aliexpress.com/w/wholesale-vtl5c3.html?osf=auto_suggest)
 * **Xvive Vactrols:** Difficult to source and often expensive
+
+## 3.5mm Stereo Sockets
+
+We use a special type of 3.5mm Stereo Socket that can be soldered directly onto a PCB. It's known as PJ366ST (usually comes in green). You can source them from the following places:
+
+* [Thonk UK](https://www.thonk.co.uk/shop/thonkiconn/)
+* [Synthrotek](https://store.synthrotek.com/35mm-Stereo-PCB-Mount-Jacks_p_761.html)
+* [Bulk Order via AliExpress](https://www.aliexpress.com/item/1005004248247782.html?spm=a2g0o.order_list.order_list_main.152.11b41802yIvLf6)
