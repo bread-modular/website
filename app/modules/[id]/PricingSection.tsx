@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import type { ModuleVersion } from '@/lib/modules';
 import styles from './page.module.css';
 
@@ -49,7 +50,7 @@ export default function PricingSection({ versions, checkout }: Props) {
             </option>
           ))}
         </select>
-        <a href="#" className={styles.differenceLink}>{"difference?"}</a>
+        <Link href="/docs/getting-started/getting-started#difference-between-semi-assembled-x26-fully-assembled" className={styles.differenceLink}>{"difference?"}</Link>
       </div>
       <div className={styles.buyOptions}>
         <div className={styles.price}>${selectedVersion.price}</div>
