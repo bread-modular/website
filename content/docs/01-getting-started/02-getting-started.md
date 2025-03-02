@@ -15,7 +15,7 @@ If you want to extend your system, you can follow the steps below:
 
 ## 2. Order Individually
 
-If you know exactly what you are looking for, you can order individual modules & build your Bread Modular system. We highly recommend you include the [base](/modules/base) module. 
+If you know exactly what you are looking for, you can [order](/modules) individual modules & build your Bread Modular system. We highly recommend you include the [base](/modules/base) module. 
 
 ## 3. Assemble Yourself
 
