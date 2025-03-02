@@ -30,6 +30,24 @@ function getYouTubeId(url: string): string {
   return '';
 }
 
+// Function to add IDs to heading tags for anchor links
+function addHeadingIds(html: string): string {
+  // Add ids to h1, h2, and h3 tags
+  return html
+    .replace(/<h1>(.+?)<\/h1>/g, (match, content) => {
+      const id = content.toLowerCase().replace(/[^\w]+/g, '-');
+      return `<h1 id="${id}">${content}</h1>`;
+    })
+    .replace(/<h2>(.+?)<\/h2>/g, (match, content) => {
+      const id = content.toLowerCase().replace(/[^\w]+/g, '-');
+      return `<h2 id="${id}">${content}</h2>`;
+    })
+    .replace(/<h3>(.+?)<\/h3>/g, (match, content) => {
+      const id = content.toLowerCase().replace(/[^\w]+/g, '-');
+      return `<h3 id="${id}">${content}</h3>`;
+    });
+}
+
 export default function MarkdownContent({ content }: Props) {
   // Process the content to replace YouTube embeds with the component
   let processedContent = content;
@@ -59,8 +77,9 @@ export default function MarkdownContent({ content }: Props) {
     <div className={styles.content}>
       {parts.map((part, index) => {
         if (index % 2 === 0) {
-          // Regular markdown content
-          return <div key={index} dangerouslySetInnerHTML={{ __html: part }} />;
+          // Regular markdown content with heading IDs added
+          const htmlWithIds = addHeadingIds(part);
+          return <div key={index} dangerouslySetInnerHTML={{ __html: htmlWithIds }} />;
         } else {
           // YouTube embed
           return <YouTubeEmbed key={index} videoId={part} />;
