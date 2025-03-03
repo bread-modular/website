@@ -15,9 +15,9 @@ function getBaseUrl() {
   }
   
   // If not, check for Vercel deployment URL
-  // VERCEL_URL is provided by Vercel in production deployments
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
+  // VERCEL_PROJECT_PRODUCTION_URL is provided by Vercel in production deployments
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
   }
   
   // Fallback to localhost in development

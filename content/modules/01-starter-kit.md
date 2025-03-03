@@ -2,9 +2,10 @@
 title: Starter Kit
 description: Everything you need to get started with Bread Modular.
 image: /images/modules/starter-kit.jpg
-checkout:
-  link: https://buy.stripe.com/eVa14l1rs0elg245kk
-  price: 290
+versions:
+  - name: Fully Assembled
+    price: 290
+    productId: price_1QvN6FDOvwMyUDfc8mU3RcwR
 featured: true
 size: triple
 ---
