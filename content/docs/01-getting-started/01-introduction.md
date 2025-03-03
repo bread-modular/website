@@ -37,3 +37,4 @@ We use proven analog designs but incorporate modern electronics to add more feat
 * We use USB-C as a power supply, so you can power Bread Modular almost anywhere.
 * We use SMT components and modern microcontrollers like the ATtiny 1616 to do more while being small and cost-effective.
 
+[**Get Started Now**](/docs/getting-started/getting-started)
