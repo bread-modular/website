@@ -6,8 +6,10 @@ price: 25
 versions:
   - name: Semi Assembled
     price: 25
+    productId: prod_RsBDR3eRE6JkB9
   - name: Fully Assembled
     price: 50
+    productId: prod_RsBDMUn5X2eBIr
 size: double
 ---
 

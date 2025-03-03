@@ -131,3 +131,23 @@
   font-size: 0.7rem;
   border-bottom: 1px solid #888;
 }
+
+.successMessage {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+  border-radius: 4px;
+  color: #52c41a;
+  text-align: center;
+}
+
+.successMessage a {
+  color: #1890ff;
+  margin-left: 0.5rem;
+  text-decoration: none;
+}
+
+.successMessage a:hover {
+  text-decoration: underline;
+}

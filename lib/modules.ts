@@ -10,6 +10,7 @@ import { cache } from 'react';
 export interface ModuleVersion {
   name: string;
   price: number;
+  productId?: string;
 }
 
 export interface ModuleSpec {
