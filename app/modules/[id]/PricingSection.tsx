@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import type { ModuleVersion } from '@/lib/modules';
 import styles from './page.module.css';
@@ -20,6 +20,7 @@ export default function PricingSection({ versions, checkout, moduleId, moduleTit
   const [selectedVersion, setSelectedVersion] = useState(versions[0]);
   const [showSuccess, setShowSuccess] = useState(false);
   const { addItem } = useCart();
+  const isProcessingRef = useRef(false);
 
   // Hide success message after 3 seconds
   useEffect(() => {
@@ -30,6 +31,25 @@ export default function PricingSection({ versions, checkout, moduleId, moduleTit
       return () => clearTimeout(timer);
     }
   }, [showSuccess]);
+
+  // Debounce function to prevent multiple rapid clicks
+  const debounce = (callback: () => void, delay: number) => {
+    if (isProcessingRef.current) return;
+    
+    isProcessingRef.current = true;
+    callback();
+    
+    setTimeout(() => {
+      isProcessingRef.current = false;
+    }, delay);
+  };
+
+  const handleAddToCart = useCallback(() => {
+    debounce(() => {
+      addItem(moduleId, moduleTitle, selectedVersion);
+      setShowSuccess(true);
+    }, 500);
+  }, [moduleId, moduleTitle, selectedVersion, addItem]);
 
   if (checkout) {
     return (
@@ -46,11 +66,6 @@ export default function PricingSection({ versions, checkout, moduleId, moduleTit
   }
 
   if (versions.length === 0) return null;
-
-  const handleAddToCart = () => {
-    addItem(moduleId, moduleTitle, selectedVersion);
-    setShowSuccess(true);
-  };
 
   return (
     <div className={styles.buySection}>
