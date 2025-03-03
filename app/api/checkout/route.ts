@@ -14,7 +14,7 @@ const SHIPPING_RATES = {
 };
 
 // Get the current environment
-const environment = process.env.NODE_ENV === 'production' ? 'production' : 'development';
+const environment = process.env.APP_ENV === 'production' ? 'production' : 'development';
 
 interface CheckoutRequestBody {
   items: CartItem[];
@@ -22,6 +22,7 @@ interface CheckoutRequestBody {
 
 export async function POST(request: Request) {
   try {
+
     const body = await request.json() as CheckoutRequestBody;
     const { items } = body;
 

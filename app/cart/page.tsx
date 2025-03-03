@@ -7,7 +7,7 @@ import { useState } from 'react';
 import styles from './page.module.css';
 
 // Get the current environment
-const environment = process.env.NODE_ENV === 'production' ? 'production' : 'development';
+const environment = process.env.APP_ENV === 'production' ? 'production' : 'development';
 
 export default function CartPage() {
   const { items, removeItem, itemCount } = useCart();
