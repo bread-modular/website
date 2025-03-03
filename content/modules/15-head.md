@@ -5,8 +5,10 @@ image: /images/modules/head.jpg
 versions:
   - name: Semi Assembled
     price: 10
+    productId: price_1QyWsADOvwMyUDfccbdNUrQV
   - name: Fully Assembled
     price: 20
+    productId: price_1QyWsQDOvwMyUDfcotvnxSfj
 size: base
 ---
 

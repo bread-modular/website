@@ -5,8 +5,10 @@ image: /images/modules/hihat.jpg
 versions:
   - name: Semi Assembled
     price: 10
+    productId: price_1QyWj8DOvwMyUDfcjXNIsEDU
   - name: Fully Assembled
     price: 20
+    productId: price_1QyWk9DOvwMyUDfchd0nuXuZ
 size: base
 ---
 

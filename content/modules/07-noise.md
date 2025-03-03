@@ -5,8 +5,10 @@ image: /images/modules/noise.jpg
 versions:
   - name: Semi Assembled
     price: 10
+    productId: price_1QyWj8DOvwMyUDfcjXNIsEDU
   - name: Fully Assembled
     price: 20
+    productId: price_1QyWipDOvwMyUDfcDBgJFULz
 size: base
 ---
 
