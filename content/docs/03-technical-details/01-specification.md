@@ -1,6 +1,6 @@
 ---
 title: Specification
-summary: The specification of the Bread Modular system
+summary: The specification of the Bread Modular system.
 ---
 
 The Bread Modular system specification is straightforward. The following aspects are defined:

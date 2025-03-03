@@ -1,6 +1,6 @@
 ---
 title: Getting Started Guide
-summary: This is how you can get started with Bread Modular.
+summary: Here's how you can get started with Bread Modular.
 ---
 
 Since we are Open Source, you can get started with Bread Modular in a couple of different ways. Let us walk you through those:

@@ -1,6 +1,6 @@
 ---
 title: Common Parts
-summary: Some of the parts you need when assembling a Bread Modular module
+summary: Some of the parts you'll need when assembling a Bread Modular module.
 ---
 
 The majority of electronic components used in Bread Modular modules are SMT components, reducing the need to source a wide variety of parts. However, for input components and connectors, THT components are employed. Here's a guide on how to source them:

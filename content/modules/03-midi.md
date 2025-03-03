@@ -10,7 +10,7 @@ versions:
 size: base
 --- 
 
-Bread Modular adopts MIDI as a communication protocol between modules. While using MIDI, we can replace multiple wires with a single wire, which is very important for a smaller system like Bread Modular.
+Bread Modular [adopts MIDI](/docs/technical-details/modular-midi) as a communication protocol between modules. While using MIDI, we can replace multiple wires with a single wire, which is very important for a smaller system like Bread Modular.
 (We still support CV and Gate communication as well)
 
 ## MIDI Host
@@ -34,5 +34,5 @@ Between the modules in Bread Modular, you only need a single wire to communicate
 
 This module does not come with any cables. Here's a guide on cables for you to source:
 
-* **3.5mm TRS to TRS** - If your MIDI device supports TRS MIDI, you can use this cable. This can be easily found at any local audio store.
+* **3.5mm TRS to TRS** - If your MIDI device supports TRS MIDI, you can use a "3.5mm stereo cable". It can be easily found at any local or online audio store.
 * **MIDI DIN to TRS MIDI** - If your MIDI device uses a DIN connector, you can use [this adapter](https://www.amazon.com/s?k=MIDI+to+TRS) along with a [MIDI DIN cable](https://www.amazon.com/s?k=MIDI+DIN+cable).
