@@ -7,6 +7,23 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-02-24.acacia',
 });
 
+// Function to get the base URL, using Vercel URL if NEXT_PUBLIC_BASE_URL is not available
+function getBaseUrl() {
+  // First check if NEXT_PUBLIC_BASE_URL is set
+  if (process.env.NEXT_PUBLIC_BASE_URL) {
+    return process.env.NEXT_PUBLIC_BASE_URL;
+  }
+  
+  // If not, check for Vercel deployment URL
+  // VERCEL_URL is provided by Vercel in production deployments
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  
+  // Fallback to localhost in development
+  return 'http://localhost:3000';
+}
+
 // Define shipping rate IDs for different environments
 const SHIPPING_RATES = {
   development: 'shr_1QyTRKDOvwMyUDfcNI3kuhdA',
@@ -22,6 +39,8 @@ interface CheckoutRequestBody {
 
 export async function POST(request: Request) {
   try {
+
+    console.log('Environment:', process.env.NEXT_PUBLIC_BASE_URL);
 
     const body = await request.json() as CheckoutRequestBody;
     const { items } = body;
@@ -50,8 +69,8 @@ export async function POST(request: Request) {
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/canceled`,
+      success_url: `${getBaseUrl()}/checkout/success`,
+      cancel_url: `${getBaseUrl()}/checkout/canceled`,
       billing_address_collection: 'required',
       shipping_address_collection: {
         allowed_countries: [
