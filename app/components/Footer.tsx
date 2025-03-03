@@ -15,7 +15,7 @@ export default function Footer() {
           <div className={styles.section}></div>
           <div className={`${styles.section} ${styles.communitySection}`}>
             <h3>Community</h3>
-            <Link href="https://discord.gg/breadmodular">Discord</Link>
+            <Link href="https://discord.gg/W72YQKU7mq">Discord</Link>
             <Link href="https://instagram.com/breadmodular">Instagram</Link>
             <Link href="https://youtube.com/@breadmodular">YouTube</Link>
           </div>

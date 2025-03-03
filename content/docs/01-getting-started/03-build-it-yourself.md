@@ -30,4 +30,4 @@ We recommend using our [base](/modules/base) to stack modules and patch them, as
 
 > Sometimes, we have Vactrols at the bottom of the module. In such cases, stacking a module on a breadboard can be challenging. But we think you'll figure something out.
 
-If you find any issues or need feedback, feel free to join our [Discord](#) and chat. 
+If you find any issues or need feedback, feel free to join our [Discord](https://discord.gg/W72YQKU7mq) and chat. 
