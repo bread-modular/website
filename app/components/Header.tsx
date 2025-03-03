@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import styles from './Header.module.css';
+import CartIcon from './CartIcon';
 
 export default function Header() {
   return (
@@ -19,6 +20,7 @@ export default function Header() {
           <ul>
             <li><Link href="/modules">MODULES</Link></li>
             <li><Link href="/docs">DOCS</Link></li>
+            <li><CartIcon /></li>
           </ul>
         </nav>
       </header>

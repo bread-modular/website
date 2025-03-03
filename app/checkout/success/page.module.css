@@ -1,0 +1,44 @@
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem;
+  width: 100%;
+}
+
+.successMessage {
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.successMessage h1 {
+  color: #52c41a;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.successMessage p {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.continueShoppingLink {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #52c41a;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.continueShoppingLink:hover {
+  background-color: #389e0d;
+  text-decoration: none;
+} 
