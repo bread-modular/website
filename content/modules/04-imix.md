@@ -5,8 +5,10 @@ image: /images/modules/imix.jpg
 versions:
   - name: Semi Assembled
     price: 10
+    productId: price_1QyWNCDOvwMyUDfcats4KTNp
   - name: Fully Assembled
     price: 20
+    productId: price_1QyWNXDOvwMyUDfcCH2CwkIv
 size: base
 ---
 

@@ -5,7 +5,9 @@ image: /images/modules/midi.jpg
 versions:
   - name: Semi Assembled
     price: 10
+    productId: price_1QyWLcDOvwMyUDfcr8Xe0xbV
   - name: Fully Assembled
+    productId: price_1QyWLrDOvwMyUDfcnHAE7s4X
     price: 20
 size: base
 --- 
