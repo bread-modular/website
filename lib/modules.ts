@@ -11,6 +11,7 @@ export interface ModuleVersion {
   name: string;
   price: number;
   productId?: string;
+  devProductId?: string;
 }
 
 export interface ModuleSpec {

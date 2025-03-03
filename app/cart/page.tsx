@@ -6,6 +6,9 @@ import Link from 'next/link';
 import { useState } from 'react';
 import styles from './page.module.css';
 
+// Get the current environment
+const environment = process.env.NODE_ENV === 'production' ? 'production' : 'development';
+
 export default function CartPage() {
   const { items, removeItem, itemCount } = useCart();
   const [isLoading, setIsLoading] = useState(false);
@@ -20,8 +23,15 @@ export default function CartPage() {
     setError(null);
 
     try {
-      // Check if all items have productId
-      const missingProductIds = items.filter(item => !item.version.productId);
+      // Check if all items have the appropriate productId
+      const missingProductIds = items.filter(item => {
+        if (environment === 'production') {
+          return !item.version.productId;
+        } else {
+          return !item.version.devProductId && !item.version.productId;
+        }
+      });
+      
       if (missingProductIds.length > 0) {
         throw new Error(`Some items are missing product IDs. Please contact support.`);
       }

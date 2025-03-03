@@ -7,6 +7,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-02-24.acacia',
 });
 
+// Define shipping rate IDs for different environments
+const SHIPPING_RATES = {
+  development: 'shr_1QyTRKDOvwMyUDfcNI3kuhdA',
+  production: 'shr_1QyQmRDOvwMyUDfcApXTHgQz',
+};
+
+// Get the current environment
+const environment = process.env.NODE_ENV === 'production' ? 'production' : 'development';
+
 interface CheckoutRequestBody {
   items: CartItem[];
 }
@@ -24,10 +33,17 @@ export async function POST(request: Request) {
     }
 
     // Create line items for Stripe
-    const lineItems = items.map((item) => ({
-      price: item.version.productId,
-      quantity: item.quantity,
-    }));
+    const lineItems = items.map((item) => {
+      // Use the appropriate product ID based on the environment
+      const priceId = environment === 'production' 
+        ? item.version.productId 
+        : (item.version.devProductId || item.version.productId);
+      
+      return {
+        price: priceId,
+        quantity: item.quantity,
+      };
+    });
 
     // Create Stripe checkout session with customer information collection
     const session = await stripe.checkout.sessions.create({
@@ -64,7 +80,7 @@ export async function POST(request: Request) {
       },
       shipping_options: [
         {
-          shipping_rate: 'shr_1QyTRKDOvwMyUDfcNI3kuhdA',
+          shipping_rate: SHIPPING_RATES[environment],
         },
       ],
       phone_number_collection: {
