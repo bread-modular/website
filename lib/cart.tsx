@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
 import { ModuleVersion } from './modules';
 
 export interface CartItem {
@@ -52,21 +52,38 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItemCount(count);
   }, [items]);
 
-  const addItem = (moduleId: string, moduleTitle: string, version: ModuleVersion) => {
+  const addItem = (moduleId: string, moduleTitle: string, version: ModuleVersion) => {    
+    // Use a closure to capture the current values
+    const currentModuleId = moduleId;
+    const currentModuleTitle = moduleTitle;
+    const currentVersion = version;
+    
     setItems(prevItems => {
       // Check if this item already exists in the cart
       const existingItemIndex = prevItems.findIndex(
-        item => item.moduleId === moduleId && item.version.name === version.name
+        item => item.moduleId === currentModuleId && item.version.name === currentVersion.name
       );
 
+
+      // Create a copy of the previous items to avoid direct mutation
+      const itemsCopy = [...prevItems];
+
       if (existingItemIndex >= 0) {
-        // Item exists, increment quantity
-        const updatedItems = [...prevItems];
-        updatedItems[existingItemIndex].quantity += 1;
-        return updatedItems;
+        // Item exists, increment quantity by exactly 1
+        const newQuantity = itemsCopy[existingItemIndex].quantity + 1;
+        itemsCopy[existingItemIndex] = {
+          ...itemsCopy[existingItemIndex],
+          quantity: newQuantity
+        };
+        return itemsCopy;
       } else {
-        // Item doesn't exist, add new item
-        return [...prevItems, { moduleId, moduleTitle, version, quantity: 1 }];
+        // Item doesn't exist, add new item with quantity 1
+        return [...itemsCopy, { 
+          moduleId: currentModuleId, 
+          moduleTitle: currentModuleTitle, 
+          version: currentVersion, 
+          quantity: 1 
+        }];
       }
     });
   };
