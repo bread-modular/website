@@ -106,6 +106,8 @@ export async function POST(request: Request) {
       phone_number_collection: {
         enabled: true,
       },
+      // Create a customer to enable receipt emails
+      customer_creation: 'always',
       custom_text: {
         shipping_address: {
           message: 'Please provide your complete shipping address for delivery.',
