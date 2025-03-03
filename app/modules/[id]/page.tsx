@@ -6,6 +6,7 @@ import PricingSection from './PricingSection';
 import MarkdownContent from '@/app/components/media/MarkdownContent';
 import ModuleNav from '@/app/components/ModuleNav';
 import styles from './page.module.css';
+import Link from 'next/link';
 import { Metadata } from 'next';
 
 export async function generateMetadata({ params }: {params: Promise<{ id: string }>}): Promise<Metadata> {
@@ -60,7 +61,7 @@ export default async function ModulePage({ params }: {params: Promise<{ id: stri
           <p className={styles.description}>{moduleData.description}</p>
 
           <div>
-            <a href="#" className={styles.diyLink}>BUILD IT YOURSELF</a>
+            <Link href="/docs/getting-started/build-it-yourself" className={styles.diyLink}>BUILD IT YOURSELF</Link>
           </div>
 
           <PricingSection 
