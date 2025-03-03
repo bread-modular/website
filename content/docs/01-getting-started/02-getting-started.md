@@ -34,4 +34,4 @@ Then you can source additional parts as listed in the docs. For example, these a
 
 If you are quite comfortable with basic electronics, we encourage you to build modules from scratch. You can either use our published Gerber files to fabricate and assemble modules or build a new module from scratch. 
 
-We have a [separate guide](/docs/build-from-scratch) on how to build from scratch; you will find all the information you need.
+We have a [separate guide](/docs/getting-started/build-it-yourself) on how to build from scratch; you will find all the information you need.
