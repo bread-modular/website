@@ -5,12 +5,18 @@
   overflow-y: auto;
   padding-right: 16px;
   scrollbar-width: thin;
-  scrollbar-color: var(--neutral-200) transparent;
-  width: 250px;
+  scrollbar-color: var(--neutral-300) transparent;
+  width: 280px;
+  background: var(--background);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--neutral-200);
+  scroll-behavior: smooth;
 }
 
 .sidebar::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .sidebar::-webkit-scrollbar-track {
@@ -18,46 +24,96 @@
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background-color: var(--neutral-200);
-  border-radius: 3px;
+  background-color: var(--neutral-300);
+  border-radius: 4px;
 }
 
 .category {
   margin-bottom: 24px;
+  padding-bottom: 8px;
 }
 
 .categoryTitle {
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   color: var(--neutral-600);
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--neutral-200);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.categoryTitle span:first-child {
+  position: relative;
+  padding-left: 12px;
+}
+
+.categoryTitle span:first-child::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 16px;
+  background-color: var(--neutral-300);
+  border-radius: 2px;
+}
+
+.categoryTitle:hover {
+  color: var(--foreground);
+}
+
+.activeCategoryTitle {
+  color: var(--foreground);
+}
+
+.activeCategoryTitle span:first-child::before {
+  background-color: var(--foreground);
+}
+
+.categoryCount {
+  background-color: var(--neutral-200);
+  color: var(--neutral-700);
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: 500;
 }
 
 .docList {
   list-style: none;
   padding: 0;
   margin: 0;
+  margin-bottom: 16px;
 }
 
 .docLink {
   display: block;
-  padding: 6px 12px;
-  margin: 2px 0;
+  padding: 8px 12px;
+  margin: 4px 0;
   font-size: 0.9375rem;
   color: var(--foreground);
   text-decoration: none;
-  border-radius: 0;
+  border-radius: 6px;
   transition: all 0.2s ease;
 }
 
 .docLink:hover {
-  background: var(--neutral-200);
+  background: var(--neutral-100);
+  transform: translateX(2px);
 }
 
 .docLink.active {
   background: var(--foreground);
   color: var(--background);
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .mobileToggle {
@@ -88,6 +144,7 @@
 
 .sidebarContent {
   display: block;
+  margin-top: 1.2rem;
 }
 
 @media (max-width: 768px) {
@@ -97,6 +154,9 @@
     position: relative;
     height: auto;
     overflow-y: visible;
+    box-shadow: none;
+    padding: 0;
+    border: none;
   }
 
   .mobileToggle {
