@@ -123,23 +123,60 @@
 .expandButton {
   width: 100%;
   text-align: left;
-  padding: 1rem;
-  background: none;
-  border: 1px solid #eaeaea;
-  color: #000000;
-  border-radius: 4px;
+  padding: 1rem 1.2rem;
+  background: var(--background);
+  border: 1px solid var(--neutral-200);
+  color: var(--foreground);
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.expandButton::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: linear-gradient(to bottom, var(--foreground), var(--neutral-400));
+  opacity: 0.8;
+}
+
+.expandButton span:first-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 85%;
+}
+
+.expandButton:hover {
+  border-color: var(--neutral-300);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
 }
 
 .arrow {
   transition: transform 0.2s ease;
+  font-size: 0.75rem;
+  margin-left: 8px;
+  color: var(--neutral-500);
 }
 
 .up {
   transform: rotate(180deg);
+}
+
+.desktopContent {
+  display: block;
+  margin-top: 1rem;
 }
 
 .sidebarContent {
@@ -161,14 +198,36 @@
 
   .mobileToggle {
     display: block;
+    margin-bottom: 1rem;
+  }
+
+  .desktopContent {
+    display: none;
   }
 
   .sidebarContent {
     margin-top: 20px;
     display: none;
+    padding: 1rem;
+    background: var(--background);
+    border-radius: 8px;
+    border: 1px solid var(--neutral-200);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
 
   .sidebarContent.expanded {
     display: block;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@media (min-width: 769px) {
+  .mobileToggle {
+    display: none;
   }
 } 
