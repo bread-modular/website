@@ -14,11 +14,13 @@ export async function generateMetadata(): Promise<Metadata> {
       description: 'Learn how to build and use Bread Modular synthesizer modules.',
       type: 'article',
       url: '/docs',
+      images: ['/images/home-slide/01.jpg'],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title: 'Documentation - Bread Modular',
       description: 'Learn how to build and use Bread Modular synthesizer modules.',
+      images: ['/images/home-slide/01.jpg'],
     },
   };
 }

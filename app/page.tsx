@@ -12,10 +12,7 @@ export const metadata: Metadata = {
     title: "Bread Modular - Affordable Modular Synth Platform",
     description: "Open Source modular synth with minimalistic PCB design, MIDI, and USB-C power. Affordable and feature-rich.",
     images: [
-      "/images/home-slide/01.jpg",
-      "/images/home-slide/02.jpg",
-      "/images/home-slide/03.jpg",
-      "/images/home-slide/04.jpg"
+      "/images/home-slide/01.jpg"
     ],
     type: "website",
   },

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Layout from '@/app/components/Layout';
 import MarkdownContent from '@/app/components/media/MarkdownContent';
-import { getDoc, getDocCategories } from '@/lib/docs';
+import { getDoc, getDocCategories, extractFirstImageFromHtml } from '@/lib/docs';
 import styles from './page.module.css';
 import DocsSidebarNav from '@/app/components/DocsSidebarNav';
 import DocsMobileNav from '@/app/components/DocsMobileNav';
@@ -26,6 +26,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  // Extract the first image from the content or use a default image
+  const contentImage = await extractFirstImageFromHtml(doc.contentHtml);
+  const imageUrl = contentImage || '/images/home-slide/01.jpg';
+
   return {
     title: `${doc.title} | Bread Modular`,
     description: doc.summary,
@@ -34,11 +38,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: doc.summary,
       type: 'article',
       url: `/docs/${category}/${slug}`,
+      images: [imageUrl],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title: doc.title,
       description: doc.summary,
+      images: [imageUrl],
     },
   };
 }

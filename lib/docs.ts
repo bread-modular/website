@@ -31,6 +31,13 @@ function getCleanId(filename: string): string {
   return filename.replace(/^\d+-/, '').replace(/\.md$/, '');
 }
 
+// Helper function to extract the first image from HTML content
+export async function extractFirstImageFromHtml(html: string): Promise<string | null> {
+  const imgRegex = /<img[^>]+src="([^">]+)"/i;
+  const match = html.match(imgRegex);
+  return match ? match[1] : null;
+}
+
 // Get all doc categories
 export const getDocCategories = cache(async (): Promise<DocCategory[]> => {
   const entries = await fs.readdir(DOCS_DIRECTORY, { withFileTypes: true });

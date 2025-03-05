@@ -8,6 +8,18 @@ import styles from './page.module.css';
 export const metadata: Metadata = {
   title: "Modules - Bread Modular",
   description: "Explore our range of affordable, open-source modular synthesizer modules.",
+  openGraph: {
+    title: "Modules - Bread Modular",
+    description: "Explore our range of affordable, open-source modular synthesizer modules.",
+    images: ["/images/modules/starter-kit.jpg"],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Modules - Bread Modular",
+    description: "Explore our range of affordable, open-source modular synthesizer modules.",
+    images: ["/images/modules/starter-kit.jpg"],
+  },
 };
 
 export default async function ModulesPage() {
