@@ -33,9 +33,26 @@ function getCleanId(filename: string): string {
 
 // Helper function to extract the first image from HTML content
 export async function extractFirstImageFromHtml(html: string): Promise<string | null> {
+  // First try to find a regular image
   const imgRegex = /<img[^>]+src="([^">]+)"/i;
-  const match = html.match(imgRegex);
-  return match ? match[1] : null;
+  const imgMatch = html.match(imgRegex);
+  
+  if (imgMatch) {
+    return imgMatch[1];
+  }
+  
+  // If no image found, try to find a YouTube embed
+  const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/i;
+  const youtubeMatch = html.match(youtubeRegex);
+  
+  if (youtubeMatch) {
+    const videoId = youtubeMatch[1];
+    // Return the high-quality thumbnail URL
+    return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  }
+  
+  // If neither image nor YouTube embed found
+  return null;
 }
 
 // Get all doc categories
