@@ -6,19 +6,24 @@ import styles from './page.module.css';
 
 export const metadata: Metadata = {
   title: "Bread Modular - Affordable Modular Synth Platform",
-  description: "An open-source, affordable modular synthesizer platform using modern electronics and minimalistic design. Features USB-C power, MIDI, and more.",
+  description: "Open Source modular synth with minimalistic PCB design, MIDI, and USB-C power. Affordable and feature-rich.",
   keywords: ["modular synth", "synthesizer", "DIY electronics", "open source hardware", "USB-C", "MIDI", "affordable synth"],
   openGraph: {
     title: "Bread Modular - Affordable Modular Synth Platform",
-    description: "Open-source modular synthesizer platform with modern features and minimalistic design.",
-    images: ["/images/home-slide/01.JPEG"],
+    description: "Open Source modular synth with minimalistic PCB design, MIDI, and USB-C power. Affordable and feature-rich.",
+    images: [
+      "/images/home-slide/01.jpg",
+      "/images/home-slide/02.jpg",
+      "/images/home-slide/03.jpg",
+      "/images/home-slide/04.jpg"
+    ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Bread Modular - Affordable Modular Synth Platform",
-    description: "Open-source modular synthesizer platform with modern features and minimalistic design.",
-    images: ["/images/home-slide/01.JPEG"],
+    description: "Open Source modular synth with minimalistic PCB design, MIDI, and USB-C power. Affordable and feature-rich.",
+    images: ["/images/home-slide/01.jpg"],
   },
 };
 
