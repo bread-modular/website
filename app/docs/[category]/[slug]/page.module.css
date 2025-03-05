@@ -29,4 +29,8 @@
     margin-top: -50px;
     flex-direction: column;
   }
+  
+  .content {
+    padding-bottom: 2rem;
+  }
 }

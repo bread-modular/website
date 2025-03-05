@@ -4,6 +4,7 @@ import MarkdownContent from '@/app/components/media/MarkdownContent';
 import { getDoc, getDocCategories } from '@/lib/docs';
 import styles from './page.module.css';
 import DocsSidebarNav from '@/app/components/DocsSidebarNav';
+import DocsMobileNav from '@/app/components/DocsMobileNav';
 import { Metadata } from 'next';
 
 interface Props {
@@ -62,6 +63,7 @@ export default async function DocPage({ params }: Props) {
           <div className={styles.markdownWrapper}>
             <MarkdownContent content={doc.contentHtml} />
           </div>
+          <DocsMobileNav categories={categories} currentDoc={doc} />
         </main>
       </div>
     </Layout>

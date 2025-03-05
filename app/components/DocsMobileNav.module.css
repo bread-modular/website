@@ -1,0 +1,101 @@
+.mobileNav {
+  display: none;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--neutral-200);
+}
+
+.navLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.navLink {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border: 1px solid var(--neutral-200);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--foreground);
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 140px;
+}
+
+.navLink:hover {
+  background-color: var(--neutral-100);
+  border-color: var(--neutral-300);
+}
+
+.navLinkNext {
+  text-align: right;
+}
+
+.navDirection {
+  font-size: 0.875rem;
+  color: var(--neutral-600);
+  margin-bottom: 0.5rem;
+}
+
+.navTitle {
+  font-weight: 500;
+}
+
+.moreSection {
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+
+.moreTitle {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.docsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.docCard {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.3rem;
+  border-radius: 8px;
+  background-color: var(--neutral-50);
+  border: 1px solid var(--neutral-200);
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  color: inherit;
+}
+
+.docCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  border-color: var(--neutral-300);
+}
+
+.docTitle {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+  color: var(--primary-600);
+}
+
+.docSummary {
+  font-size: 0.95rem;
+  color: var(--neutral-600);
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .mobileNav {
+    display: block;
+  }
+} 
