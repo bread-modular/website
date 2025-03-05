@@ -7,7 +7,7 @@ import styles from './DocsSidebarNav.module.css';
 
 interface Props {
   categories: DocCategory[];
-  currentDoc: Doc;
+  currentDoc: Doc | null;
 }
 
 export default function DocsSidebarNav({ categories, currentDoc }: Props) {
@@ -15,15 +15,27 @@ export default function DocsSidebarNav({ categories, currentDoc }: Props) {
 
   return (
     <aside className={styles.sidebar}>
-      <div className={styles.mobileToggle}>
-        <button 
-          className={styles.expandButton}
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
-          {currentDoc.categoryName} - {currentDoc.title}
-          <span className={`${styles.arrow} ${isExpanded ? styles.up : ''}`}>▼</span>
-        </button>
-      </div>
+      {currentDoc ? (
+        <div className={styles.mobileToggle}>
+          <button 
+            className={styles.expandButton}
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
+            {currentDoc.categoryName} - {currentDoc.title}
+            <span className={`${styles.arrow} ${isExpanded ? styles.up : ''}`}>▼</span>
+          </button>
+        </div>
+      ) : (
+        <div className={styles.mobileToggle}>
+          <button 
+            className={styles.expandButton}
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
+            Documentation
+            <span className={`${styles.arrow} ${isExpanded ? styles.up : ''}`}>▼</span>
+          </button>
+        </div>
+      )}
       <div className={`${styles.sidebarContent} ${isExpanded ? styles.expanded : ''}`}>
         {categories.map((category) => (
           <div key={category.slug} className={styles.category}>
@@ -34,7 +46,7 @@ export default function DocsSidebarNav({ categories, currentDoc }: Props) {
                   <Link
                     href={`/docs/${category.slug}/${doc.slug}`}
                     className={`${styles.docLink} ${
-                      doc.slug === currentDoc.slug && category.slug === currentDoc.categorySlug
+                      currentDoc && doc.slug === currentDoc.slug && category.slug === currentDoc.categorySlug
                         ? styles.active
                         : ''
                     }`}

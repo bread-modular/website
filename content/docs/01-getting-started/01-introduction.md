@@ -1,6 +1,6 @@
 ---
-title: Introduction to Bread Modular
-summary: Learn about Bread Modular's philosophy and how we're developing it.
+title: Intro to Bread Modular
+summary: Learn about the core ideas behind Bread Modular.
 ---
 
 Bread Modular is an affordable modular synth platform built around the following core principles:
