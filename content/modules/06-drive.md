@@ -3,12 +3,12 @@ title: Drive
 description: Analog Distortion & Saturation Module.
 image: /images/modules/drive.jpg
 versions:
-  - name: Semi Assembled
-    price: 10
-    productId: price_1QyWPoDOvwMyUDfcjX9KKPOg
   - name: Fully Assembled
     price: 20
     productId: price_1QyWPVDOvwMyUDfcdbSDCxRZ
+  - name: Semi Assembled
+    price: 10
+    productId: price_1QyWPoDOvwMyUDfcjX9KKPOg
 size: base
 ---
 

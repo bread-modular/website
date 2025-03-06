@@ -3,12 +3,12 @@ title: Line Out
 description: Stereo Line Out.
 image: /images/modules/line_out.jpg
 versions:
-  - name: Semi Assembled
-    price: 10
-    productId: price_1QyWrMDOvwMyUDfcSPPrAHok
   - name: Fully Assembled
     price: 20
     productId: price_1QyWr6DOvwMyUDfc7a4uALeH
+  - name: Semi Assembled
+    price: 10
+    productId: price_1QyWrMDOvwMyUDfcSPPrAHok
 size: base
 ---
 

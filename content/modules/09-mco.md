@@ -3,12 +3,12 @@ title: MCO
 description: MIDI Controllable Oscillator with Detune Support.
 image: /images/modules/mco.jpg
 versions:
-  - name: Semi Assembled
-    price: 10
-    productId: price_1QyWlbDOvwMyUDfcdoWGc97i
   - name: Fully Assembled
     price: 20
     productId: price_1QyWlNDOvwMyUDfcw3i6VQua
+  - name: Semi Assembled
+    price: 10
+    productId: price_1QyWlbDOvwMyUDfcdoWGc97i
 size: base
 ---
 

@@ -3,12 +3,12 @@ title: MIDI
 description: MIDI host module and 8 channel MIDI router.
 image: /images/modules/midi.jpg
 versions:
-  - name: Semi Assembled
-    price: 10
-    productId: price_1QyWLcDOvwMyUDfcr8Xe0xbV
   - name: Fully Assembled
     productId: price_1QyWLrDOvwMyUDfcnHAE7s4X
     price: 20
+  - name: Semi Assembled
+    price: 10
+    productId: price_1QyWLcDOvwMyUDfcr8Xe0xbV
 size: base
 --- 
 

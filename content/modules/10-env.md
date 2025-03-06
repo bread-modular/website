@@ -3,12 +3,12 @@ title: ENV
 description: Envelope Generator with Multiple Algorithm Options (MIDI Controllable).
 image: /images/modules/env.jpg
 versions:
-  - name: Semi Assembled
-    price: 10
-    productId: price_1QyWmsDOvwMyUDfcuXOxg3k3
   - name: Fully Assembled
     price: 20
     productId: price_1QyWn9DOvwMyUDfcbXuqDsTq
+  - name: Semi Assembled
+    price: 10
+    productId: price_1QyWmsDOvwMyUDfcuXOxg3k3
 size: base
 ---
 

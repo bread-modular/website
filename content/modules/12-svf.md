@@ -3,12 +3,12 @@ title: SVF
 description: Analog State Variable Filter with 3 Frequency Bands.
 image: /images/modules/svf.jpg
 versions:
-  - name: Semi Assembled
-    price: 10
-    productId: price_1QyWp3DOvwMyUDfcYwTnbJW0
   - name: Fully Assembled
     price: 20
     productId: price_1QyWpIDOvwMyUDfcdTQ63jbE
+  - name: Semi Assembled
+    price: 10
+    productId: price_1QyWp3DOvwMyUDfcYwTnbJW0
 size: base
 ---
 

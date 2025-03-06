@@ -3,12 +3,12 @@ title: Wave
 description: Analog Waveform Generator with Configurable Frequency Ranges.
 image: /images/modules/wave.jpg
 versions:
-  - name: Semi Assembled
-    price: 10
-    productId: price_1QyWubDOvwMyUDfccMNmFymI
   - name: Fully Assembled
     price: 20
     productId: price_1QyWupDOvwMyUDfc23KEmVdt
+  - name: Semi Assembled
+    price: 10
+    productId: price_1QyWubDOvwMyUDfccMNmFymI
 size: base
 ---
 
