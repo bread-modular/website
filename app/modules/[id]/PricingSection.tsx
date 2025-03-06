@@ -19,6 +19,7 @@ interface Props {
 export default function PricingSection({ versions, checkout, moduleId, moduleTitle }: Props) {
   const [selectedVersion, setSelectedVersion] = useState(versions[0]);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isDIY, setIsDIY] = useState(false);
   const { addItem } = useCart();
   const isProcessingRef = useRef(false);
 
@@ -67,36 +68,55 @@ export default function PricingSection({ versions, checkout, moduleId, moduleTit
 
   if (versions.length === 0) return null;
 
+  const handleVersionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (e.target.value === 'diy') {
+      setIsDIY(true);
+    } else {
+      setIsDIY(false);
+      const version = versions.find(v => v.name === e.target.value);
+      if (version) setSelectedVersion(version);
+    }
+  };
+
   return (
     <div className={styles.buySection}>
       <div className={styles.buyHeader}>
-        <span>OR BUY IT:</span>
+        
         <select 
           className={styles.versionSelect}
-          value={selectedVersion.name}
-          onChange={(e) => {
-            const version = versions.find(v => v.name === e.target.value);
-            if (version) setSelectedVersion(version);
-          }}
+          value={isDIY ? 'diy' : selectedVersion.name}
+          onChange={handleVersionChange}
+          aria-label="Select version or build option"
         >
           {versions.map((version) => (
             <option key={version.name} value={version.name}>
               {version.name}
             </option>
           ))}
+          <option value="diy">Build It Yourself (DIY)</option>
         </select>
-        <Link href="/docs/getting-started/getting-started#difference-between-semi-assembled-x26-fully-assembled" className={styles.differenceLink}>{"difference?"}</Link>
+        {!isDIY && (
+          <Link href="/docs/getting-started/getting-started#difference-between-semi-assembled-x26-fully-assembled" className={styles.differenceLink}>{"difference?"}</Link>
+        )}
       </div>
       <div className={styles.buyOptions}>
-        <div className={styles.price}>${selectedVersion.price}</div>
-        <button 
-          className={styles.buyButton}
-          onClick={handleAddToCart}
-        >
-          ADD TO CART
-        </button>
+        {!isDIY ? (
+          <>
+            <div className={styles.price}>${selectedVersion.price}</div>
+            <button 
+              className={styles.buyButton}
+              onClick={handleAddToCart}
+            >
+              ADD TO CART
+            </button>
+          </>
+        ) : (
+          <Link href="/docs/getting-started/build-it-yourself" className={styles.buyButton}>
+            BUILD IT YOURSELF
+          </Link>
+        )}
       </div>
-      {showSuccess && (
+      {showSuccess && !isDIY && (
         <div className={styles.successMessage}>
           Item added to cart! <Link href="/cart">View Cart</Link>
         </div>
