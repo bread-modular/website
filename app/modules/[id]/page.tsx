@@ -6,7 +6,6 @@ import PricingSection from './PricingSection';
 import MarkdownContent from '@/app/components/media/MarkdownContent';
 import ModuleNav from '@/app/components/ModuleNav';
 import styles from './page.module.css';
-import Link from 'next/link';
 import { Metadata } from 'next';
 
 export async function generateMetadata({ params }: {params: Promise<{ id: string }>}): Promise<Metadata> {
