@@ -118,7 +118,7 @@ export default function DocsSidebarNav({ categories, currentDoc }: Props) {
         >
           {currentDoc ? (
             <>
-              <span>{currentDoc.title}</span>
+              <span>{currentDoc.categoryName}</span>
               <span className={`${styles.arrow} ${isExpanded ? styles.up : ''}`}>▼</span>
             </>
           ) : (
