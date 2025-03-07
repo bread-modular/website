@@ -23,7 +23,7 @@ We make it affordable by making things minimal rather than cutting corners on el
 
 ## Open Source Everything
 
-We [develop](/develop) in the open. You can access everything we do from [our GitHub](https://github.com/bread-modular/bread-modular). We share all the schematics, PCB designs, and code.
+We develop in the open. You can access everything we do from [our GitHub](https://github.com/bread-modular/bread-modular). We share all the schematics, PCB designs, and code.
 
 We even show you how to use [PCB manufacturing services to assemble PCBs](https://youtu.be/eTam3B5scmY?si=M_9DaomW9O6EwgJN) as well as [sourcing parts](/docs/common_parts).
 
