@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import Layout from '@/app/components/Layout';
 import { getModuleData } from '@/lib/modules';
 import PricingSection from './PricingSection';
 import MarkdownContent from '@/app/components/media/MarkdownContent';
 import ModuleNav from '@/app/components/ModuleNav';
+import ImagePreviewWrapper from '@/app/components/ImagePreviewWrapper';
 import styles from './page.module.css';
 import { Metadata } from 'next';
 
@@ -67,12 +67,10 @@ export default async function ModulePage({ params }: {params: Promise<{ id: stri
           />
         </div>
         <div className={styles.imageSection}>
-          <Image
+          <ImagePreviewWrapper
             src={moduleData.image}
             alt={moduleData.title}
-            fill
             className={styles.moduleImage}
-            priority
           />
         </div>
       </div>
