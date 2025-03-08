@@ -8,7 +8,7 @@ versions:
     productId: price_1QyWk9DOvwMyUDfchd0nuXuZ
   - name: Semi Assembled
     price: 10
-    productId: price_1QyWj8DOvwMyUDfcjXNIsEDU
+    productId: price_1QyWkQDOvwMyUDfcTEsuVsye
 size: base
 ---
 
