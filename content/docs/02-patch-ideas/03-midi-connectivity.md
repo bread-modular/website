@@ -14,3 +14,4 @@ Then we show you how to feed that MIDI data into our [MCO](/modules/mco) module 
 * Check for TRS Type A or Type B: [https://minimidi.world](https://minimidi.world)
 * MIDI DIN to TRS [converter](https://www.amazon.com/s?k=MIDI+to+TRS)
 * MIDI DIN [cable](https://www.amazon.com/s?k=midi+din+cable)
+* Modular MIDI [docs](/docs/technical-details/modular-midi)
