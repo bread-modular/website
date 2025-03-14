@@ -50,3 +50,11 @@ Here are some ideas:
 
 * Use any MIDI note to trigger the oscillator (this is a monophonic oscillator).
 * Accept velocity and output it as a CV signal. (Velocity does not affect the oscillator.)
+
+## Additional Parts
+
+> This section is only relevant if you are buying the semi-assembled module. You have to source & solder the following parts. You can check our guide on [common parts](/docs/technical-details/common-parts) for where to source these components.
+
+* 2.54mm Header Pins (5-pin) - 2
+* Circular Pin Header Sockets (5-pin) - 2
+* 50K Potentiometers - 2

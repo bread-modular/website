@@ -38,3 +38,13 @@ This module does not come with any cables. Here's a guide on cables for you to s
 
 * **3.5mm TRS to TRS** - If your MIDI device supports TRS MIDI, you can use a "3.5mm stereo cable". It can be easily found at any local or online audio store.
 * **MIDI DIN to TRS MIDI** - If your MIDI device uses a DIN connector, you can use [this adapter](https://www.amazon.com/s?k=MIDI+to+TRS) along with a [MIDI DIN cable](https://www.amazon.com/s?k=MIDI+DIN+cable).
+
+## Additional Parts
+
+> This section is only relevant if you are buying the semi-assembled module. You have to source & solder the following parts. You can check our guide on [common parts](/docs/technical-details/common-parts) for where to source these components.
+
+* 2.54mm Header Pins (5pin) - 2
+* Cicular Pin Header Sockets (8pin) - 2
+* 2.54mm Header Pins (3pin) - 1 (for Type-A / Type-B selection)
+* 2.54mm Jumper Cap - 1
+* 3.5mm Stereo Sockets - 1

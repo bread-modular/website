@@ -43,3 +43,14 @@ This is a traditional analog State Variable Filter (SVF) implementation that inc
 * **RESONANCE**: Adjusts the filter's resonance level
 * **FREQ**: Sets the CUTOFF frequency of the filter (CV input is limited to this maximum value)
 * **FREQ CURV**: Reduces the filter's frequency range for more precise control (turn clockwise to decrease range)
+
+## Additional Parts
+
+> This section is only relevant if you are buying the semi-assembled module. You have to source & solder the following parts. You can check our guide on [common parts](/docs/technical-details/common-parts) for where to source these components.
+
+* 2.54mm Header Pins (5-pin) - 2
+* Circular Pin Header Sockets (5-pin) - 2
+* 50K Potentiometers - 1 (FREQ CURVE)
+* 500K Potentiometers - 1 (RESONANCE)
+* 1M Potentiometers - (FREQ)
+* Vactrols - 2

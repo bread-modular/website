@@ -16,9 +16,9 @@ For enhanced durability and conductivity, opt for gold-plated pins whenever poss
 
 These are sockets with 2.54mm spacing between pins. The ideal hole size of the socket should be 0.76mm. 
 
-* [Ideal Component](https://www.digikey.com/en/products/detail/preci-dip/801-87-005-10-001101/3757433) - Perci Dip 801-87-005-10-001101
-* [AE Modular Sockets](https://www.tangiblewaves.com/store/p123/10_x_PATCH_SOCKETS.html) - Sockets used in AE Modular
-* [Standard 2.54mm Sockets on Ali Express](https://www.aliexpress.com/w/wholesale-2.54-headers-sockets-female.html?spm=a2g0o.productlist.search.0) - You may choose 40-pin or 5-pin arrays.
+* [Ideal Component (Circular)](https://www.digikey.com/en/products/detail/preci-dip/801-87-005-10-001101/3757433) - Perci Dip 801-87-005-10-001101
+* [AE Modular Sockets (Circular)](https://www.tangiblewaves.com/store/p123/10_x_PATCH_SOCKETS.html) - Sockets used in AE Modular
+* [Standard 2.54mm Sockets (Square)](https://www.aliexpress.com/w/wholesale-2.54-headers-sockets-female.html?spm=a2g0o.productlist.search.0) - You may choose 40-pin or 5-pin arrays.
 
 ## Potentiometers
 

@@ -33,6 +33,7 @@
   padding: 8px 40px;
   border-left: 6px solid #06a523;
   font-size: 1rem;
+  margin: 2rem 0;
 }
 
 .content ol {
@@ -46,8 +47,12 @@
 
 .content ul {
   padding-left: 50px;
-  margin-bottom: 32px;
+  margin: 2rem 0;
   list-style-type: disc;
+}
+
+.content li > ul {
+  margin: 0;
 }
 
 .content ul li {

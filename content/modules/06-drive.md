@@ -29,3 +29,12 @@ Turning both **OD1** and **OD2** to the right will turn this module into an over
 ## Fuzz
 
 Output sockets labeled as **DIRTY** go through another diode-based drive circuit to add more harmonics. You can use the output socket labeled as **CLEN** to bypass this circuit.
+
+## Additional Parts
+
+> This section is only relevant if you are buying the semi-assembled module. You have to source & solder the following parts. You can check our guide on [common parts](/docs/technical-details/common-parts) for where to source these components.
+
+* 2.54mm Header Pins (5-pin) - 2
+* Circular Pin Header Sockets (5-pin) - 2
+* 50K Potentiometers - 1 (Gain)
+* 500K Potentiometers - 1 (OD1 & OD2)
