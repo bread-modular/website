@@ -32,19 +32,25 @@ function getYouTubeId(url: string): string {
 
 // Function to add IDs to heading tags for anchor links
 function addHeadingIds(html: string): string {
-  // Add ids to h1, h2, and h3 tags
+  // Add ids to h1, h2, and h3 tags with anchor links
   return html
     .replace(/<h1>(.+?)<\/h1>/g, (match, content) => {
       const id = content.toLowerCase().replace(/[^\w]+/g, '-');
-      return `<h1 id="${id}">${content}</h1>`;
+      return `<h1 id="${id}" class="${styles.headingWithAnchor}">
+        <a href="#${id}" class="${styles.headingLink}">${content}</a><a href="#${id}" class="${styles.anchorLink}" aria-hidden="true">#</a>
+      </h1>`;
     })
     .replace(/<h2>(.+?)<\/h2>/g, (match, content) => {
       const id = content.toLowerCase().replace(/[^\w]+/g, '-');
-      return `<h2 id="${id}">${content}</h2>`;
+      return `<h2 id="${id}" class="${styles.headingWithAnchor}">
+        <a href="#${id}" class="${styles.headingLink}">${content}</a><a href="#${id}" class="${styles.anchorLink}" aria-hidden="true">#</a>
+      </h2>`;
     })
     .replace(/<h3>(.+?)<\/h3>/g, (match, content) => {
       const id = content.toLowerCase().replace(/[^\w]+/g, '-');
-      return `<h3 id="${id}">${content}</h3>`;
+      return `<h3 id="${id}" class="${styles.headingWithAnchor}">
+        <a href="#${id}" class="${styles.headingLink}">${content}</a><a href="#${id}" class="${styles.anchorLink}" aria-hidden="true">#</a>
+      </h3>`;
     });
 }
 
