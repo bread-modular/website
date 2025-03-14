@@ -105,28 +105,12 @@
 
 /* Mobile-specific styles */
 @media (max-width: 768px) {
-  /* Make the heading link take up the full width on mobile */
-  .headingLink {
-    flex-grow: 1;
-    display: block;
-    padding: 0.5rem 0;  /* Add padding to increase tap target */
-  }
-  
-  /* Keep the anchor link next to the title, 2rem away */
+  /* Position the anchor link exactly 2rem away from the header text */
   .anchorLink {
     position: relative;
-    margin-left: 2rem;
-    padding: 0.5rem;  /* Larger tap target */
-  }
-  
-  /* Increase tap target size for better mobile usability */
-  .headingWithAnchor {
-    position: relative;
-  }
-  
-  /* Class to be added via JavaScript when heading is near viewport top */
-  .headingInView .anchorLink {
-    opacity: 0.7;
+    margin-left: 0.5rem;
+    opacity: 0.7 !important;  /* Always visible */
+    color: #999999 !important;  /* Lighter color on mobile */
   }
 }
 

@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import YouTubeEmbed from './YouTubeEmbed';
 import styles from './MarkdownContent.module.css';
 
@@ -56,8 +55,6 @@ function addHeadingIds(html: string): string {
 }
 
 export default function MarkdownContent({ content }: Props) {
-  const contentRef = useRef<HTMLDivElement>(null);
-
   // Process the content to replace YouTube embeds with the component
   let processedContent = content;
   
@@ -82,44 +79,8 @@ export default function MarkdownContent({ content }: Props) {
   // Split content into parts, separating YouTube embeds
   const parts = processedContent.split(/<div data-youtube-id="([^"]+)"><\/div>/);
 
-  // Add scroll event listener to show anchor links when headings are near the top
-  useEffect(() => {
-    // Only run on mobile devices
-    const isMobile = window.innerWidth <= 768;
-    if (!isMobile || !contentRef.current) return;
-
-    const handleScroll = () => {
-      // Find all headings in the content
-      const headings = contentRef.current?.querySelectorAll('h1, h2, h3');
-      if (!headings) return;
-
-      // Check each heading's position
-      headings.forEach((heading) => {
-        const rect = heading.getBoundingClientRect();
-        
-        // If heading is near the top of the viewport (within 200px)
-        if (rect.top >= 0 && rect.top <= 200) {
-          heading.classList.add(styles.headingInView);
-        } else {
-          heading.classList.remove(styles.headingInView);
-        }
-      });
-    };
-
-    // Add scroll event listener
-    window.addEventListener('scroll', handleScroll);
-    
-    // Run once on mount to check initial positions
-    handleScroll();
-
-    // Clean up
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
   return (
-    <div className={styles.content} ref={contentRef}>
+    <div className={styles.content}>
       {parts.map((part, index) => {
         if (index % 2 === 0) {
           // Regular markdown content with heading IDs added
