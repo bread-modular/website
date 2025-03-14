@@ -105,9 +105,23 @@
 
 /* Mobile-specific styles */
 @media (max-width: 768px) {
-  /* Increase tap target size for better mobile usability */
+  /* Make the heading link take up the full width on mobile */
+  .headingLink {
+    flex-grow: 1;
+    display: block;
+    padding: 0.5rem 0;  /* Add padding to increase tap target */
+  }
+  
+  /* Keep the anchor link next to the title, 2rem away */
   .anchorLink {
-    padding: 0.25rem;
+    position: relative;
+    margin-left: 2rem;
+    padding: 0.5rem;  /* Larger tap target */
+  }
+  
+  /* Increase tap target size for better mobile usability */
+  .headingWithAnchor {
+    position: relative;
   }
   
   /* Class to be added via JavaScript when heading is near viewport top */
