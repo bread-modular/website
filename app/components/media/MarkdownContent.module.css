@@ -103,10 +103,17 @@
   color: #333333 !important;
 }
 
-.anchorLink:hover {
-  opacity: 1 !important;
-  color: #000000 !important;
-  border-bottom: none !important;
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  /* Increase tap target size for better mobile usability */
+  .anchorLink {
+    padding: 0.25rem;
+  }
+  
+  /* Class to be added via JavaScript when heading is near viewport top */
+  .headingInView .anchorLink {
+    opacity: 0.7;
+  }
 }
 
 
