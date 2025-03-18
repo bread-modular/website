@@ -112,6 +112,10 @@
     opacity: 0.7 !important;  /* Always visible */
     color: #999999 !important;  /* Lighter color on mobile */
   }
+
+  .codeBlock {
+    width: 80vw;
+  }
 }
 
 /* Code block styling */
