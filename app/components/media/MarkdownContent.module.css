@@ -116,6 +116,11 @@
   .codeBlock {
     width: 80vw;
   }
+
+  .copyButton {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.9rem;
+  }
 }
 
 /* Code block styling */
@@ -123,12 +128,81 @@
   background-color: #282c34;
   border-radius: 6px;
   margin: 1.5rem 0;
-  padding: 1rem;
-  overflow-x: auto;
   position: relative;
   font-family: 'Fira Code', 'Roboto Mono', 'SF Mono', Consolas, Monaco, 'Andale Mono', monospace;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Code header with the copy button */
+.codeHeader {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Empty div should still take up space */
+.codeHeader > div:first-child {
+  min-height: 1rem;
+}
+
+/* Language label styling */
+.languageLabel {
+  font-size: 0.8rem;
+  color: #abb2bf;
+  font-family: 'Fira Code', 'Roboto Mono', 'SF Mono', Consolas, Monaco, 'Andale Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Fix for pre and code elements inside codeBlock */
+.codeBlock pre {
+  margin: 0;
+  padding: 1rem;
+  background: none;
+  text-align: left;
+  overflow: auto;
+}
+
+.codeBlock code {
+  display: block;
+  text-align: left;
+  padding: 0;
+  white-space: pre;
+  overflow: visible;
+  margin: 0;
+}
+
+/* Copy button styling */
+.copyButton {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 4px;
+  color: #abb2bf;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  z-index: 5;
+}
+
+.copyButton:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.copyButtonSuccess {
+  background-color: rgba(35, 209, 96, 0.2);
+  color: #23d160;
 }
 
 .code {

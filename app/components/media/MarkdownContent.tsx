@@ -72,8 +72,23 @@ function enhanceCodeBlocks(html: string): string {
       }
       
       const languageClass = language ? ` language-${language}` : '';
+      const languageLabel = language ? `<span class="${styles.languageLabel}">${language}</span>` : '';
       
-      return `<pre class="${styles.codeBlock}"><code class="${styles.code}${languageClass}">${processedContent}</code></pre>`;
+      return `<div class="${styles.codeBlock}">
+        <div class="${styles.codeHeader}">
+          <div>${languageLabel}</div>
+          <div>
+            <button class="${styles.copyButton}" onclick="copyCodeToClipboard(this)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span>Copy</span>
+            </button>
+          </div>
+        </div>
+        <pre><code class="${styles.code}${languageClass}">${processedContent}</code></pre>
+      </div>`;
     }
   );
   
@@ -84,7 +99,22 @@ function enhanceCodeBlocks(html: string): string {
     tildeCodeBlockRegex,
     (match, language, codeContent) => {
       const languageClass = language ? ` language-${language}` : '';
-      return `<pre class="${styles.codeBlock}"><code class="${styles.code}${languageClass}">${codeContent.trim()}</code></pre>`;
+      const languageLabel = language ? `<span class="${styles.languageLabel}">${language}</span>` : '';
+      return `<div class="${styles.codeBlock}">
+        <div class="${styles.codeHeader}">
+          <div>${languageLabel}</div>
+          <div>
+            <button class="${styles.copyButton}" onclick="copyCodeToClipboard(this)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span>Copy</span>
+            </button>
+          </div>
+        </div>
+        <pre><code class="${styles.code}${languageClass}">${codeContent.trim()}</code></pre>
+      </div>`;
     }
   );
   
@@ -118,6 +148,86 @@ export default function MarkdownContent({ content }: Props) {
 
   // Load Prism.js for syntax highlighting after component mounts
   useEffect(() => {
+    // Add the copy code function to the window object
+    if (typeof window !== 'undefined') {
+      window.copyCodeToClipboard = (button) => {
+        const codeBlockDiv = button.closest(`.${styles.codeBlock}`);
+        if (!codeBlockDiv) return;
+        
+        const codeElement = codeBlockDiv.querySelector('code');
+        if (!codeElement) return;
+        
+        const code = codeElement.textContent || '';
+        
+        // Function to show success feedback
+        const showSuccessFeedback = () => {
+          const spanElement = button.querySelector('span');
+          if (!spanElement) return;
+          
+          const originalText = spanElement.textContent || 'Copy';
+          button.classList.add(styles.copyButtonSuccess);
+          spanElement.textContent = 'Copied!';
+          
+          // Reset after 2 seconds
+          setTimeout(() => {
+            button.classList.remove(styles.copyButtonSuccess);
+            const span = button.querySelector('span');
+            if (span) span.textContent = originalText;
+          }, 2000);
+        };
+        
+        // Try using the Clipboard API first (modern browsers)
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(code)
+            .then(showSuccessFeedback)
+            .catch(err => {
+              console.error('Clipboard API error: ', err);
+              // Fall back to older method
+              fallbackCopyTextToClipboard(code);
+            });
+        } else {
+          // Fallback for browsers that don't support the Clipboard API
+          fallbackCopyTextToClipboard(code);
+        }
+        
+        // Fallback copy method using a temporary textarea element
+        function fallbackCopyTextToClipboard(text: string) {
+          const textArea = document.createElement('textarea');
+          textArea.value = text;
+          
+          // Make the textarea out of viewport
+          textArea.style.position = 'fixed';
+          textArea.style.top = '0';
+          textArea.style.left = '0';
+          textArea.style.width = '2em';
+          textArea.style.height = '2em';
+          textArea.style.padding = '0';
+          textArea.style.border = 'none';
+          textArea.style.outline = 'none';
+          textArea.style.boxShadow = 'none';
+          textArea.style.background = 'transparent';
+          textArea.style.opacity = '0';
+          
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+          
+          try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+              showSuccessFeedback();
+            } else {
+              console.error('Fallback: Unable to copy');
+            }
+          } catch (err) {
+            console.error('Fallback: Unable to copy', err);
+          }
+          
+          document.body.removeChild(textArea);
+        }
+      };
+    }
+
     // Check if Prism is already loaded
     if (typeof window !== 'undefined' && !window.Prism) {
       // Dynamically load Prism.js and its CSS
@@ -176,5 +286,6 @@ declare global {
     Prism?: {
       highlightAll: () => void;
     };
+    copyCodeToClipboard?: (button: HTMLButtonElement) => void;
   }
 } 
