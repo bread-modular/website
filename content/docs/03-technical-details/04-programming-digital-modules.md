@@ -5,6 +5,8 @@ summary: How to program Bread Modular's digital modules using ATTiny 1616 microc
 
 Most of the digital and hybrid modules of bread Modular including 8bit and MIDI use a microcontroller called ATTiny 1616. This guide shows you how to program those modules with our provided firmware (from source code) or customize them as you want. 
 
+[embed]https://youtu.be/7ViV-pzMLu0?si=iYhmWURk8hgzpm2r[/embed]
+
 ## Programmer
 
 In order to program these modules, we need an interface between the computer and the module. That's a programmer. In this case we use a programmer with a protocol called UPDI (hence UPDI programmer).
@@ -28,7 +30,7 @@ We don't provide pre-built firmware but we provide the source code. Don't worry,
 These are the software tools we need: 
 
 - [VS Code](https://code.visualstudio.com) (or Cursor)
-- Install the [Platform IO](https://platformio.org/platformio-ide) from the marketplace
+- Install the [Platform IO](https://platformio.org/platformio-ide) extension from the "VS Code Marketplace"
 - Go to Platform IO's "Platform" section and select & install "Atmel megaAVR"
 
 (Watch this video if you are new to these tools)
@@ -78,4 +80,4 @@ Here's the fun part. Just don't stop here. Experiment with the source code and c
 
 If you are new to programming, use an IDE like [Cursor](https://www.cursor.com) to help you with the use of AI. 
 
-(Fun Fact: 80% of our firmware codebase is written by AI. We simply guide it to do what we want to do.)
+> Fun Fact: 80% of our firmware codebase is written by AI. We simply guide it to do what we want to do.
