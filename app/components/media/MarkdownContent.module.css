@@ -114,6 +114,49 @@
   }
 }
 
+/* Code block styling */
+.codeBlock {
+  background-color: #282c34;
+  border-radius: 6px;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  overflow-x: auto;
+  position: relative;
+  font-family: 'Fira Code', 'Roboto Mono', 'SF Mono', Consolas, Monaco, 'Andale Mono', monospace;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.code {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #f8f8f2;
+  tab-size: 2;
+  hyphens: none;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+}
+
+/* For inline code */
+.content :not(pre) > code {
+  background-color: #f3f3f3;
+  border-radius: 3px;
+  font-family: 'Fira Code', 'Roboto Mono', 'SF Mono', Consolas, Monaco, 'Andale Mono', monospace;
+  padding: 0.2em 0.4em;
+  font-size: 0.9em;
+  color: #d63384;
+  white-space: nowrap;
+}
+
+/* Dark mode support - if your site has dark mode */
+@media (prefers-color-scheme: dark) {
+  .content :not(pre) > code {
+    background-color: #2d2d2d;
+    color: #ff7edb;
+  }
+}
+
 
 
 
