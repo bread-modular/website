@@ -33,7 +33,6 @@ These are the software tools we need:
 - Install the [Platform IO](https://platformio.org/platformio-ide) extension from the "VS Code Marketplace"
 - Go to Platform IO's "Platform" section and select & install "Atmel megaAVR"
 
-(Watch this video if you are new to these tools)
 
 ## Source Code
 
