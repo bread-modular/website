@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ImageSlideshow from "./components/media/ImageSlideshow";
 import Layout from "./components/Layout";
+import NewsletterSignup from "./components/NewsletterSignup";
 import type { Metadata } from "next";
 import styles from './page.module.css';
 
@@ -103,6 +104,9 @@ export default function Home() {
           GET STARTED NOW
         </Link>
       </section>
+
+      {/* Newsletter Signup */}
+      <NewsletterSignup />
 
       {/* Social Links */}
       <section aria-label="Social media links" className={styles.socialSection}>
