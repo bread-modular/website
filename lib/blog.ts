@@ -16,6 +16,7 @@ export interface BlogPost {
   slug: string;
   contentHtml: string;
   indexNo: number;
+  image?: string;
 }
 
 const BLOG_DIRECTORY = path.join(process.cwd(), 'content/blog');
@@ -106,6 +107,7 @@ export const getBlogPost = cache(async (slug: string): Promise<BlogPost | null> 
       date: data.date,
       author: data.author,
       summary: data.summary,
+      image: data.image,
       slug,
       contentHtml,
       indexNo: getIndexNoFromFilename(postFile)
@@ -122,6 +124,11 @@ export async function generateRssFeed(): Promise<string> {
   const site_url = process.env.SITE_URL || 'https://breadmodular.com';
   
   const feedItems = posts.map(post => {
+    // Include image in the enclosure tag if available
+    const imageTag = post.image 
+      ? `<enclosure url="${site_url}${post.image}" type="image/jpeg" />` 
+      : '';
+    
     return `
       <item>
         <title>${post.title}</title>
@@ -130,6 +137,7 @@ export async function generateRssFeed(): Promise<string> {
         <link>${site_url}/blog/${post.slug}</link>
         <guid>${site_url}/blog/${post.slug}</guid>
         <author>${post.author}</author>
+        ${imageTag}
       </item>
     `;
   }).join('');

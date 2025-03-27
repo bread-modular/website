@@ -59,6 +59,13 @@
   margin: 0.5rem 0;
 }
 
+.content hr {
+  border: none;
+  height: 1px;
+  background-color: #eaeaea;
+  margin: 4rem 0;
+}
+
 /* Zoomable image styles */
 .zoomableImageContainer {
   display: block;

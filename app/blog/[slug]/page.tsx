@@ -22,8 +22,8 @@ export async function generateMetadata({
     };
   }
 
-  // Extract the first image from the content or use a default image
-  const contentImage = await extractFirstImageFromHtml(post.contentHtml);
+  // Prioritize image from frontmatter, fall back to extracting from content
+  const contentImage = post.image || await extractFirstImageFromHtml(post.contentHtml);
   const imageUrl = contentImage || '/images/bread-modular-system.jpg';
 
   return {

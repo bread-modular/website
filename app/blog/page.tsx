@@ -44,10 +44,11 @@ export default async function BlogPage() {
   // Preprocess posts to extract images
   const postsWithImages = await Promise.all(
     sortedPosts.map(async (post) => {
-      const firstImage = await extractFirstImageFromHtml(post.contentHtml);
+      // Prioritize image from frontmatter, fall back to extracting from content
+      const contentImage = post.image || await extractFirstImageFromHtml(post.contentHtml);
       return {
         ...post,
-        imageUrl: firstImage || null
+        imageUrl: contentImage || null
       };
     })
   );
