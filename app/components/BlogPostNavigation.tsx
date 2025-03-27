@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { BlogPost } from '@/lib/blog';
 import styles from './BlogPostNavigation.module.css';
+import NewsletterSignup from './NewsletterSignup';
 
 interface Props {
   posts: BlogPost[];
@@ -51,6 +52,11 @@ export default function BlogPostNavigation({ posts, currentPost }: Props) {
         ) : (
           <span className={styles.disabledLink}>Next</span>
         )}
+      </div>
+
+      {/* Newsletter Signup */}
+      <div className={styles.newsletterContainer}>
+        <NewsletterSignup />
       </div>
 
       {relatedPosts.length > 0 && (
