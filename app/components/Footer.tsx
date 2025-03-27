@@ -10,6 +10,7 @@ export default function Footer() {
             <h3>Resources</h3>
             <Link href="/docs">Docs</Link>
             <Link href="/modules">Modules</Link>
+            <Link href="/blog">Blog</Link>
             <Link href="https://github.com/bread-modular/bread-modular">GitHub</Link>
           </div>
           <div className={styles.section}></div>

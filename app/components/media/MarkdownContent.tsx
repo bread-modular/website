@@ -3,6 +3,7 @@
 import YouTubeEmbed from './YouTubeEmbed';
 import styles from './MarkdownContent.module.css';
 import { useEffect } from 'react';
+import useImagePreview from '../../utils/useImagePreview';
 
 interface Props {
   content: string;
@@ -146,6 +147,12 @@ export default function MarkdownContent({ content }: Props) {
   // Split content into parts, separating YouTube embeds
   const parts = processedContent.split(/<div data-youtube-id="([^"]+)"><\/div>/);
 
+  // Handle image click events with the hook
+  useImagePreview({
+    containerSelector: `.${styles.content}`,
+    dependencies: [content]
+  });
+
   // Load Prism.js for syntax highlighting after component mounts
   useEffect(() => {
     // Add the copy code function to the window object
@@ -264,19 +271,21 @@ export default function MarkdownContent({ content }: Props) {
   }, []);
 
   return (
-    <div className={styles.content}>
-      {parts.map((part, index) => {
-        if (index % 2 === 0) {
-          // Regular markdown content with heading IDs added and enhanced code blocks
-          const htmlWithIds = addHeadingIds(part);
-          const htmlWithEnhancedCode = enhanceCodeBlocks(htmlWithIds);
-          return <div key={index} dangerouslySetInnerHTML={{ __html: htmlWithEnhancedCode }} />;
-        } else {
-          // YouTube embed
-          return <YouTubeEmbed key={index} videoId={part} />;
-        }
-      })}
-    </div>
+    <>
+      <div className={styles.content}>
+        {parts.map((part, index) => {
+          if (index % 2 === 0) {
+            // Process regular markdown content
+            let processedPart = addHeadingIds(part);
+            processedPart = enhanceCodeBlocks(processedPart);
+            return <div key={index} dangerouslySetInnerHTML={{ __html: processedPart }} />;
+          } else {
+            // YouTube embed
+            return <YouTubeEmbed key={index} videoId={part} />;
+          }
+        })}
+      </div>
+    </>
   );
 }
 
@@ -288,4 +297,4 @@ declare global {
     };
     copyCodeToClipboard?: (button: HTMLButtonElement) => void;
   }
-} 
+}

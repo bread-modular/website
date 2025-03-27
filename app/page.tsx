@@ -119,7 +119,7 @@ export default function Home() {
           <Link href="https://youtube.com/@breadmodular" className={styles.socialLink} aria-label="Watch our tutorials on YouTube">
             YOUTUBE FOR TUTORIALS
           </Link>
-          <Link href="https://discord.gg/breadmodular" className={styles.socialLink} aria-label="Join our Discord community for discussions">
+          <Link href="https://discord.gg/W72YQKU7mq" className={styles.socialLink} aria-label="Join our Discord community for discussions">
             DISCORD FOR DISCUSSIONS
           </Link>
         </nav>

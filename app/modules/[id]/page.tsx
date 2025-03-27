@@ -4,7 +4,7 @@ import { getModuleData } from '@/lib/modules';
 import PricingSection from './PricingSection';
 import MarkdownContent from '@/app/components/media/MarkdownContent';
 import ModuleNav from '@/app/components/ModuleNav';
-import ImagePreviewWrapper from '@/app/components/ImagePreviewWrapper';
+import ModuleImage from './ModuleImage';
 import styles from './page.module.css';
 import { Metadata } from 'next';
 
@@ -66,13 +66,10 @@ export default async function ModulePage({ params }: {params: Promise<{ id: stri
             moduleTitle={moduleData.title}
           />
         </div>
-        <div className={styles.imageSection}>
-          <ImagePreviewWrapper
-            src={moduleData.image}
-            alt={moduleData.title}
-            className={styles.moduleImage}
-          />
-        </div>
+        <ModuleImage
+          src={moduleData.image}
+          alt={moduleData.title}
+        />
       </div>
 
       <div className={styles.markdownWrapper}>

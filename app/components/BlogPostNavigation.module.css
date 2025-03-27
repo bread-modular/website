@@ -1,0 +1,98 @@
+.navigation {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--neutral-200);
+}
+
+.simpleNavLinks {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.simpleNavLink {
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--neutral-200);
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--foreground);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.simpleNavLink:hover {
+  background-color: var(--neutral-100);
+  border-color: var(--neutral-300);
+  transform: translateY(-2px);
+}
+
+.disabledLink {
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--neutral-100);
+  border-radius: 4px;
+  color: var(--neutral-300);
+  font-weight: 500;
+  cursor: default;
+  visibility: hidden;
+}
+
+.newsletterContainer {
+  margin: 2rem 0 3rem 0;
+}
+
+.moreSection {
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+
+.moreTitle {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.postsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.postCard {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1.5rem;
+  border-radius: 8px;
+  background-color: var(--neutral-50);
+  border: 1px solid var(--neutral-200);
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  color: inherit;
+}
+
+.postCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  border-color: var(--neutral-300);
+}
+
+.postTitle {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--primary-600);
+}
+
+.postDate {
+  font-size: 0.9rem;
+  color: var(--neutral-600);
+  margin-bottom: 0.75rem;
+}
+
+.postSummary {
+  font-size: 1rem;
+  color: var(--neutral-600);
+  line-height: 1.5;
+} 

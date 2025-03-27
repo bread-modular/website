@@ -20,6 +20,7 @@ export default function Header() {
           <ul>
             <li><Link href="/modules">MODULES</Link></li>
             <li><Link href="/docs">DOCS</Link></li>
+            <li><Link href="/blog">BLOG</Link></li>
             <li><CartIcon /></li>
           </ul>
         </nav>
