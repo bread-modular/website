@@ -5,8 +5,6 @@ author: Alex Johnson
 summary: A step-by-step guide to building your first Bread Modular module from scratch.
 ---
 
-# Building Your First Bread Modular Module
-
 One of the greatest advantages of Bread Modular is how easy it is to build your own modules. In this guide, we'll walk through the process of creating your first module from start to finish.
 
 ![Module PCB](/images/docs/hithat-pcb-module.png)

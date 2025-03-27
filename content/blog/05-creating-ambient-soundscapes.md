@@ -5,8 +5,6 @@ author: Nina Rodriguez
 summary: Discover techniques for creating lush ambient textures and evolving soundscapes using Bread Modular's unique capabilities.
 ---
 
-# Creating Ambient Soundscapes with Bread Modular
-
 Ambient music is all about creating atmospheric textures and evolving soundscapes that transport listeners to different emotional states. Bread Modular's flexible architecture makes it ideal for ambient music production. In this guide, we'll explore techniques for creating beautiful ambient sounds with your Bread Modular system.
 
 ![Bread Modular System](/images/bread-modular-system.jpg)

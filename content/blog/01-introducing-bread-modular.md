@@ -5,8 +5,6 @@ author: Bread Modular Team
 summary: Learn about our new affordable modular synth platform and how it can transform your music production.
 ---
 
-# Introducing Bread Modular
-
 We're excited to announce Bread Modular, an affordable modular synth platform built with the following core principles:
 
 1. **Minimalistic Design**: We make it affordable by making things minimal rather than cutting corners on electronics.

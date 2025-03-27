@@ -72,6 +72,7 @@ export default async function BlogPostPage({ params }: Props) {
         <header className={styles.header}>
           <h1 className={styles.title}>{post.title}</h1>
           <div className={styles.meta}>
+            <span className={styles.author}>{post.author}</span>
             <time dateTime={post.date} className={styles.date}>
               {new Date(post.date).toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -79,7 +80,6 @@ export default async function BlogPostPage({ params }: Props) {
                 day: 'numeric'
               })}
             </time>
-            <span className={styles.author}>{post.author}</span>
           </div>
         </header>
         

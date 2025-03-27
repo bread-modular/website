@@ -5,7 +5,6 @@ author: Michael Wu
 summary: Learn how to create custom enclosures for your Bread Modular system using simple materials and basic tools.
 ---
 
-# DIY Enclosure Guide for Bread Modular
 
 While Bread Modular PCBs are designed to be used as-is, many users enjoy creating custom enclosures to protect their modules and give their system a polished look. This guide will walk you through creating simple yet effective enclosures using readily available materials.
 

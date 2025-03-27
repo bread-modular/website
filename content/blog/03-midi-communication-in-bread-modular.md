@@ -5,8 +5,6 @@ author: Sarah Chen
 summary: An in-depth look at how Bread Modular uses MIDI for inter-module communication and what this means for your setups.
 ---
 
-# MIDI Communication in Bread Modular
-
 One of the most innovative aspects of Bread Modular is our use of MIDI for communication between modules. This approach offers several advantages over traditional CV/Gate systems while maintaining compatibility with existing gear.
 
 ![Bread Modular Base Module](/images/modules/base.jpg)
