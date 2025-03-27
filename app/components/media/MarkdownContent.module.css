@@ -59,10 +59,39 @@
   margin: 0.5rem 0;
 }
 
+/* Zoomable image styles */
+.zoomableImageContainer {
+  display: block;
+  position: relative;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.zoomableImage {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  cursor: zoom-in;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.zoomableImage:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Create a loading indicator if image hasn't loaded yet */
+.zoomableImageContainer:empty::after {
+  content: "";
+}
+
+/* Make sure regular images still display normally */
 .content img {
   max-width: 100%;
   height: auto;
   margin: 1.5rem 0;
+  display: block;
 }
 
 /* Heading anchor link styles */
