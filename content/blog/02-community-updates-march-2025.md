@@ -11,6 +11,7 @@ So far we have shipped about 10 starter kits & people are happy with them. Let m
 ![First Bread Modular Order We Shipped](/images/blog/first_order.jpg)
 
 This is one of the first Bread Modular orders we shipped. Unfortunately, it was delayed in shipping due to some mechanical failure and we were checking the tracking details every day until it was delivered.
+
 ---
 
 ![Bread Modular with Friends](/images/blog/bread-modular-with-friends.jpg)
