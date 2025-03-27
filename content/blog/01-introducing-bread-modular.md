@@ -1,43 +1,41 @@
 ---
-title: Introducing Bread Modular
-date: 2024-03-28
+title: Launching Bread Modular
+date: 2025-03-03
 author: Bread Modular Team
-summary: Learn about our new affordable modular synth platform and how it can transform your music production.
+summary: An affordable, open-source modular synthesizer system for everyone
 ---
 
-We're excited to announce Bread Modular, an affordable modular synth platform built with the following core principles:
+We were supposed to launch Bread Modular on March 1st, 2025, but it was a Saturday and we decided to launch on Monday (2025 March 03). Interestingly enough, a couple of people have mentioned why we are not launching on March 1st.
 
-1. **Minimalistic Design**: We make it affordable by making things minimal rather than cutting corners on electronics.
-2. **Open Source Everything**: Access to our GitHub repository with all schematics, PCB designs, and code.
-3. **Modern Capabilities**: Using MIDI communication, USB-C power, and modern components.
+> Honestly, we were thrilled to know that people were interested.
+
+So, this is Bread Modular. [Have a look](/).
 
 ![Bread Modular System](/images/bread-modular-system.jpg)
 
-## Why Bread Modular?
 
-Traditional modular synthesizers are expensive, bulky, and often complicated to use. Bread Modular changes that by offering:
+## Origin Story
 
-- Affordable modules that don't compromise on quality
-- PCB-based design that reduces costs while maintaining functionality
-- Open-source approach that allows for community participation
-- Modern connectivity options that integrate with your existing setup
+You can learn about Bread Modular from our home page. But we'll expand on why we decided to work on Bread Modular. Our founder, Arunoda, is very keen on modular, but he soon found out that it was a very expensive hobby. Since he is based in Sri Lanka, with the shipping fees and import duty, he has to pay twice the price of the modules to bring them to Sri Lanka.
 
-![PCB Module Design](/images/docs/hithat-pcb-module.png)
+So, he decided to learn Electronics with the help of books and ChatGPT. A lot of people at AE Modular discord helped him too. Then he learned about KiCad & JLCPCB, where he could print & assemble circuit boards with SMD components.
 
-## Getting Started
+Since he has a background in Software Engineering, he developed Bread Modular like a software project. He experimented with some designs on a breadboard, then moved them to KiCad and then sent them to JLCPCB. While waiting for the prototype, he could do the same process on some other design or validate a prototype which was delivered recently.
 
-Ready to jump in? Head over to our [Getting Started guide](/docs/getting-started/getting-started) to learn how you can start building your own Bread Modular system today.
+Due to this process, he could make a complete system from scratch in a very short time.
 
-You can also check out our [GitHub repository](https://github.com/bread-modular/bread-modular) to explore the code and schematics.
+![](/images/blog/bread-modular-prototypes.jpg)
 
-![Bread Modular Modules](/images/home-slide/01.jpg)
+> So, over the last couple of months, we experimented with more than 100 prototypes.
 
-## Join Our Community
+## Affordability
 
-We believe in the power of community to drive innovation. Join us on:
+The main goal behind Bread Modular is affordability. That's why we open-sourced it under the MIT license from day one. So, you can do whatever you want with the project.
 
-- [Discord](https://discord.gg/W72YQKU7mq) for discussions and support
-- [Instagram](https://instagram.com/breadmodular) for updates and inspiration
-- [YouTube](https://youtube.com/@breadmodular) for tutorials and demos
+We also share where you can [find parts](/docs/technical-details/common-parts) & show how to [assemble modules](/docs/getting-started/build-it-yourself).
 
-We can't wait to see what you create with Bread Modular! 
+Sometimes, you don't want to mess with assembling. So, we [sell](/modules) fully-assembled and semi-assembled modules with a sustainable profit margin.
+
+---
+
+This is our story & hope you find Bread Modular interesting.
