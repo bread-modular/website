@@ -30,7 +30,7 @@ interface UseImagePreviewOptions {
    * Dependency array for the useEffect hook
    * @default []
    */
-  dependencies?: any[];
+  dependencies?: unknown[];
 }
 
 /**
@@ -112,7 +112,7 @@ export default function useImagePreview({
       // If we're completely unmounting, no need to clean up individual images
       // React will handle DOM cleanup for us
     };
-  }, [...dependencies]);
+  }, [containerSelector, enableHoverEffects, hoverScale, dependencies]);
   
   return { preview };
 } 

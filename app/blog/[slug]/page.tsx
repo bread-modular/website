@@ -6,14 +6,14 @@ import { getBlogPost, getAllBlogPosts, extractFirstImageFromHtml } from '@/lib/b
 import BlogPostNavigation from '@/app/components/BlogPostNavigation';
 import styles from './page.module.css';
 
-interface Props {
-  params: {
-    slug: string;
-  };
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = await getBlogPost(params.slug);
+// Following Next.js 15 typing requirements for params
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: Promise<{ slug: string }> 
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getBlogPost(slug);
   
   if (!post) {
     return {
@@ -56,9 +56,14 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function BlogPostPage({ params }: Props) {
+export default async function BlogPostPage({ 
+  params 
+}: { 
+  params: Promise<{ slug: string }> 
+}) {
+  const { slug } = await params;
   const [post, allPosts] = await Promise.all([
-    getBlogPost(params.slug),
+    getBlogPost(slug),
     getAllBlogPosts()
   ]);
 

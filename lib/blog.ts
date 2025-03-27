@@ -60,7 +60,7 @@ export async function extractFirstImageFromHtml(html: string): Promise<string | 
 export const getAllBlogPosts = cache(async (): Promise<BlogPost[]> => {
   try {
     await fs.access(BLOG_DIRECTORY);
-  } catch (error) {
+  } catch {
     // Create the blog directory if it doesn't exist
     await fs.mkdir(BLOG_DIRECTORY, { recursive: true });
     return [];
