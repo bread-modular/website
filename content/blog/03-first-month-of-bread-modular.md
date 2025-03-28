@@ -6,6 +6,8 @@ summary: Here's what happened after the Bread Modular launch in March and what w
 image: /images/blog/bread-modular-first-month.jpg
 ---
 
+![Bread Modular System](/images/home-slide/03.jpg)
+
 We [released](/blog/introducing-bread-modular) the first stable version of Bread Modular earlier this month (March 2025), and we've sold around 10 starter kits so far. While that might seem like a small number, it's more than enough for us. With a manageable number of orders, we can fulfill them quickly, identify issues early, and gradually build our supply chain and logistics.
 
 > Even though we sell modules, we really want you to build Bread Modular from scratch. That's why we open-sourced it and show you all the steps on [how to build](/docs/getting-started/build-it-yourself) it and source the parts.
