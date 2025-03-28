@@ -1,0 +1,338 @@
+.container {
+  width: 100%;
+  position: relative;
+  background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+  max-width: 540px;
+  margin: 0 auto;
+  padding-bottom: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* Responsive container sizing */
+@media (max-width: 600px) {
+  .container {
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    padding-bottom: 1.5rem;
+    max-width: 95%;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 390px) {
+  /* iPhone 12 and similar smaller devices */
+  .container {
+    max-width: 85%;
+  }
+}
+
+.loadingContainer {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+}
+
+@media (max-width: 480px) {
+  .loadingContainer {
+    height: 400px;
+  }
+}
+
+.loadingText {
+  font-size: 1rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.reelsContainer {
+  position: relative;
+  width: 100%;
+  /* Adjust height based on viewport size */
+  height: 680px;
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+  box-shadow: none; /* Remove inset shadow */
+  background: #fff; /* Match Instagram background */
+}
+
+/* Mobile responsive height */
+@media (max-width: 768px) {
+  .reelsContainer {
+    height: 580px;
+  }
+}
+
+@media (max-width: 480px) {
+  .reelsContainer {
+    height: 480px;
+    border-radius: 8px 8px 0 0;
+  }
+}
+
+@media (max-width: 390px) {
+  /* iPhone 12 and similar smaller devices */
+  .reelsContainer {
+    height: 430px;
+  }
+}
+
+/* Override Instagram styling to remove borders */
+.reelsContainer :global(.instagram-media),
+.reelsContainer :global(.instagram-media-rendered) {
+  border: none !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.reelsContainer :global(.instagram-media) iframe,
+.reelsContainer :global(.instagram-media-rendered) iframe {
+  border: none !important;
+  margin-top: -1px !important; /* Fix for top border by slightly shifting up */
+  max-height: 100% !important; /* Ensure iframe doesn't exceed container */
+}
+
+/* Target Instagram header specifically */
+.reelsContainer :global(iframe[src*="instagram.com"]) {
+  border: none !important;
+  max-height: 100% !important;
+}
+
+.reelsContainer :global(.instagram-media-rendered) div,
+.reelsContainer :global(.instagram-media) div {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Hide unnecessary Instagram UI on mobile */
+@media (max-width: 480px) {
+  .reelsContainer :global(.instagram-media-rendered) header {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+  
+  .reelsContainer :global(.instagram-media-rendered) footer {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+}
+
+.reelWrapper {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  /* Set a fixed height to match container */
+  height: 680px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  transition: opacity 0.3s ease;
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Mobile responsive height */
+@media (max-width: 768px) {
+  .reelWrapper {
+    height: 580px;
+  }
+}
+
+@media (max-width: 480px) {
+  .reelWrapper {
+    height: 480px;
+  }
+}
+
+/* Smaller controls for mobile */
+@media (max-width: 480px) {
+  .controls {
+    margin-top: 1rem;
+    gap: 8px;
+  }
+  
+  .button {
+    width: 42px;
+    height: 34px;
+    font-size: 20px;
+  }
+  
+  .counter {
+    height: 34px;
+    font-size: 12px;
+    padding: 0 12px;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* We no longer need these classes since we're only showing one reel at a time */
+/* .reelWrapper.hidden {
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.reelWrapper.visible {
+  display: block;
+  opacity: 1;
+} */
+
+/* Loading overlay that appears when changing slides */
+.loadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  backdrop-filter: blur(3px);
+  transition: all 0.3s ease;
+}
+
+/* Spinner animation */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #000;
+  animation: spin 1s cubic-bezier(0.19, 1, 0.22, 1) infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.controls {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 10;
+  margin-top: 1.25rem;
+  padding: 0 1rem;
+}
+
+.button {
+  background: #000;
+  color: white;
+  width: 48px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 300;
+  transition: all 0.2s ease-in-out;
+  opacity: 0.85;
+  border: none;
+  cursor: pointer;
+  line-height: 1;
+  padding-bottom: 4px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.button:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.button:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.counter {
+  background: #000;
+  color: white;
+  width: auto;
+  padding: 0 16px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.85;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 390px) {
+  /* iPhone 12 and similar smaller devices */
+  .reelsContainer {
+    height: 430px;
+  }
+  
+  .reelWrapper {
+    height: 430px;
+  }
+  
+  /* Make controls more compact for very small screens */
+  .controls {
+    margin-top: 0.75rem;
+    gap: 6px;
+  }
+  
+  .button {
+    width: 38px;
+    height: 32px;
+    font-size: 18px;
+  }
+  
+  .counter {
+    height: 32px;
+    font-size: 11px;
+    padding: 0 10px;
+  }
+} 

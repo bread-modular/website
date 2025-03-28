@@ -23,6 +23,17 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  
+  // Public runtime configuration
+  publicRuntimeConfig: {
+    // Instagram reels from Bread Modular
+    instagramReels: [
+      "DHnqtG8isU9",
+      "DHaq6cZiEcB",
+      "DG5NOzLCgHW",
+      "DGSlo9VtFTv"
+    ],
+  },
 };
 
 export default nextConfig;

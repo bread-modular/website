@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ImageSlideshow from "./components/media/ImageSlideshow";
+import InstagramReelsSlideshow from "./components/media/InstagramReelsSlideshow";
 import Layout from "./components/Layout";
 import NewsletterSignup from "./components/NewsletterSignup";
 import type { Metadata } from "next";
@@ -107,6 +108,16 @@ export default function Home() {
 
       {/* Newsletter Signup */}
       <NewsletterSignup />
+
+      {/* Instagram Reels */}
+      <section aria-label="Instagram Reels showcase" className={styles.reelsSection}>
+        <div className={styles.reelsSeparator} role="separator"></div>
+        <h2 className={styles.reelsTitle}>LATEST FROM INSTAGRAM</h2>
+        <div className={styles.reelsDescription}>
+          <p>Check out our latest demos & updates</p>
+        </div>
+        <InstagramReelsSlideshow />
+      </section>
 
       {/* Social Links */}
       <section aria-label="Social media links" className={styles.socialSection}>
