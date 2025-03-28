@@ -20,12 +20,13 @@
 }
 
 .content a {
-  color: #0077ff;
+  color: #478be6;
   text-decoration: none;
+  font-weight: 500;
 }
 
 .content a:hover {
-  border-bottom: 1px solid #0077ff;
+  border-bottom: 1px solid #478be6;
 }
 
 .content blockquote {
