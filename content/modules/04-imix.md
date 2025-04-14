@@ -1,6 +1,6 @@
 ---
 title: IMIX
-description: 4 Channel Analog Mixer.
+description: Compact 4 Channel Analog Mixer.
 image: /images/modules/imix.jpg
 versions:
   - name: Fully Assembled

@@ -29,7 +29,7 @@ If you are comfortable with soldering & sourcing general electronic parts, this 
 * Semi-assembled modules come with pre-assembled SMT components, but you need to solder potentiometers, sockets & pin headers.
 * Fully assembled modules are pre-programmed with firmware for our digital & hybrid modules, for semi-assembled modules you have to program the firmware using our given source code.
 
-Then you can source [additional parts](/docs/technical-details/common-parts) as listed in the docs. For example, these are the external parts you need to source for the [hihat](/modules/hihat#external-parts) module.
+Then you can source [additional parts](/docs/technical-details/common-parts) as listed in the docs. For example, these are the external parts you need to source for the [hihat](/modules/hihat#additional-parts) module.
 
 ## 4. Build from Scratch
 
