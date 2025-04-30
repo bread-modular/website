@@ -129,30 +129,30 @@ const PicoWebSerial = () => {
     if (!portRef.current || !writerRef.current || sampleFile == null || uploading) return;
     setUploading(true);
     try {
-      // Convert file to Base64
+      // Convert file to binary with escape encoding
       const arrayBuffer = await sampleFile.arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);
       
-      // Convert binary to Base64
-      const base64 = arrayBufferToBase64(arrayBuffer);
-      const length = base64.length; // Base64 encoded length
+      // Convert binary to escaped encoding (much more efficient than Base64)
+      const encodedData = encodeBinaryEscaped(uint8Array);
+      const length = encodedData.length; // Encoded length
       
-      // Send the write-sample command with base64 length
-      await writerRef.current.write(`write-sample-base64 ${sampleId} ${arrayBuffer.byteLength} ${length}\n`);
-      displayMessage(`Sent: write-sample-base64 ${sampleId} ${arrayBuffer.byteLength} ${length}`, "sent");
+      // Send the write-sample command with escaped binary data length
+      await writerRef.current.write(`write-sample-escaped ${sampleId} ${arrayBuffer.byteLength} ${length}\n`);
+      displayMessage(`Sent: write-sample-escaped ${sampleId} ${arrayBuffer.byteLength} ${length}`, "sent");
 
       // Wait for Pico to respond with 'Ready to receive ...'
       await new Promise((res) => setTimeout(res, 300));
       
-      // Send Base64 data in chunks
-      const chunkSize = 64; // Reasonable chunk size for text
+      // Send encoded data in chunks
+      const chunkSize = 1024; // Larger chunk size since escaped data is more efficient
       let sent = 0;
       
-      displayMessage("Sending Base64 encoded data...", "status");
+      displayMessage("Sending escaped binary data...", "status");
       
       while (sent < length) {
         const end = Math.min(sent + chunkSize, length);
-        const chunk = base64.substring(sent, end);
+        const chunk = encodedData.substring(sent, end);
         await writerRef.current.write(chunk);
         
         sent = end;
@@ -170,7 +170,7 @@ const PicoWebSerial = () => {
       // Send end marker
       await writerRef.current.write("\n");
       
-      displayMessage(`Sample file sent (${arrayBuffer.byteLength} bytes as ${length} Base64 chars)`, "sent");
+      displayMessage(`Sample file sent (${arrayBuffer.byteLength} bytes as ${length} escaped chars)`, "sent");
       setSampleFile(null);
     } catch (error: any) {
       displayMessage("Sample upload error: " + (error?.message || String(error)), "error");
@@ -179,15 +179,26 @@ const PicoWebSerial = () => {
     }
   };
 
-  // Helper function to convert ArrayBuffer to Base64
-  function arrayBufferToBase64(buffer: ArrayBuffer): string {
-    let binary = '';
-    const bytes = new Uint8Array(buffer);
-    const len = bytes.byteLength;
+  // Helper function to convert binary data to escaped text
+  // Only escapes \n, \r, and \ characters for efficient encoding
+  function encodeBinaryEscaped(data: Uint8Array): string {
+    let result = '';
+    const len = data.length;
+    
     for (let i = 0; i < len; i++) {
-      binary += String.fromCharCode(bytes[i]);
+      const byte = data[i];
+      if (byte === 10) { // \n
+        result += '\\n';
+      } else if (byte === 13) { // \r
+        result += '\\r';
+      } else if (byte === 92) { // \ (backslash)
+        result += '\\\\';
+      } else {
+        result += String.fromCharCode(byte);
+      }
     }
-    return btoa(binary);
+    
+    return result;
   }
 
   const disconnectFromPico = async () => {
