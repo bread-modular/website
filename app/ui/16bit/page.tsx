@@ -19,10 +19,33 @@ const PicoWebSerial = () => {
   const [status, setStatus] = useState("Disconnected");
   const [messages, setMessages] = useState<MessageObj[]>([]);
   const [input, setInput] = useState("");
+  const [unsupported, setUnsupported] = useState(false);
   const portRef = useRef<SerialPort | null>(null);
   const readerRef = useRef<ReadableStreamDefaultReader<string> | null>(null);
   const writerRef = useRef<WritableStreamDefaultWriter<string> | null>(null);
   const readLoopActive = useRef(false);
+  const readPipePromise = useRef<Promise<void> | null>(null);
+  const writePipePromise = useRef<Promise<void> | null>(null);
+  const abortController = useRef<AbortController | null>(null);
+
+  React.useEffect(() => {
+    // Check for Web Serial API support
+    if (typeof navigator !== 'undefined' && !("serial" in navigator)) {
+      setUnsupported(true);
+    }
+  }, []);
+
+  if (unsupported) {
+    return (
+      <div className={styles.container}>
+        <h1 className={styles.header}>Raspberry Pi Pico Web Interface</h1>
+        <div style={{ color: '#b00', fontWeight: 'bold', fontSize: 18, marginTop: 32 }}>
+          Web Serial API is not supported in this browser.<br />
+          Please use <span style={{ color: '#0070f3' }}>Google Chrome</span> on a PC or Mac.
+        </div>
+      </div>
+    );
+  }
 
   const displayMessage = (message: string, type: MessageType) => {
     setMessages((msgs) => [...msgs, { message, type }]);
@@ -54,13 +77,21 @@ const PicoWebSerial = () => {
 
   const setupCommunication = () => {
     if (!portRef.current) return;
+    abortController.current = new AbortController();
+
     const textDecoder = new (window as any).TextDecoderStream();
-    portRef.current.readable.pipeTo(textDecoder.writable);
+    readPipePromise.current = portRef.current.readable.pipeTo(
+      textDecoder.writable,
+      { signal: abortController.current.signal }
+    );
     readerRef.current = textDecoder.readable.getReader();
 
     const textEncoder = new (window as any).TextEncoderStream();
     writerRef.current = textEncoder.writable.getWriter();
-    textEncoder.readable.pipeTo(portRef.current.writable);
+    writePipePromise.current = textEncoder.readable.pipeTo(
+      portRef.current.writable,
+      { signal: abortController.current.signal }
+    );
   };
 
   const readLoop = async () => {
@@ -92,26 +123,7 @@ const PicoWebSerial = () => {
   };
 
   const disconnectFromPico = async () => {
-    if (!portRef.current) return;
-    try {
-      readLoopActive.current = false;
-      if (readerRef.current) {
-        await readerRef.current.cancel();
-        readerRef.current.releaseLock();
-        readerRef.current = null;
-      }
-      if (writerRef.current) {
-        writerRef.current.releaseLock();
-        writerRef.current = null;
-      }
-      await portRef.current.close();
-      portRef.current = null;
-      setConnected(false);
-      setStatus("Disconnected");
-      displayMessage("Disconnected from Pico device", "status");
-    } catch (error: any) {
-      displayMessage("Disconnect error: " + (error?.message || String(error)), "error");
-    }
+    window.location.reload();
   };
 
   return (
