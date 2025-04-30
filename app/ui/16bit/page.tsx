@@ -27,6 +27,9 @@ const PicoWebSerial = () => {
   const readPipePromise = useRef<Promise<void> | null>(null);
   const writePipePromise = useRef<Promise<void> | null>(null);
   const abortController = useRef<AbortController | null>(null);
+  const [sampleId, setSampleId] = useState(0);
+  const [sampleFile, setSampleFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   React.useEffect(() => {
     // Check for Web Serial API support
@@ -122,6 +125,71 @@ const PicoWebSerial = () => {
     }
   };
 
+  const sendSample = async () => {
+    if (!portRef.current || !writerRef.current || sampleFile == null || uploading) return;
+    setUploading(true);
+    try {
+      // Convert file to Base64
+      const arrayBuffer = await sampleFile.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+      
+      // Convert binary to Base64
+      const base64 = arrayBufferToBase64(arrayBuffer);
+      const length = base64.length; // Base64 encoded length
+      
+      // Send the write-sample command with base64 length
+      await writerRef.current.write(`write-sample-base64 ${sampleId} ${arrayBuffer.byteLength} ${length}\n`);
+      displayMessage(`Sent: write-sample-base64 ${sampleId} ${arrayBuffer.byteLength} ${length}`, "sent");
+
+      // Wait for Pico to respond with 'Ready to receive ...'
+      await new Promise((res) => setTimeout(res, 300));
+      
+      // Send Base64 data in chunks
+      const chunkSize = 64; // Reasonable chunk size for text
+      let sent = 0;
+      
+      displayMessage("Sending Base64 encoded data...", "status");
+      
+      while (sent < length) {
+        const end = Math.min(sent + chunkSize, length);
+        const chunk = base64.substring(sent, end);
+        await writerRef.current.write(chunk);
+        
+        sent = end;
+        
+        // Show progress every 10% or so
+        if (Math.floor((sent / length) * 10) > Math.floor(((sent - chunk.length) / length) * 10)) {
+          const percent = Math.floor((sent / length) * 100);
+          displayMessage(`Sending: ${percent}% (${sent}/${length} chars)`, "status");
+        }
+        
+        // Small delay between chunks
+        await new Promise(res => setTimeout(res, 5));
+      }
+      
+      // Send end marker
+      await writerRef.current.write("\n");
+      
+      displayMessage(`Sample file sent (${arrayBuffer.byteLength} bytes as ${length} Base64 chars)`, "sent");
+      setSampleFile(null);
+    } catch (error: any) {
+      displayMessage("Sample upload error: " + (error?.message || String(error)), "error");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Helper function to convert ArrayBuffer to Base64
+  function arrayBufferToBase64(buffer: ArrayBuffer): string {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
   const disconnectFromPico = async () => {
     window.location.reload();
   };
@@ -188,14 +256,44 @@ const PicoWebSerial = () => {
           Send
         </button>
       </div>
+      {/* Write Sample UI */}
+      <div style={{ marginTop: 32, padding: 16, border: '1px solid #eee', borderRadius: 8, background: '#fcfcfc' }}>
+        <h2 style={{ fontSize: 18, marginBottom: 12 }}>Upload Sample</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+          <label htmlFor="sample-id">Sample Number:</label>
+          <select
+            id="sample-id"
+            value={sampleId}
+            onChange={e => setSampleId(Number(e.target.value))}
+            disabled={!connected || uploading}
+            style={{ fontSize: 16, padding: 4 }}
+          >
+            {Array.from({ length: 12 }, (_, i) => (
+              <option key={i} value={i}>{i}</option>
+            ))}
+          </select>
+          <input
+            type="file"
+            accept="audio/*,.raw"
+            onChange={e => setSampleFile(e.target.files?.[0] || null)}
+            disabled={!connected || uploading}
+            style={{ fontSize: 16 }}
+          />
+          <button
+            className={styles.sendButton}
+            onClick={sendSample}
+            disabled={!connected || !sampleFile || uploading}
+          >
+            {uploading ? 'Uploading...' : 'Send Sample'}
+          </button>
+        </div>
+        <div style={{ fontSize: 13, color: '#888' }}>
+          Select a sample number (0-11) and upload a file to send to the Pico.<br />
+          The file will be sent as binary after issuing the <code>write-sample</code> command.
+        </div>
+      </div>
     </div>
   );
 };
 
-export default function Page() {
-  return (
-    <Layout>
-      <PicoWebSerial />
-    </Layout>
-  );
-} 
+export default PicoWebSerial;
