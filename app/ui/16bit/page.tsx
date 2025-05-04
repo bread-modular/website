@@ -125,52 +125,51 @@ const PicoWebSerial = () => {
     }
   };
 
+  // Helper function to convert binary data to base64
+  function encodeBinaryBase64(data: Uint8Array): string {
+    // Browser btoa works on strings, so we need to convert the bytes to a string
+    let binary = '';
+    for (let i = 0; i < data.length; i++) {
+      binary += String.fromCharCode(data[i]);
+    }
+    return btoa(binary);
+  }
+
   const sendSample = async () => {
     if (!portRef.current || !writerRef.current || sampleFile == null || uploading) return;
     setUploading(true);
     try {
-      // Convert file to binary with escape encoding
+      // Convert file to binary and encode as base64
       const arrayBuffer = await sampleFile.arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);
-      
-      // Convert binary to escaped encoding (much more efficient than Base64)
-      const encodedData = encodeBinaryEscaped(uint8Array);
-      const length = encodedData.length; // Encoded length
-      
-      // Send the write-sample command with escaped binary data length
-      await writerRef.current.write(`write-sample-escaped ${sampleId} ${arrayBuffer.byteLength} ${length}\n`);
-      displayMessage(`Sent: write-sample-escaped ${sampleId} ${arrayBuffer.byteLength} ${length}`, "sent");
+      const base64Data = encodeBinaryBase64(uint8Array);
+      const length = base64Data.length;
+
+      // Send the write-sample-base64 command
+      await writerRef.current.write(`write-sample-base64 ${sampleId} ${arrayBuffer.byteLength} ${length}\n`);
+      displayMessage(`Sent: write-sample-base64 ${sampleId} ${arrayBuffer.byteLength} ${length}`, "sent");
 
       // Wait for Pico to respond with 'Ready to receive ...'
       await new Promise((res) => setTimeout(res, 300));
-      
-      // Send encoded data in chunks
-      const chunkSize = 1024; // Larger chunk size since escaped data is more efficient
+
+      // Send base64 data in chunks
+      const chunkSize = 1024;
       let sent = 0;
-      
-      displayMessage("Sending escaped binary data...", "status");
-      
+      displayMessage("Sending base64 data...", "status");
       while (sent < length) {
         const end = Math.min(sent + chunkSize, length);
-        const chunk = encodedData.substring(sent, end);
+        const chunk = base64Data.substring(sent, end);
         await writerRef.current.write(chunk);
-        
         sent = end;
-        
-        // Show progress every 10% or so
         if (Math.floor((sent / length) * 10) > Math.floor(((sent - chunk.length) / length) * 10)) {
           const percent = Math.floor((sent / length) * 100);
           displayMessage(`Sending: ${percent}% (${sent}/${length} chars)`, "status");
         }
-        
-        // Small delay between chunks
         await new Promise(res => setTimeout(res, 5));
       }
-      
       // Send end marker
       await writerRef.current.write("\n");
-      
-      displayMessage(`Sample file sent (${arrayBuffer.byteLength} bytes as ${length} escaped chars)`, "sent");
+      displayMessage(`Sample file sent (${arrayBuffer.byteLength} bytes as ${length} base64 chars)`, "sent");
       setSampleFile(null);
     } catch (error: any) {
       displayMessage("Sample upload error: " + (error?.message || String(error)), "error");
@@ -178,28 +177,6 @@ const PicoWebSerial = () => {
       setUploading(false);
     }
   };
-
-  // Helper function to convert binary data to escaped text
-  // Only escapes \n, \r, and \ characters for efficient encoding
-  function encodeBinaryEscaped(data: Uint8Array): string {
-    let result = '';
-    const len = data.length;
-    
-    for (let i = 0; i < len; i++) {
-      const byte = data[i];
-      if (byte === 10) { // \n
-        result += '\\n';
-      } else if (byte === 13) { // \r
-        result += '\\r';
-      } else if (byte === 92) { // \ (backslash)
-        result += '\\\\';
-      } else {
-        result += String.fromCharCode(byte);
-      }
-    }
-    
-    return result;
-  }
 
   const disconnectFromPico = async () => {
     window.location.reload();
