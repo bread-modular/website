@@ -135,14 +135,37 @@ const PicoWebSerial = () => {
     return btoa(binary);
   }
 
+  // CRC32 implementation (same polynomial as firmware)
+  function crc32(buf: Uint8Array): number {
+    let crc = 0xFFFFFFFF;
+    for (let i = 0; i < buf.length; i++) {
+      crc ^= buf[i];
+      for (let j = 0; j < 8; j++) {
+        crc = (crc >>> 1) ^ (0xEDB88320 & -(crc & 1));
+      }
+    }
+    return (~crc) >>> 0;
+  }
+
   const sendSample = async () => {
     if (!portRef.current || !writerRef.current || sampleFile == null || uploading) return;
     setUploading(true);
     try {
-      // Convert file to binary and encode as base64
+      // Convert file to binary
       const arrayBuffer = await sampleFile.arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);
-      const base64Data = encodeBinaryBase64(uint8Array);
+
+      // Calculate CRC32 and prepend (little-endian)
+      const crc = crc32(uint8Array);
+      const withCrc = new Uint8Array(uint8Array.length + 4);
+      withCrc[0] = crc & 0xFF;
+      withCrc[1] = (crc >> 8) & 0xFF;
+      withCrc[2] = (crc >> 16) & 0xFF;
+      withCrc[3] = (crc >> 24) & 0xFF;
+      withCrc.set(uint8Array, 4);
+
+      // Base64 encode
+      const base64Data = encodeBinaryBase64(withCrc);
       const length = base64Data.length;
 
       // Send the write-sample-base64 command
