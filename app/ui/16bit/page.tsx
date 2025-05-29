@@ -166,22 +166,24 @@ const PicoWebSerial = () => {
         onAppChange={handleAppChange}
       />
       
+      {selectedApp === "sampler" && (
+        <AppSampler 
+          sampleId={sampleId}
+          setSampleId={setSampleId}
+          sampleFile={sampleFile}
+          setSampleFile={setSampleFile}
+          sendSample={sendSample}
+            connected={connected}
+            uploading={uploading}
+        />
+      )}
+
       <Terminal 
         messages={messages}
         input={input}
         setInput={setInput}
         sendMessage={sendMessage}
         connected={connected}
-      />
-      
-      <AppSampler 
-        sampleId={sampleId}
-        setSampleId={setSampleId}
-        sampleFile={sampleFile}
-        setSampleFile={setSampleFile}
-        sendSample={sendSample}
-        connected={connected}
-        uploading={uploading}
       />
     </div>
   );

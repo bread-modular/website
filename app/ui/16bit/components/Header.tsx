@@ -45,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <h1 className={styles.header}>Raspberry Pi Pico Web Interface</h1>
+      <h1 className={styles.header}>16Bit Configurator</h1>
       {unsupported ? (
         <div className={styles.unsupportedMessage}>
           Web Serial API is not supported in this browser.<br />
@@ -53,26 +53,28 @@ const Header: React.FC<HeaderProps> = ({
         </div>
       ) : (
         <div className={styles.buttonRow}>
-          <button
-            className={styles.button}
-            onClick={connectToPico}
-            disabled={connected}
-          >
-            Connect
-          </button>
-          <button
-            className={styles.button}
-            onClick={disconnectFromPico}
-            disabled={!connected}
-          >
-            Disconnect
-          </button>
-          <span className={styles.status}>{status}</span>
+          {connected && (
+            <button
+              className={styles.button}
+              onClick={disconnectFromPico}  
+            >
+              Disconnect
+            </button>
+          )}
+          {!connected && (
+            <button
+              className={styles.button}
+              onClick={connectToPico}
+            >
+              Connect
+            </button>
+          )}    
+          
           {connected && (
             <>
               <div className={styles.appSwitcher}>
                 <label htmlFor="app-select" className={styles.appSwitcherLabel}>
-                  Switch App:
+                  Current App:
                 </label>
                 <select
                   id="app-select"
