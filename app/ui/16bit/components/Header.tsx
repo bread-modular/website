@@ -5,11 +5,9 @@ import styles from "./Header.module.css";
 interface HeaderProps {
   connected: boolean;
   status: string;
-  appInfo: string | null;
   loadingAppInfo: boolean;
   connectToPico: () => Promise<void>;
   disconnectFromPico: () => Promise<void>;
-  getAppInfo: () => Promise<void>;
   selectedApp: string;
   switchingApp: boolean;
   onAppChange: (appName: string) => void;
@@ -19,11 +17,9 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({
   connected,
   status,
-  appInfo,
   loadingAppInfo,
   connectToPico,
   disconnectFromPico,
-  getAppInfo,
   selectedApp,
   switchingApp,
   onAppChange,
@@ -98,31 +94,6 @@ const Header: React.FC<HeaderProps> = ({
                   <span className={styles.switchingIndicator}>Switching...</span>
                 )}
               </div>
-              <span className={styles.appInfoContainer}>
-                {loadingAppInfo ? (
-                  <span className={styles.loadingAppInfo}>Loading app info...</span>
-                ) : appInfo ? (
-                  <span className={styles.appInfoText}>
-                    App: {appInfo}
-                    <button 
-                      onClick={getAppInfo} 
-                      className={styles.refreshButton}
-                    >
-                      ↻
-                    </button>
-                  </span>
-                ) : (
-                  <span className={styles.noAppInfo}>
-                    No app info
-                    <button 
-                      onClick={getAppInfo} 
-                      className={styles.refreshButton}
-                    >
-                      ↻
-                    </button>
-                  </span>
-                )}
-              </span>
             </>
           )}
         </div>

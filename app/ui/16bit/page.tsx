@@ -15,7 +15,6 @@ const PicoWebSerial = () => {
   const [sampleId, setSampleId] = useState(0);
   const [sampleFile, setSampleFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [appInfo, setAppInfo] = useState<string | null>(null);
   const [loadingAppInfo, setLoadingAppInfo] = useState(false);
   const [selectedApp, setSelectedApp] = useState("");
   const [switchingApp, setSwitchingApp] = useState(false);
@@ -53,13 +52,8 @@ const PicoWebSerial = () => {
       displayMessage("Requesting app info...", "status");
       // Send a command that will return a value in the format ::val::value::val::
       const result = await serialManagerRef.current.sendAndReceive("get-app");
-      setAppInfo(result);
-      
-      if (result !== null) {
-        displayMessage(`App info: ${result}`, "status");
-      } else {
-        displayMessage("Failed to get app info (timeout or no match)", "error");
-      }
+      setSelectedApp(result || "");
+
     } catch (error) {
       displayMessage(`Error getting app info: ${error}`, "error");
     } finally {
@@ -69,16 +63,8 @@ const PicoWebSerial = () => {
 
   const handleAppChange = async (appName: string) => {
     if (!connected || switchingApp || !appName) {
-      setSelectedApp(""); // Reset dropdown
       return;
     }
-
-    // Simple mapping for confirmation dialog
-    const appLabels: { [key: string]: string } = {
-      sampler: "Sampler",
-      polysynth: "PolySynth", 
-      noop: "Noop"
-    };
 
     try {
       setSwitchingApp(true);
@@ -92,11 +78,9 @@ const PicoWebSerial = () => {
       setTimeout(async () => {
         await getAppInfo();
         setSwitchingApp(false);
-        setSelectedApp(""); // Reset dropdown
       }, 1000);
     } catch (error) {
       setSwitchingApp(false);
-      setSelectedApp(""); // Reset dropdown
       console.error("Error switching app:", error);
     }
   };
@@ -162,11 +146,9 @@ const PicoWebSerial = () => {
         <Header 
           connected={connected}
           status={status}
-          appInfo={appInfo}
           loadingAppInfo={loadingAppInfo}
           connectToPico={connectToPico}
           disconnectFromPico={disconnectFromPico}
-          getAppInfo={getAppInfo}
           selectedApp={selectedApp}
           switchingApp={switchingApp}
           onAppChange={handleAppChange}
@@ -181,11 +163,9 @@ const PicoWebSerial = () => {
       <Header 
         connected={connected}
         status={status}
-        appInfo={appInfo}
         loadingAppInfo={loadingAppInfo}
         connectToPico={connectToPico}
         disconnectFromPico={disconnectFromPico}
-        getAppInfo={getAppInfo}
         selectedApp={selectedApp}
         switchingApp={switchingApp}
         onAppChange={handleAppChange}
