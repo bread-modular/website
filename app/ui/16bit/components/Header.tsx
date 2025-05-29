@@ -10,6 +10,9 @@ interface HeaderProps {
   connectToPico: () => Promise<void>;
   disconnectFromPico: () => Promise<void>;
   getAppInfo: () => Promise<void>;
+  selectedApp: string;
+  switchingApp: boolean;
+  onAppChange: (appName: string) => void;
   unsupported?: boolean;
 }
 
@@ -21,8 +24,31 @@ const Header: React.FC<HeaderProps> = ({
   connectToPico,
   disconnectFromPico,
   getAppInfo,
+  selectedApp,
+  switchingApp,
+  onAppChange,
   unsupported = false,
 }) => {
+  const appOptions = [
+    { value: "sampler", label: "Sampler" },
+    { value: "polysynth", label: "PolySynth" },
+    { value: "noop", label: "Noop" }
+  ];
+
+  const handleAppChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const appName = e.target.value;
+
+    const confirmed = window.confirm(
+      `Are you sure you want to switch to ${appOptions.find(app => app.value === appName)?.label || appName}?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    onAppChange(appName);
+  };
+
   return (
     <>
       <h1 className={styles.header}>Raspberry Pi Pico Web Interface</h1>
@@ -49,31 +75,55 @@ const Header: React.FC<HeaderProps> = ({
           </button>
           <span className={styles.status}>{status}</span>
           {connected && (
-            <span className={styles.appInfoContainer}>
-              {loadingAppInfo ? (
-                <span className={styles.loadingAppInfo}>Loading app info...</span>
-              ) : appInfo ? (
-                <span className={styles.appInfoText}>
-                  App: {appInfo}
-                  <button 
-                    onClick={getAppInfo} 
-                    className={styles.refreshButton}
-                  >
-                    ↻
-                  </button>
-                </span>
-              ) : (
-                <span className={styles.noAppInfo}>
-                  No app info
-                  <button 
-                    onClick={getAppInfo} 
-                    className={styles.refreshButton}
-                  >
-                    ↻
-                  </button>
-                </span>
-              )}
-            </span>
+            <>
+              <div className={styles.appSwitcher}>
+                <label htmlFor="app-select" className={styles.appSwitcherLabel}>
+                  Switch App:
+                </label>
+                <select
+                  id="app-select"
+                  value={selectedApp}
+                  onChange={handleAppChange}
+                  disabled={switchingApp}
+                  className={styles.appSelect}
+                >
+                  <option value="">Select an app...</option>
+                  {appOptions.map((app) => (
+                    <option key={app.value} value={app.value}>
+                      {app.label}
+                    </option>
+                  ))}
+                </select>
+                {switchingApp && (
+                  <span className={styles.switchingIndicator}>Switching...</span>
+                )}
+              </div>
+              <span className={styles.appInfoContainer}>
+                {loadingAppInfo ? (
+                  <span className={styles.loadingAppInfo}>Loading app info...</span>
+                ) : appInfo ? (
+                  <span className={styles.appInfoText}>
+                    App: {appInfo}
+                    <button 
+                      onClick={getAppInfo} 
+                      className={styles.refreshButton}
+                    >
+                      ↻
+                    </button>
+                  </span>
+                ) : (
+                  <span className={styles.noAppInfo}>
+                    No app info
+                    <button 
+                      onClick={getAppInfo} 
+                      className={styles.refreshButton}
+                    >
+                      ↻
+                    </button>
+                  </span>
+                )}
+              </span>
+            </>
           )}
         </div>
       )}

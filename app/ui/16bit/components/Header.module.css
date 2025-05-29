@@ -64,4 +64,39 @@
 
 .browserHighlight {
   color: #0070f3;
+}
+
+.appSwitcher {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+  gap: 8px;
+}
+
+.appSwitcherLabel {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.appSelect {
+  padding: 4px 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  min-width: 140px;
+}
+
+.appSelect:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f5f5f5;
+}
+
+.switchingIndicator {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
 } 

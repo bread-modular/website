@@ -17,6 +17,8 @@ const PicoWebSerial = () => {
   const [uploading, setUploading] = useState(false);
   const [appInfo, setAppInfo] = useState<string | null>(null);
   const [loadingAppInfo, setLoadingAppInfo] = useState(false);
+  const [selectedApp, setSelectedApp] = useState("");
+  const [switchingApp, setSwitchingApp] = useState(false);
   
   const serialManagerRef = useRef<WebSerialManager | null>(null);
 
@@ -62,6 +64,40 @@ const PicoWebSerial = () => {
       displayMessage(`Error getting app info: ${error}`, "error");
     } finally {
       setLoadingAppInfo(false);
+    }
+  };
+
+  const handleAppChange = async (appName: string) => {
+    if (!connected || switchingApp || !appName) {
+      setSelectedApp(""); // Reset dropdown
+      return;
+    }
+
+    // Simple mapping for confirmation dialog
+    const appLabels: { [key: string]: string } = {
+      sampler: "Sampler",
+      polysynth: "PolySynth", 
+      noop: "Noop"
+    };
+
+    try {
+      setSwitchingApp(true);
+      setSelectedApp(appName);
+      
+      if (serialManagerRef.current) {
+        await serialManagerRef.current.sendMessage(`set-app ${appName}`);
+      }
+      
+      // Wait a moment for the app to switch, then get the new app info
+      setTimeout(async () => {
+        await getAppInfo();
+        setSwitchingApp(false);
+        setSelectedApp(""); // Reset dropdown
+      }, 1000);
+    } catch (error) {
+      setSwitchingApp(false);
+      setSelectedApp(""); // Reset dropdown
+      console.error("Error switching app:", error);
     }
   };
 
@@ -131,6 +167,9 @@ const PicoWebSerial = () => {
           connectToPico={connectToPico}
           disconnectFromPico={disconnectFromPico}
           getAppInfo={getAppInfo}
+          selectedApp={selectedApp}
+          switchingApp={switchingApp}
+          onAppChange={handleAppChange}
           unsupported={true}
         />
       </div>
@@ -147,6 +186,9 @@ const PicoWebSerial = () => {
         connectToPico={connectToPico}
         disconnectFromPico={disconnectFromPico}
         getAppInfo={getAppInfo}
+        selectedApp={selectedApp}
+        switchingApp={switchingApp}
+        onAppChange={handleAppChange}
       />
       
       <Terminal 
