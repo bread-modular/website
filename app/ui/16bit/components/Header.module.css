@@ -1,0 +1,67 @@
+.header {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.buttonRow {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.button {
+  margin-right: 8px;
+  padding: 6px 16px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.status {
+  font-size: 1rem;
+}
+
+.appInfoContainer {
+  margin-left: 16px;
+  font-size: 14px;
+}
+
+.loadingAppInfo {
+  color: #666;
+}
+
+.appInfoText {
+  color: #0070f3;
+  font-weight: bold;
+}
+
+.noAppInfo {
+  color: #888;
+}
+
+.refreshButton {
+  margin-left: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 12px;
+}
+
+.unsupportedMessage {
+  color: #b00;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 32px;
+}
+
+.browserHighlight {
+  color: #0070f3;
+} 

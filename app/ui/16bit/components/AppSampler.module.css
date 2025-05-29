@@ -1,0 +1,47 @@
+.sampleUploadContainer {
+  margin-top: 32px;
+  padding: 16px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fcfcfc;
+}
+
+.sampleUploadTitle {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.sampleUploadControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sampleSelect {
+  font-size: 16px;
+  padding: 4px;
+}
+
+.fileInput {
+  font-size: 16px;
+}
+
+.sampleUploadInfo {
+  font-size: 13px;
+  color: #888;
+}
+
+.sendButton {
+  padding: 6px 16px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sendButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+} 

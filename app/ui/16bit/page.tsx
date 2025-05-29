@@ -1,8 +1,10 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
 import styles from "./page.module.css";
-import Layout from "@/app/components/Layout";
 import { WebSerialManager, MessageType, MessageObj } from "@/app/lib/webserial";
+import Header from "./components/Header";
+import Terminal from "./components/Terminal";
+import AppSampler from "./components/AppSampler";
 
 const PicoWebSerial = () => {
   const [connected, setConnected] = useState(false);
@@ -121,140 +123,49 @@ const PicoWebSerial = () => {
   if (unsupported) {
     return (
       <div className={styles.container}>
-        <h1 className={styles.header}>Raspberry Pi Pico Web Interface</h1>
-        <div className={styles.unsupportedMessage}>
-          Web Serial API is not supported in this browser.<br />
-          Please use <span className={styles.browserHighlight}>Google Chrome</span> on a PC or Mac.
-        </div>
+        <Header 
+          connected={connected}
+          status={status}
+          appInfo={appInfo}
+          loadingAppInfo={loadingAppInfo}
+          connectToPico={connectToPico}
+          disconnectFromPico={disconnectFromPico}
+          getAppInfo={getAppInfo}
+          unsupported={true}
+        />
       </div>
     );
   }
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.header}>Raspberry Pi Pico Web Interface</h1>
-      <div className={styles.buttonRow}>
-        <button
-          className={styles.button}
-          onClick={connectToPico}
-          disabled={connected}
-        >
-          Connect
-        </button>
-        <button
-          className={styles.button}
-          onClick={disconnectFromPico}
-          disabled={!connected}
-        >
-          Disconnect
-        </button>
-        <span className={styles.status}>{status}</span>
-        {connected && (
-          <span className={styles.appInfoContainer}>
-            {loadingAppInfo ? (
-              <span className={styles.loadingAppInfo}>Loading app info...</span>
-            ) : appInfo ? (
-              <span className={styles.appInfoText}>
-                App: {appInfo}
-                <button 
-                  onClick={getAppInfo} 
-                  className={styles.refreshButton}
-                >
-                  ↻
-                </button>
-              </span>
-            ) : (
-              <span className={styles.noAppInfo}>
-                No app info
-                <button 
-                  onClick={getAppInfo} 
-                  className={styles.refreshButton}
-                >
-                  ↻
-                </button>
-              </span>
-            )}
-          </span>
-        )}
-      </div>
-      <div className={styles.messageContainer}>
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={
-              styles.message +
-              " " +
-              (msg.type === "received"
-                ? styles.received
-                : msg.type === "sent"
-                ? styles.sent
-                : msg.type === "status"
-                ? styles.status
-                : msg.type === "error"
-                ? styles.error
-                : "")
-            }
-          >
-            {msg.message}
-          </div>
-        ))}
-      </div>
-      <div className={styles.inputRow}>
-        <input
-          className={styles.input}
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") sendMessage();
-          }}
-          placeholder="Type a command..."
-          disabled={!connected}
-        />
-        <button
-          className={styles.sendButton}
-          onClick={sendMessage}
-          disabled={!connected || !input.trim()}
-        >
-          Send
-        </button>
-      </div>
-      {/* Write Sample UI */}
-      <div className={styles.sampleUploadContainer}>
-        <h2 className={styles.sampleUploadTitle}>Upload Sample</h2>
-        <div className={styles.sampleUploadControls}>
-          <label htmlFor="sample-id">Sample Number:</label>
-          <select
-            id="sample-id"
-            value={sampleId}
-            onChange={e => setSampleId(Number(e.target.value))}
-            disabled={!connected || uploading}
-            className={styles.sampleSelect}
-          >
-            {Array.from({ length: 12 }, (_, i) => (
-              <option key={i} value={i}>{i}</option>
-            ))}
-          </select>
-          <input
-            type="file"
-            accept="audio/*,.raw"
-            onChange={e => setSampleFile(e.target.files?.[0] || null)}
-            disabled={!connected || uploading}
-            className={styles.fileInput}
-          />
-          <button
-            className={styles.sendButton}
-            onClick={sendSample}
-            disabled={!connected || !sampleFile || uploading}
-          >
-            {uploading ? 'Uploading...' : 'Send Sample'}
-          </button>
-        </div>
-        <div className={styles.sampleUploadInfo}>
-          Select a sample number (0-11) and upload a file to send to the Pico.<br />
-          The file will be sent as binary after issuing the <code>write-sample</code> command.
-        </div>
-      </div>
+      <Header 
+        connected={connected}
+        status={status}
+        appInfo={appInfo}
+        loadingAppInfo={loadingAppInfo}
+        connectToPico={connectToPico}
+        disconnectFromPico={disconnectFromPico}
+        getAppInfo={getAppInfo}
+      />
+      
+      <Terminal 
+        messages={messages}
+        input={input}
+        setInput={setInput}
+        sendMessage={sendMessage}
+        connected={connected}
+      />
+      
+      <AppSampler 
+        sampleId={sampleId}
+        setSampleId={setSampleId}
+        sampleFile={sampleFile}
+        setSampleFile={setSampleFile}
+        sendSample={sendSample}
+        connected={connected}
+        uploading={uploading}
+      />
     </div>
   );
 };
