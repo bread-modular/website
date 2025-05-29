@@ -5,7 +5,6 @@ import styles from "./Header.module.css";
 interface HeaderProps {
   connected: boolean;
   status: string;
-  loadingAppInfo: boolean;
   connectToPico: () => Promise<void>;
   disconnectFromPico: () => Promise<void>;
   selectedApp: string;
@@ -17,7 +16,6 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({
   connected,
   status,
-  loadingAppInfo,
   connectToPico,
   disconnectFromPico,
   selectedApp,

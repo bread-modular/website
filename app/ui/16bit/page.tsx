@@ -15,7 +15,6 @@ const PicoWebSerial = () => {
   const [sampleId, setSampleId] = useState(0);
   const [sampleFile, setSampleFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [loadingAppInfo, setLoadingAppInfo] = useState(false);
   const [selectedApp, setSelectedApp] = useState("");
   const [switchingApp, setSwitchingApp] = useState(false);
   
@@ -48,16 +47,14 @@ const PicoWebSerial = () => {
     }
     
     try {
-      setLoadingAppInfo(true);
       displayMessage("Requesting app info...", "status");
       // Send a command that will return a value in the format ::val::value::val::
       const result = await serialManagerRef.current.sendAndReceive("get-app");
       setSelectedApp(result || "");
 
     } catch (error) {
+      setSelectedApp("");
       displayMessage(`Error getting app info: ${error}`, "error");
-    } finally {
-      setLoadingAppInfo(false);
     }
   };
 
@@ -146,7 +143,6 @@ const PicoWebSerial = () => {
         <Header 
           connected={connected}
           status={status}
-          loadingAppInfo={loadingAppInfo}
           connectToPico={connectToPico}
           disconnectFromPico={disconnectFromPico}
           selectedApp={selectedApp}
@@ -163,7 +159,6 @@ const PicoWebSerial = () => {
       <Header 
         connected={connected}
         status={status}
-        loadingAppInfo={loadingAppInfo}
         connectToPico={connectToPico}
         disconnectFromPico={disconnectFromPico}
         selectedApp={selectedApp}
