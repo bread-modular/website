@@ -1,18 +1,8 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import styles from "./page.module.css";
 import Layout from "@/app/components/Layout";
-
-// Minimal SerialPort type for TS
-interface SerialPort {
-  open(options: any): Promise<void>;
-  close(): Promise<void>;
-  readable: ReadableStream<any>;
-  writable: WritableStream<any>;
-}
-
-type MessageType = "received" | "sent" | "status" | "error";
-type MessageObj = { message: string; type: MessageType };
+import { WebSerialManager, MessageType, MessageObj } from "@/app/lib/webserial";
 
 const PicoWebSerial = () => {
   const [connected, setConnected] = useState(false);
@@ -20,23 +10,113 @@ const PicoWebSerial = () => {
   const [messages, setMessages] = useState<MessageObj[]>([]);
   const [input, setInput] = useState("");
   const [unsupported, setUnsupported] = useState(false);
-  const portRef = useRef<SerialPort | null>(null);
-  const readerRef = useRef<ReadableStreamDefaultReader<string> | null>(null);
-  const writerRef = useRef<WritableStreamDefaultWriter<string> | null>(null);
-  const readLoopActive = useRef(false);
-  const readPipePromise = useRef<Promise<void> | null>(null);
-  const writePipePromise = useRef<Promise<void> | null>(null);
-  const abortController = useRef<AbortController | null>(null);
   const [sampleId, setSampleId] = useState(0);
   const [sampleFile, setSampleFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [appInfo, setAppInfo] = useState<string | null>(null);
+  const [loadingAppInfo, setLoadingAppInfo] = useState(false);
+  
+  const serialManagerRef = useRef<WebSerialManager | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    // Initialize the WebSerialManager
+    serialManagerRef.current = new WebSerialManager(displayMessage);
+    
     // Check for Web Serial API support
-    if (typeof navigator !== 'undefined' && !("serial" in navigator)) {
+    if (!serialManagerRef.current.isWebSerialSupported()) {
       setUnsupported(true);
     }
+    
+    // Cleanup on unmount
+    return () => {
+      if (serialManagerRef.current && connected) {
+        serialManagerRef.current.disconnect();
+      }
+    };
   }, []);
+
+  const displayMessage = (message: string, type: MessageType) => {
+    setMessages((msgs) => [...msgs, { message, type }]);
+  };
+
+  const getAppInfo = async () => {
+    if (!serialManagerRef.current || !serialManagerRef.current.isConnected()) {
+      return;
+    }
+    
+    try {
+      setLoadingAppInfo(true);
+      displayMessage("Requesting app info...", "status");
+      // Send a command that will return a value in the format ::val::value::val::
+      const result = await serialManagerRef.current.sendAndReceive("get-app");
+      setAppInfo(result);
+      
+      if (result !== null) {
+        displayMessage(`App info: ${result}`, "status");
+      } else {
+        displayMessage("Failed to get app info (timeout or no match)", "error");
+      }
+    } catch (error) {
+      displayMessage(`Error getting app info: ${error}`, "error");
+    } finally {
+      setLoadingAppInfo(false);
+    }
+  };
+
+  const connectToPico = async () => {
+    try {
+      if (!serialManagerRef.current) return;
+      
+      await serialManagerRef.current.connect();
+      setConnected(true);
+      setStatus("Connected");
+      
+      // Wait for the WebSerialManager to be fully ready before getting app info
+      const waitForConnection = () => {
+        if (serialManagerRef.current?.isConnected()) {
+          getAppInfo();
+        } else {
+          console.log("Connection not ready yet, waiting...");
+          setTimeout(waitForConnection, 500);
+        }
+      };
+      
+      setTimeout(waitForConnection, 500);
+    } catch (error: any) {
+      setConnected(false);
+      setStatus("Disconnected");
+    }
+  };
+
+  const sendMessage = async () => {
+    if (!input.trim() || !serialManagerRef.current) return;
+    try {
+      await serialManagerRef.current.sendMessage(input);
+      setInput("");
+    } catch (error) {
+      // Error is already handled in the WebSerialManager
+    }
+  };
+
+  const sendSample = async () => {
+    if (!serialManagerRef.current || !sampleFile || uploading) return;
+    setUploading(true);
+    try {
+      await serialManagerRef.current.sendSampleFile(sampleId, sampleFile);
+      setSampleFile(null);
+    } catch (error) {
+      // Error is already handled in the WebSerialManager
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const disconnectFromPico = async () => {
+    if (serialManagerRef.current) {      
+      // Reload the page after disconnection
+      window.location.reload();
+    }
+  };
 
   if (unsupported) {
     return (
@@ -49,161 +129,6 @@ const PicoWebSerial = () => {
       </div>
     );
   }
-
-  const displayMessage = (message: string, type: MessageType) => {
-    setMessages((msgs) => [...msgs, { message, type }]);
-  };
-
-  const connectToPico = async () => {
-    try {
-      // @ts-ignore
-      const port = await (navigator as any).serial.requestPort();
-      await port.open({
-        baudRate: 115200,
-        dataBits: 8,
-        stopBits: 1,
-        parity: "none",
-        flowControl: "none",
-      });
-      portRef.current = port;
-      setConnected(true);
-      setStatus("Connected");
-      displayMessage("Connected to Pico device", "status");
-      setupCommunication();
-      readLoop();
-    } catch (error: any) {
-      displayMessage("Connection error: " + (error?.message || String(error)), "error");
-      setConnected(false);
-      setStatus("Disconnected");
-    }
-  };
-
-  const setupCommunication = () => {
-    if (!portRef.current) return;
-    abortController.current = new AbortController();
-
-    const textDecoder = new (window as any).TextDecoderStream();
-    readPipePromise.current = portRef.current.readable.pipeTo(
-      textDecoder.writable,
-      { signal: abortController.current.signal }
-    );
-    readerRef.current = textDecoder.readable.getReader();
-
-    const textEncoder = new (window as any).TextEncoderStream();
-    writerRef.current = textEncoder.writable.getWriter();
-    writePipePromise.current = textEncoder.readable.pipeTo(
-      portRef.current.writable,
-      { signal: abortController.current.signal }
-    );
-  };
-
-  const readLoop = async () => {
-    readLoopActive.current = true;
-    try {
-      while (portRef.current && readLoopActive.current) {
-        if (!readerRef.current) break;
-        const { value, done } = await readerRef.current.read();
-        if (done) break;
-        if (value) displayMessage(value, "received");
-      }
-    } catch (error: any) {
-      displayMessage("Read error: " + (error?.message || String(error)), "error");
-      if (portRef.current) disconnectFromPico();
-    } finally {
-      readLoopActive.current = false;
-    }
-  };
-
-  const sendMessage = async () => {
-    if (!input.trim() || !writerRef.current) return;
-    try {
-      await writerRef.current.write(input + "\n");
-      displayMessage("Sent: " + input, "sent");
-      setInput("");
-    } catch (error: any) {
-      displayMessage("Send error: " + (error?.message || String(error)), "error");
-    }
-  };
-
-  // Helper function to convert binary data to base64
-  function encodeBinaryBase64(data: Uint8Array): string {
-    // Browser btoa works on strings, so we need to convert the bytes to a string
-    let binary = '';
-    for (let i = 0; i < data.length; i++) {
-      binary += String.fromCharCode(data[i]);
-    }
-    return btoa(binary);
-  }
-
-  // CRC32 implementation (same polynomial as firmware)
-  function crc32(buf: Uint8Array): number {
-    let crc = 0xFFFFFFFF;
-    for (let i = 0; i < buf.length; i++) {
-      crc ^= buf[i];
-      for (let j = 0; j < 8; j++) {
-        crc = (crc >>> 1) ^ (0xEDB88320 & -(crc & 1));
-      }
-    }
-    return (~crc) >>> 0;
-  }
-
-  const sendSample = async () => {
-    if (!portRef.current || !writerRef.current || sampleFile == null || uploading) return;
-    setUploading(true);
-    try {
-      // Convert file to binary
-      const arrayBuffer = await sampleFile.arrayBuffer();
-      const uint8Array = new Uint8Array(arrayBuffer);
-
-      // Calculate CRC32 and prepend (little-endian)
-      const crc = crc32(uint8Array);
-      const withCrc = new Uint8Array(uint8Array.length + 4);
-      withCrc[0] = crc & 0xFF;
-      withCrc[1] = (crc >> 8) & 0xFF;
-      withCrc[2] = (crc >> 16) & 0xFF;
-      withCrc[3] = (crc >> 24) & 0xFF;
-      withCrc.set(uint8Array, 4);
-
-      // Base64 encode
-      const base64Data = encodeBinaryBase64(withCrc);
-      const length = base64Data.length;
-
-      // Send the write-sample-base64 command
-      await writerRef.current.write(`write-sample-base64 ${sampleId} ${arrayBuffer.byteLength} ${length}\n`);
-      displayMessage(`Sent: write-sample-base64 ${sampleId} ${arrayBuffer.byteLength} ${length}`, "sent");
-
-      // Wait for Pico to respond with 'Ready to receive ...'
-      await new Promise((res) => setTimeout(res, 300));
-
-      // Send base64 data in chunks
-      const chunkSize = 1024;
-      let sent = 0;
-      displayMessage("Sending base64 data...", "status");
-      while (sent < length) {
-        const end = Math.min(sent + chunkSize, length);
-        const chunk = base64Data.substring(sent, end);
-        await writerRef.current.write(chunk);
-        sent = end;
-        if (Math.floor((sent / length) * 10) > Math.floor(((sent - chunk.length) / length) * 10)) {
-          const percent = Math.floor((sent / length) * 100);
-          displayMessage(`Sending: ${percent}% (${sent}/${length} chars)`, "status");
-        }
-        await new Promise(res => setTimeout(res, 5));
-      }
-      // Send end marker
-      await writerRef.current.write("\n");
-      displayMessage(`Sample file sent (${arrayBuffer.byteLength} bytes as ${length} base64 chars)`, "sent");
-      setSampleFile(null);
-    } catch (error: any) {
-      displayMessage("Sample upload error: " + (error?.message || String(error)), "error");
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const disconnectFromPico = async () => {
-    window.location.reload();
-  };
 
   return (
     <div className={styles.container}>
@@ -224,6 +149,47 @@ const PicoWebSerial = () => {
           Disconnect
         </button>
         <span className={styles.status}>{status}</span>
+        {connected && (
+          <span style={{ marginLeft: 16, fontSize: 14 }}>
+            {loadingAppInfo ? (
+              <span style={{ color: '#666' }}>Loading app info...</span>
+            ) : appInfo ? (
+              <span style={{ color: '#0070f3', fontWeight: 'bold' }}>
+                App: {appInfo}
+                <button 
+                  onClick={getAppInfo} 
+                  style={{ 
+                    marginLeft: 8, 
+                    background: 'none', 
+                    border: 'none', 
+                    cursor: 'pointer', 
+                    color: '#666',
+                    fontSize: 12
+                  }}
+                >
+                  ↻
+                </button>
+              </span>
+            ) : (
+              <span style={{ color: '#888' }}>
+                No app info
+                <button 
+                  onClick={getAppInfo} 
+                  style={{ 
+                    marginLeft: 8, 
+                    background: 'none', 
+                    border: 'none', 
+                    cursor: 'pointer', 
+                    color: '#666',
+                    fontSize: 12
+                  }}
+                >
+                  ↻
+                </button>
+              </span>
+            )}
+          </span>
+        )}
       </div>
       <div className={styles.messageContainer}>
         {messages.map((msg, i) => (
