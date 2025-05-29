@@ -122,9 +122,9 @@ const PicoWebSerial = () => {
     return (
       <div className={styles.container}>
         <h1 className={styles.header}>Raspberry Pi Pico Web Interface</h1>
-        <div style={{ color: '#b00', fontWeight: 'bold', fontSize: 18, marginTop: 32 }}>
+        <div className={styles.unsupportedMessage}>
           Web Serial API is not supported in this browser.<br />
-          Please use <span style={{ color: '#0070f3' }}>Google Chrome</span> on a PC or Mac.
+          Please use <span className={styles.browserHighlight}>Google Chrome</span> on a PC or Mac.
         </div>
       </div>
     );
@@ -150,39 +150,25 @@ const PicoWebSerial = () => {
         </button>
         <span className={styles.status}>{status}</span>
         {connected && (
-          <span style={{ marginLeft: 16, fontSize: 14 }}>
+          <span className={styles.appInfoContainer}>
             {loadingAppInfo ? (
-              <span style={{ color: '#666' }}>Loading app info...</span>
+              <span className={styles.loadingAppInfo}>Loading app info...</span>
             ) : appInfo ? (
-              <span style={{ color: '#0070f3', fontWeight: 'bold' }}>
+              <span className={styles.appInfoText}>
                 App: {appInfo}
                 <button 
                   onClick={getAppInfo} 
-                  style={{ 
-                    marginLeft: 8, 
-                    background: 'none', 
-                    border: 'none', 
-                    cursor: 'pointer', 
-                    color: '#666',
-                    fontSize: 12
-                  }}
+                  className={styles.refreshButton}
                 >
                   ↻
                 </button>
               </span>
             ) : (
-              <span style={{ color: '#888' }}>
+              <span className={styles.noAppInfo}>
                 No app info
                 <button 
                   onClick={getAppInfo} 
-                  style={{ 
-                    marginLeft: 8, 
-                    background: 'none', 
-                    border: 'none', 
-                    cursor: 'pointer', 
-                    color: '#666',
-                    fontSize: 12
-                  }}
+                  className={styles.refreshButton}
                 >
                   ↻
                 </button>
@@ -234,16 +220,16 @@ const PicoWebSerial = () => {
         </button>
       </div>
       {/* Write Sample UI */}
-      <div style={{ marginTop: 32, padding: 16, border: '1px solid #eee', borderRadius: 8, background: '#fcfcfc' }}>
-        <h2 style={{ fontSize: 18, marginBottom: 12 }}>Upload Sample</h2>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+      <div className={styles.sampleUploadContainer}>
+        <h2 className={styles.sampleUploadTitle}>Upload Sample</h2>
+        <div className={styles.sampleUploadControls}>
           <label htmlFor="sample-id">Sample Number:</label>
           <select
             id="sample-id"
             value={sampleId}
             onChange={e => setSampleId(Number(e.target.value))}
             disabled={!connected || uploading}
-            style={{ fontSize: 16, padding: 4 }}
+            className={styles.sampleSelect}
           >
             {Array.from({ length: 12 }, (_, i) => (
               <option key={i} value={i}>{i}</option>
@@ -254,7 +240,7 @@ const PicoWebSerial = () => {
             accept="audio/*,.raw"
             onChange={e => setSampleFile(e.target.files?.[0] || null)}
             disabled={!connected || uploading}
-            style={{ fontSize: 16 }}
+            className={styles.fileInput}
           />
           <button
             className={styles.sendButton}
@@ -264,7 +250,7 @@ const PicoWebSerial = () => {
             {uploading ? 'Uploading...' : 'Send Sample'}
           </button>
         </div>
-        <div style={{ fontSize: 13, color: '#888' }}>
+        <div className={styles.sampleUploadInfo}>
           Select a sample number (0-11) and upload a file to send to the Pico.<br />
           The file will be sent as binary after issuing the <code>write-sample</code> command.
         </div>

@@ -85,4 +85,77 @@
 .sendButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* New styles for elements that were using inline styles */
+.appInfoContainer {
+  margin-left: 16px;
+  font-size: 14px;
+}
+
+.loadingAppInfo {
+  color: #666;
+}
+
+.appInfoText {
+  color: #0070f3;
+  font-weight: bold;
+}
+
+.noAppInfo {
+  color: #888;
+}
+
+.refreshButton {
+  margin-left: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 12px;
+}
+
+.unsupportedMessage {
+  color: #b00;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 32px;
+}
+
+.browserHighlight {
+  color: #0070f3;
+}
+
+.sampleUploadContainer {
+  margin-top: 32px;
+  padding: 16px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fcfcfc;
+}
+
+.sampleUploadTitle {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.sampleUploadControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sampleSelect {
+  font-size: 16px;
+  padding: 4px;
+}
+
+.fileInput {
+  font-size: 16px;
+}
+
+.sampleUploadInfo {
+  font-size: 13px;
+  color: #888;
 } 
