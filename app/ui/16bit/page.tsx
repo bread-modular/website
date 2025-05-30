@@ -7,7 +7,9 @@ import Terminal from "./components/Terminal";
 import AppSampler from "./components/AppSampler";
 
 export interface AppSamplerState {
-  
+  fx1: string;
+  fx2: string;
+  fx3: string;
 }
 
 const PicoWebSerial = () => {
@@ -175,7 +177,9 @@ const PicoWebSerial = () => {
           onKeySelect={handleKeyPress}
           uploadSample={handleUploadSample}
           appState={{
-            
+            fx1: "delay",  
+            fx2: "metalverb",
+            fx3: "noop",
           }}
         />
       )}

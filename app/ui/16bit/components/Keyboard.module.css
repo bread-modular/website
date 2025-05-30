@@ -84,6 +84,10 @@
   background: #45a049;
 }
 
+.whiteKey .keyLabel {
+  color: #666;
+}
+
 .blackKeysContainer {
   position: absolute;
   top: 0;
@@ -129,16 +133,6 @@
   background: #45a049;
 }
 
-.keyLabel {
-  font-size: 12px;
-  font-weight: bold;
-  pointer-events: none;
-}
-
-.whiteKey .keyLabel {
-  color: #666;
-}
-
 .blackKey .keyLabel {
   color: white;
 }
@@ -146,6 +140,12 @@
 .whiteKey.selected .keyLabel,
 .blackKey.selected .keyLabel {
   color: white;
+}
+
+.keyLabel {
+  font-size: 12px;
+  font-weight: bold;
+  pointer-events: none;
 }
 
 .disabled {
@@ -156,30 +156,4 @@
 .disabled:hover {
   transform: none !important;
   background: inherit !important;
-}
-
-.groupLabelsContainer {
-  display: flex;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.groupLabel {
-  padding: 5px 0;
-  text-align: center;
-  font-weight: bold;
-  font-size: 14px;
-  border-radius: 4px;
-  color: white;
-}
-
-.groupA {
-  background-color: #6366f1;
-  width: 42.85%; /* 3/7 of the keyboard width (C to E) */
-  margin-right: 1px;
-}
-
-.groupB {
-  background-color: #8b5cf6;
-  width: 57.15%; /* 4/7 of the keyboard width (F to B) */
 } 

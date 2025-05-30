@@ -39,58 +39,46 @@ const Keyboard: React.FC<KeyboardProps> = ({
   };
 
   return (
-    <div className={styles.keyboardContainer}>
-      {/* Group labels */}
-      <div className={styles.groupLabelsContainer}>
-        <div className={`${styles.groupLabel} ${styles.groupA}`}>
-          Group A
-        </div>
-        <div className={`${styles.groupLabel} ${styles.groupB}`}>
-          Group B
-        </div>
+    <div className={styles.keyboard}>
+      {/* Group background boxes */}
+      <div className={styles.groupBackgrounds}>
+        <div className={styles.groupABackground}></div>
+        <div className={styles.groupBBackground}></div>
       </div>
       
-      <div className={styles.keyboard}>
-        {/* Group background boxes */}
-        <div className={styles.groupBackgrounds}>
-          <div className={styles.groupABackground}></div>
-          <div className={styles.groupBBackground}></div>
-        </div>
-        
-        {/* White keys */}
-        <div className={styles.whiteKeysContainer}>
-          {whiteKeys.map((key) => (
-            <button
-              key={key.index}
-              className={`${styles.whiteKey} ${
-                selectedKey === key.index ? styles.selected : ""
-              } ${disabled ? styles.disabled : ""}`}
-              onClick={() => handleKeyClick(key.index)}
-              disabled={disabled}
-              title={key.note}
-            >
-              <span className={styles.keyLabel}>{key.note}</span>
-            </button>
-          ))}
-        </div>
+      {/* White keys */}
+      <div className={styles.whiteKeysContainer}>
+        {whiteKeys.map((key) => (
+          <button
+            key={key.index}
+            className={`${styles.whiteKey} ${
+              selectedKey === key.index ? styles.selected : ""
+            } ${disabled ? styles.disabled : ""}`}
+            onClick={() => handleKeyClick(key.index)}
+            disabled={disabled}
+            title={key.note}
+          >
+            <span className={styles.keyLabel}>{key.note}</span>
+          </button>
+        ))}
+      </div>
 
-        {/* Black keys */}
-        <div className={styles.blackKeysContainer}>
-          {blackKeys.map((key) => (
-            <button
-              key={key.index}
-              className={`${styles.blackKey} ${
-                selectedKey === key.index ? styles.selected : ""
-              } ${disabled ? styles.disabled : ""}`}
-              onClick={() => handleKeyClick(key.index)}
-              disabled={disabled}
-              style={{ left: `${key.position * (100 / 7)}%` }}
-              title={key.note}
-            >
-              <span className={styles.keyLabel}>{key.note}</span>
-            </button>
-          ))}
-        </div>
+      {/* Black keys */}
+      <div className={styles.blackKeysContainer}>
+        {blackKeys.map((key) => (
+          <button
+            key={key.index}
+            className={`${styles.blackKey} ${
+              selectedKey === key.index ? styles.selected : ""
+            } ${disabled ? styles.disabled : ""}`}
+            onClick={() => handleKeyClick(key.index)}
+            disabled={disabled}
+            style={{ left: `${key.position * (100 / 7)}%` }}
+            title={key.note}
+          >
+            <span className={styles.keyLabel}>{key.note}</span>
+          </button>
+        ))}
       </div>
     </div>
   );

@@ -2,18 +2,21 @@
 import React, { useState } from "react";
 import styles from "./AppSampler.module.css";
 import Keyboard from "./Keyboard";
+import SampleFX from "./SampleFX";
 import { AppSamplerState } from "../page";
 
 interface AppSamplerProps {
   appState: AppSamplerState;
   onKeySelect: (key: number) => void;
   uploadSample: (key: number, file: File) => Promise<void>;
+  onFxChange?: (fxIndex: string, fxValue: string) => Promise<void>;
 }
 
 const AppSampler: React.FC<AppSamplerProps> = ({
-  appState,
+  appState, 
   uploadSample,
-  onKeySelect
+  onKeySelect,
+  onFxChange
 }) => {
 
   const [selectedKey, setSelectedKey] = useState<number | undefined>(undefined);
@@ -43,6 +46,12 @@ const AppSampler: React.FC<AppSamplerProps> = ({
       console.error('Error uploading sample:', error);
     } finally {
       setUploadingSample(false);
+    }
+  };
+
+  const handleFxChange = async (fxIndex: string, fxValue: string) => {
+    if (onFxChange) {
+      await onFxChange(fxIndex, fxValue);
     }
   };
 
@@ -83,14 +92,30 @@ const AppSampler: React.FC<AppSamplerProps> = ({
   };
 
   return (
-    <div className={styles.sampleUploadContainer}>
-      <h2 className={styles.sampleUploadTitle}>Upload Sample</h2>
-      <Keyboard 
-        selectedKey={selectedKey}
-        onKeyPress={handleKeySelect}
+    <div className={styles.sampleContainer}>
+      <div className={styles.sampleSection}>
+        <h2 className={styles.sampleUploadTitle}>Upload Sample</h2>
+        <div className={styles.groupLabelsContainer}>
+          <div className={`${styles.groupLabel} ${styles.groupA}`}>
+            Group A
+          </div>
+          <div className={`${styles.groupLabel} ${styles.groupB}`}>
+            Group B
+          </div>
+        </div>
+        <Keyboard 
+          selectedKey={selectedKey}
+          onKeyPress={handleKeySelect}
+        />
+        {renderUploadControls()}
+        
+      </div>
+      <SampleFX
+        fx1={appState.fx1}
+        fx2={appState.fx2}
+        fx3={appState.fx3}
+        onFxChange={handleFxChange}
       />
-      {renderUploadControls()}
-      
     </div>
   );
 };

@@ -1,9 +1,13 @@
-.sampleUploadContainer {
+.sampleContainer {
   margin-top: 32px;
   padding: 16px;
   border: 1px solid #eee;
   border-radius: 8px;
   background: #fcfcfc;
+}
+
+.sampleSection {
+  margin: 20px 0; 
 }
 
 .sampleUploadTitle {
@@ -41,7 +45,34 @@
   cursor: pointer;
   transition: background 0.2s;
 }
+
 .uploadButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+} 
+
+.groupLabelsContainer {
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.groupLabel {
+  padding: 5px 0;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  border-radius: 4px;
+  color: white;
+}
+
+.groupA {
+  background-color: #6366f1;
+  width: 42.85%; /* 3/7 of the keyboard width (C to E) */
+  margin-right: 1px;
+}
+
+.groupB {
+  background-color: #8b5cf6;
+  width: 57.15%; /* 4/7 of the keyboard width (F to B) */
 } 
