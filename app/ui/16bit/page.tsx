@@ -5,6 +5,7 @@ import { WebSerialManager, MessageType, MessageObj } from "@/app/lib/webserial";
 import Header from "./components/Header";
 import Terminal from "./components/Terminal";
 import AppSampler from "./components/AppSampler";
+import Keyboard from "./components/Keyboard";
 
 const PicoWebSerial = () => {
   const [connected, setConnected] = useState(false);
@@ -17,6 +18,7 @@ const PicoWebSerial = () => {
   const [uploading, setUploading] = useState(false);
   const [selectedApp, setSelectedApp] = useState("");
   const [switchingApp, setSwitchingApp] = useState(false);
+  const [selectedKey, setSelectedKey] = useState<number | undefined>(undefined);
   
   const serialManagerRef = useRef<WebSerialManager | null>(null);
 
@@ -137,6 +139,19 @@ const PicoWebSerial = () => {
     }
   };
 
+  const handleKeyPress = async (keyIndex: number) => {
+    setSelectedKey(keyIndex);
+    
+    // Send key press command via serial
+    if (serialManagerRef.current && connected) {
+      try {
+        await serialManagerRef.current.sendMessage(`key ${keyIndex}`);
+      } catch (error) {
+        console.error("Error sending key press:", error);
+      }
+    }
+  };
+
   if (unsupported) {
     return (
       <div className={styles.container}>
@@ -177,6 +192,12 @@ const PicoWebSerial = () => {
             uploading={uploading}
         />
       )}
+
+      <Keyboard 
+        selectedKey={selectedKey}
+        onKeyPress={handleKeyPress}
+        disabled={!connected}
+      />
 
       <Terminal 
         messages={messages}
