@@ -71,7 +71,7 @@ const AppSampler: React.FC<AppSamplerProps> = ({
     if (selectedKey === 0) {
       return <div>
         The sample at "C" is the default sample.<br/>
-        it's not possible to upload a new one.
+        It's not possible to upload a new one.
       </div>;
     }
 
@@ -116,15 +116,64 @@ const AppSampler: React.FC<AppSamplerProps> = ({
           onKeyPress={handleKeySelect}
         />
         {renderUploadControls()}
-        
       </div>
-      <SampleFX
-        fx1={appState.fx1}
-        fx2={appState.fx2}
-        fx3={appState.fx3}
-        onFxChange={handleFxChange}
-        loading={settingFx}
-      />
+      <div className={styles.sampleSection}>
+        <h2 className={styles.sampleSubTitle}>Filter</h2>
+        <div className={styles.groupLabelsContainer}>
+          <div className={`${styles.groupLabel} ${styles.groupA}`}>
+            Group A
+          </div>
+          <div className={`${styles.groupLabel} ${styles.groupB}`}>
+            Group B
+          </div>
+        </div>
+        <div className={styles.filterInfoContainer}>
+          <div className={styles.filterInfoGroupA}>
+            <div>CV1: Highpass</div>
+            <div>CV2: Lowpass</div>
+          </div>
+          <div className={styles.filterInfoGroupB}>
+            Bypass the filter
+          </div>
+        </div>
+      </div>
+      <div className={styles.sampleSection}>
+        <h2 className={styles.sampleSubTitle}>FX</h2>
+        <div className={styles.groupLabelsContainer}>
+          <div className={`${styles.groupLabel} ${styles.groupA}`}>
+            Group A
+          </div>
+          <div className={`${styles.groupLabel} ${styles.groupB}`}>
+            Group B
+          </div>
+        </div>
+        <SampleFX
+          fx1={appState.fx1}
+          fx2={appState.fx2}
+          fx3={appState.fx3}
+          onFxChange={handleFxChange}
+          loading={settingFx}
+        />
+      </div>
+      <div className={styles.sampleSection}>
+        <h2 className={styles.sampleSubTitle}>Output</h2>
+        <div className={styles.groupLabelsContainer}>
+          <div className={`${styles.groupLabel} ${styles.groupA}`}>
+            Group A
+          </div>
+          <div className={`${styles.groupLabel} ${styles.groupB}`}>
+            Group B
+          </div>
+        </div>
+        <div className={styles.filterInfoContainer}>
+          <div className={styles.filterInfoGroupA}>
+            A1 & A2
+          </div>
+          <div className={styles.filterInfoGroupB}>
+            A1 & A2
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

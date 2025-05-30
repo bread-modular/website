@@ -34,12 +34,12 @@
 }
 
 .groupB {
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  background: linear-gradient(135deg, #ea580c, #c2410c);
   width: 57.15%; /* 4/7 of the keyboard width (F to B) */
 }
 
 .fxSlotsContainer {
-  margin-top: 24px;
+  
 }
 
 .fxGroupContainer {
@@ -83,7 +83,7 @@
 }
 
 .fxSlotGroupB {
-  border-left: 3px solid #8b5cf6;
+  border-left: 3px solid #ea580c;
 }
 
 .fxLabel {

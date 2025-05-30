@@ -51,16 +51,6 @@ const SampleFX: React.FC<SampleFXProps> = ({
         </div>
       )}
       
-      <h2 className={styles.sampleUploadTitle}>Plugable FX</h2>
-      <div className={styles.groupLabelsContainer}>
-        <div className={`${styles.groupLabel} ${styles.groupA}`}>
-          Group A
-        </div>
-        <div className={`${styles.groupLabel} ${styles.groupB}`}>
-          Group B
-        </div>
-      </div>
-      
       <div className={styles.fxSlotsContainer}>
         <div className={styles.fxGroupContainer}>
           <div className={styles.fxGroupA}>

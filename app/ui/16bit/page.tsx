@@ -207,7 +207,7 @@ const PicoWebSerial = () => {
           <div className={styles.section}>
             <h2 className={styles.sectionHeader}>App: Sampler</h2>
             <p className={styles.sectionDescription}>
-              A 12 voice sampler which is ideal for drums. It has two groups of samples and three FX slots.
+              A 12-voice sampler that is ideal for drums. It features two groups of samples and three FX slots.
             </p>
             <AppSampler 
               onKeySelect={handleKeyPress}
