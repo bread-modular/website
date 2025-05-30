@@ -102,7 +102,7 @@ const AppSampler: React.FC<AppSamplerProps> = ({
   return (
     <div className={styles.sampleContainer}>
       <div className={styles.sampleSection}>
-        <h2 className={styles.sampleUploadTitle}>Upload Sample</h2>
+        <h2 className={styles.sampleSubTitle}>Samples</h2>
         <div className={styles.groupLabelsContainer}>
           <div className={`${styles.groupLabel} ${styles.groupA}`}>
             Group A

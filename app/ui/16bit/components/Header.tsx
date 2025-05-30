@@ -45,7 +45,6 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <h1 className={styles.header}>16Bit Configurator</h1>
       {unsupported ? (
         <div className={styles.unsupportedMessage}>
           Web Serial API is not supported in this browser.<br />
@@ -53,48 +52,48 @@ const Header: React.FC<HeaderProps> = ({
         </div>
       ) : (
         <div className={styles.buttonRow}>
-          {connected && (
-            <button
-              className={styles.button}
-              onClick={disconnectFromPico}  
-            >
-              Disconnect
-            </button>
-          )}
-          {!connected && (
-            <button
-              className={styles.button}
-              onClick={connectToPico}
-            >
-              Connect
-            </button>
-          )}    
+          <div className={styles.connectionSection}>
+            {connected && (
+              <button
+                className={styles.button}
+                onClick={disconnectFromPico}  
+              >
+                Disconnect
+              </button>
+            )}
+            {!connected && (
+              <button
+                className={styles.button}
+                onClick={connectToPico}
+              >
+                Connect
+              </button>
+            )}    
+          </div>
           
           {connected && (
-            <>
-              <div className={styles.appSwitcher}>
-                <label htmlFor="app-select" className={styles.appSwitcherLabel}>
-                  Current App:
-                </label>
-                <select
-                  id="app-select"
-                  value={selectedApp}
-                  onChange={handleAppChange}
-                  disabled={switchingApp}
-                  className={styles.appSelect}
-                >
-                  <option value="">Select an app...</option>
-                  {appOptions.map((app) => (
-                    <option key={app.value} value={app.value}>
-                      {app.label}
-                    </option>
-                  ))}
-                </select>
-                {switchingApp && (
-                  <span className={styles.switchingIndicator}>Switching...</span>
-                )}
-              </div>
-            </>
+            <div className={styles.appSwitcher}>
+              <label htmlFor="app-select" className={styles.appSwitcherLabel}>
+                Current App:
+              </label>
+              <select
+                id="app-select"
+                value={selectedApp}
+                onChange={handleAppChange}
+                disabled={switchingApp}
+                className={styles.appSelect}
+              >
+                <option value="">Select an app...</option>
+                {appOptions.map((app) => (
+                  <option key={app.value} value={app.value}>
+                    {app.label}
+                  </option>
+                ))}
+              </select>
+              {switchingApp && (
+                <span className={styles.switchingIndicator}>Switching...</span>
+              )}
+            </div>
           )}
         </div>
       )}

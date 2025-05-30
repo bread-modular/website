@@ -1,41 +1,45 @@
 .sampleFxContainer {
-  margin-top: 20px;
+  margin-top: 0;
   position: relative;
 }
 
 .sampleUploadTitle {
-  font-size: 18px;
-  margin-bottom: 12px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--foreground, #171717);
 }
 
 .groupLabelsContainer {
   display: flex;
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
+  gap: 2px;
 }
 
 .groupLabel {
-  padding: 5px 0;
+  padding: 8px 0;
   text-align: center;
-  font-weight: bold;
-  font-size: 14px;
-  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 6px;
   color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .groupA {
-  background-color: #6366f1;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
   width: 42.85%; /* 3/7 of the keyboard width (C to E) */
-  margin-right: 1px;
+  margin-right: 2px;
 }
 
 .groupB {
-  background-color: #8b5cf6;
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
   width: 57.15%; /* 4/7 of the keyboard width (F to B) */
 }
 
 .fxSlotsContainer {
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
 .fxGroupContainer {
@@ -47,58 +51,66 @@
 .fxGroupA {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   width: 42.85%; /* Match Group A width */
 }
 
 .fxGroupB {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   width: 57.15%; /* Match Group B width */
 }
 
 .fxSlot {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 12px;
-  border-radius: 6px;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid var(--neutral-200, #e5e7eb);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+}
+
+.fxSlot:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .fxSlotGroupA {
-  background-color: rgba(99, 102, 241, 0.1);
+  border-left: 3px solid #6366f1;
 }
 
 .fxSlotGroupB {
-  background-color: rgba(139, 92, 246, 0.1);
+  border-left: 3px solid #8b5cf6;
 }
 
 .fxLabel {
-  font-weight: bold;
-  font-size: 14px;
-  color: #374151;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--foreground, #171717);
   margin-bottom: 4px;
 }
 
 .fxSelect {
   padding: 8px 12px;
-  font-size: 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  background-color: white;
+  font-size: 0.875rem;
+  border: 1px solid var(--neutral-200, #e5e7eb);
+  border-radius: 6px;
+  background: white;
   cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.2s ease;
 }
 
 .fxSelect:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-.fxSelect:hover {
-  border-color: #9ca3af;
+.fxSelect:hover:not(:disabled) {
+  border-color: var(--neutral-600, #525252);
 }
 
 .fxSelect:disabled {
@@ -117,20 +129,22 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
-  border-radius: 6px;
+  border-radius: 8px;
+  backdrop-filter: blur(2px);
 }
 
 .loadingText {
-  font-size: 16px;
-  font-weight: bold;
-  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--foreground, #171717);
   padding: 12px 24px;
   background-color: white;
-  border-radius: 6px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--neutral-200, #e5e7eb);
 } 

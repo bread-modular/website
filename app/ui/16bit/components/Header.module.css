@@ -1,92 +1,153 @@
 .header {
-  font-size: 24px;
-  margin-bottom: 16px;
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 24px;
+  color: var(--foreground, #171717);
+}
+
+.connectionSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .buttonRow {
-  margin-bottom: 10px;
   display: flex;
   align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .button {
-  margin-right: 8px;
-  padding: 6px 16px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  background: #f5f5f5;
-  border-radius: 4px;
+  padding: 12px 24px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid var(--neutral-200, #e5e7eb);
+  background: white;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
+
+.button:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: var(--neutral-600, #525252);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
 .button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  background: #f5f5f5;
 }
 
 .status {
-  font-size: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: #f0f9ff;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
 }
 
 .appInfoContainer {
-  margin-left: 16px;
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border: 1px solid var(--neutral-200, #e5e7eb);
+  border-radius: 8px;
+  margin-top: 16px;
 }
 
 .loadingAppInfo {
-  color: #666;
+  color: var(--neutral-600, #525252);
+  font-size: 0.875rem;
 }
 
 .appInfoText {
-  color: #0070f3;
-  font-weight: bold;
+  color: #059669;
+  font-weight: 600;
+  font-size: 0.875rem;
 }
 
 .noAppInfo {
-  color: #888;
+  color: var(--neutral-600, #525252);
+  font-size: 0.875rem;
 }
 
 .refreshButton {
-  margin-left: 8px;
   background: none;
   border: none;
   cursor: pointer;
-  color: #666;
-  font-size: 12px;
+  color: var(--neutral-600, #525252);
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.refreshButton:hover {
+  background: #f3f4f6;
 }
 
 .unsupportedMessage {
-  color: #b00;
-  font-weight: bold;
-  font-size: 18px;
+  color: #dc2626;
+  font-weight: 600;
+  font-size: 1.125rem;
   margin-top: 32px;
+  padding: 24px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  text-align: center;
 }
 
 .browserHighlight {
-  color: #0070f3;
+  color: #2563eb;
+  font-weight: 600;
 }
 
 .appSwitcher {
   display: flex;
   align-items: center;
-  margin-left: 16px;
-  gap: 8px;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-left: auto;
 }
 
 .appSwitcherLabel {
-  font-size: 14px;
-  color: #333;
+  font-size: 0.875rem;
+  color: var(--foreground, #171717);
   font-weight: 500;
 }
 
 .appSelect {
-  padding: 4px 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  border: 1px solid var(--neutral-200, #e5e7eb);
+  border-radius: 6px;
   background: white;
   cursor: pointer;
   min-width: 140px;
+  transition: border-color 0.2s ease;
+}
+
+.appSelect:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .appSelect:disabled {
@@ -96,7 +157,10 @@
 }
 
 .switchingIndicator {
-  font-size: 12px;
-  color: #666;
+  font-size: 0.75rem;
+  color: var(--neutral-600, #525252);
   font-style: italic;
+  padding: 4px 8px;
+  background: #fef3c7;
+  border-radius: 4px;
 } 

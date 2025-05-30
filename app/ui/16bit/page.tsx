@@ -186,27 +186,41 @@ const PicoWebSerial = () => {
 
   return (
     <div className={styles.container}>
-      <Header 
-        connected={connected}
-        status={status}
-        connectToPico={connectToPico}
-        disconnectFromPico={disconnectFromPico}
-        selectedApp={selectedApp}
-        switchingApp={switchingApp}
-        onAppChange={handleAppChange}
-      />
-      
-      {selectedApp === "sampler" && (
-        <AppSampler 
-          onKeySelect={handleKeyPress}
-          uploadSample={handleUploadSample}
-          appState={samplerState}
-          onFxChange={handleFxChange}
-        />
-      )}
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>16bit UI</h1>
+      </div>
 
-      {/* Empty space at the end of the page */}
-      <div style={{ height: '100px' }}></div>
+      <div className={styles.mainContent}>
+        <div className={styles.section}>
+          <Header 
+            connected={connected}
+            status={status}
+            connectToPico={connectToPico}
+            disconnectFromPico={disconnectFromPico}
+            selectedApp={selectedApp}
+            switchingApp={switchingApp}
+            onAppChange={handleAppChange}
+          />
+        </div>
+        
+        {selectedApp === "sampler" && (
+          <div className={styles.section}>
+            <h2 className={styles.sectionHeader}>App: Sampler</h2>
+            <p className={styles.sectionDescription}>
+              A 12 voice sampler which is ideal for drums. It has two groups of samples and three FX slots.
+            </p>
+            <AppSampler 
+              onKeySelect={handleKeyPress}
+              uploadSample={handleUploadSample}
+              appState={samplerState}
+              onFxChange={handleFxChange}
+            />
+          </div>
+        )}
+
+        {/* Empty space at the end of the page */}
+        <div style={{ height: '100px' }}></div>
+      </div>
 
       <Terminal 
         messages={messages}
