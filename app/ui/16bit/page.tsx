@@ -20,6 +20,11 @@ const PicoWebSerial = () => {
   const [unsupported, setUnsupported] = useState(false);
   const [selectedApp, setSelectedApp] = useState("");
   const [switchingApp, setSwitchingApp] = useState(false);
+  const [samplerState, setSamplerState] = useState<AppSamplerState>({
+    fx1: "noop",
+    fx2: "noop",
+    fx3: "noop",
+  });
   
   const serialManagerRef = useRef<WebSerialManager | null>(null);
 
@@ -54,6 +59,14 @@ const PicoWebSerial = () => {
       // Send a command that will return a value in the format ::val::value::val::
       const result = await serialManagerRef.current.sendAndReceive("get-app");
       setSelectedApp(result || "");
+
+      if (result === "sampler") {
+        // Get the FX values
+        const fx1 = await serialManagerRef.current.sendAndReceive("get-fx1") || "noop";
+        const fx2 = await serialManagerRef.current.sendAndReceive("get-fx2") || "noop";
+        const fx3 = await serialManagerRef.current.sendAndReceive("get-fx3") || "noop";
+        setSamplerState({ fx1, fx2, fx3 });
+      }
 
     } catch (error) {
       setSelectedApp("");
@@ -125,6 +138,17 @@ const PicoWebSerial = () => {
     await serialManagerRef.current.sendSampleFile(key, file);
   };
 
+  const handleFxChange = async (fxIndex: string, fxValue: string) => {
+    if (!serialManagerRef.current) return;
+    try {
+      console.log(`set-${fxIndex} ${fxValue}`);
+      await serialManagerRef.current.sendMessage(`set-${fxIndex} ${fxValue}`);
+      await getAppInfo();
+    } catch (error) {
+      console.error("Error changing FX:", error);
+    }
+  };
+
   const disconnectFromPico = async () => {
     if (serialManagerRef.current) {      
       // Reload the page after disconnection
@@ -176,11 +200,8 @@ const PicoWebSerial = () => {
         <AppSampler 
           onKeySelect={handleKeyPress}
           uploadSample={handleUploadSample}
-          appState={{
-            fx1: "delay",  
-            fx2: "metalverb",
-            fx3: "noop",
-          }}
+          appState={samplerState}
+          onFxChange={handleFxChange}
         />
       )}
 

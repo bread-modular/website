@@ -22,6 +22,7 @@ const AppSampler: React.FC<AppSamplerProps> = ({
   const [selectedKey, setSelectedKey] = useState<number | undefined>(undefined);
   const [uploadingSample, setUploadingSample] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [settingFx, setSettingFx] = useState<boolean>(false);
 
   const handleKeySelect = (key: number) => {
     setSelectedKey(key);
@@ -51,7 +52,14 @@ const AppSampler: React.FC<AppSamplerProps> = ({
 
   const handleFxChange = async (fxIndex: string, fxValue: string) => {
     if (onFxChange) {
-      await onFxChange(fxIndex, fxValue);
+      try {
+        setSettingFx(true);
+        await onFxChange(fxIndex, fxValue);
+      } catch (error) {
+        console.error("Error changing FX:", error);
+      } finally {
+        setSettingFx(false);
+      }
     }
   };
 
@@ -115,6 +123,7 @@ const AppSampler: React.FC<AppSamplerProps> = ({
         fx2={appState.fx2}
         fx3={appState.fx3}
         onFxChange={handleFxChange}
+        loading={settingFx}
       />
     </div>
   );

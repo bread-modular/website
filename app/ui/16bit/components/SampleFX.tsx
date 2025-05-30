@@ -7,13 +7,15 @@ interface SampleFXProps {
   fx2: string;
   fx3: string;
   onFxChange: (fxIndex: string, fxValue: string) => Promise<void>;
+  loading: boolean;
 }
 
 const SampleFX: React.FC<SampleFXProps> = ({
   fx1,
   fx2,
   fx3,
-  onFxChange
+  onFxChange,
+  loading
 }) => {
   const fxOptions = ['noop', 'delay', 'metalverb'];
 
@@ -29,6 +31,7 @@ const SampleFX: React.FC<SampleFXProps> = ({
           className={styles.fxSelect}
           value={fxValue}
           onChange={(e) => handleFXChange(fxIndex, e.target.value)}
+          disabled={loading}
         >
           {fxOptions.map((fx) => (
             <option key={fx} value={fx}>
@@ -41,7 +44,13 @@ const SampleFX: React.FC<SampleFXProps> = ({
   };
 
   return (
-    <div className={styles.sampleFxContainer}>
+    <div className={`${styles.sampleFxContainer} ${loading ? styles.loadingContainer : ''}`}>
+      {loading && (
+        <div className={styles.loadingOverlay}>
+          <div className={styles.loadingText}>Loading...</div>
+        </div>
+      )}
+      
       <h2 className={styles.sampleUploadTitle}>Plugable FX</h2>
       <div className={styles.groupLabelsContainer}>
         <div className={`${styles.groupLabel} ${styles.groupA}`}>
@@ -55,11 +64,11 @@ const SampleFX: React.FC<SampleFXProps> = ({
       <div className={styles.fxSlotsContainer}>
         <div className={styles.fxGroupContainer}>
           <div className={styles.fxGroupA}>
-            {renderFXSelector('fx1', fx1, 'FX1', 'fxSlotGroupA')}
-            {renderFXSelector('fx2', fx2, 'FX2', 'fxSlotGroupA')}
+            {renderFXSelector('fx1', fx1, 'FX1 (MCC: A)', 'fxSlotGroupA')}
+            {renderFXSelector('fx2', fx2, 'FX2 (MCC: B)', 'fxSlotGroupA')}
           </div>
           <div className={styles.fxGroupB}>
-            {renderFXSelector('fx3', fx3, 'FX3', 'fxSlotGroupB')}
+            {renderFXSelector('fx3', fx3, 'FX3 (MCC: C)', 'fxSlotGroupB')}
           </div>
         </div>
       </div>
