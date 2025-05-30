@@ -46,20 +46,21 @@ const AppSampler: React.FC<AppSamplerProps> = ({
     }
   };
 
-  return (
-    <div className={styles.sampleUploadContainer}>
-      <Keyboard 
-        selectedKey={selectedKey}
-        onKeyPress={handleKeySelect}
-      />
-      {!selectedKey && (
+  const renderUploadControls = () => {
+    if (selectedKey === undefined) {
+      return <div>Select a key to upload a sample.</div>;
+    }
+
+    if (selectedKey === 0) {
+      return <div>
+        The sample at "C" is the default sample.<br/>
+        it's not possible to upload a new one.
+      </div>;
+    }
+
+    return (
+      <div>
         <div>
-          Select a key to upload a sample.
-        </div>
-      )}
-      {selectedKey && (
-        <div>
-          <h2 className={styles.sampleUploadTitle}>Upload Sample</h2>
           <div className={styles.sampleUploadControls}>
           <input
             type="file"
@@ -77,7 +78,18 @@ const AppSampler: React.FC<AppSamplerProps> = ({
             </button>
           </div>
         </div>
-      )}
+      </div>
+    )
+  };
+
+  return (
+    <div className={styles.sampleUploadContainer}>
+      <h2 className={styles.sampleUploadTitle}>Upload Sample</h2>
+      <Keyboard 
+        selectedKey={selectedKey}
+        onKeyPress={handleKeySelect}
+      />
+      {renderUploadControls()}
       
     </div>
   );

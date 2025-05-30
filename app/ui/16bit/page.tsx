@@ -18,7 +18,6 @@ const PicoWebSerial = () => {
   const [unsupported, setUnsupported] = useState(false);
   const [selectedApp, setSelectedApp] = useState("");
   const [switchingApp, setSwitchingApp] = useState(false);
-  const [selectedKey, setSelectedKey] = useState<number | undefined>(undefined);
   
   const serialManagerRef = useRef<WebSerialManager | null>(null);
 
@@ -131,15 +130,13 @@ const PicoWebSerial = () => {
     }
   };
 
-  const handleKeyPress = async (keyIndex: number) => {
-    setSelectedKey(keyIndex);
-    
+  const handleKeyPress = async (key: number) => {    
     // Send key press command via serial
     if (serialManagerRef.current && connected) {
       try {
-        await serialManagerRef.current.sendMessage(`key ${keyIndex}`);
+        await serialManagerRef.current.sendMessage(`play-sample ${key}`);
       } catch (error) {
-        console.error("Error sending key press:", error);
+        console.error("Error sending keyboard press:", error);
       }
     }
   };
@@ -178,7 +175,7 @@ const PicoWebSerial = () => {
           onKeySelect={handleKeyPress}
           uploadSample={handleUploadSample}
           appState={{
-            selectedKey: selectedKey,
+            
           }}
         />
       )}
