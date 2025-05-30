@@ -23,6 +23,7 @@ const Terminal: React.FC<TerminalProps> = ({
   // Initialize with default values to match server-side rendering
   const [isMinimized, setIsMinimized] = useState(true);
   const [terminalHeight, setTerminalHeight] = useState(150);
+  const [isRightSide, setIsRightSide] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const resizeStartY = useRef(0);
@@ -33,6 +34,7 @@ const Terminal: React.FC<TerminalProps> = ({
     if (typeof window !== 'undefined') {
       const savedMinimized = localStorage.getItem('terminal-minimized');
       const savedHeight = localStorage.getItem('terminal-height');
+      const savedPosition = localStorage.getItem('terminal-right-side');
       
       if (savedMinimized !== null) {
         setIsMinimized(JSON.parse(savedMinimized));
@@ -40,6 +42,10 @@ const Terminal: React.FC<TerminalProps> = ({
       
       if (savedHeight !== null) {
         setTerminalHeight(parseInt(savedHeight, 10));
+      }
+      
+      if (savedPosition !== null) {
+        setIsRightSide(JSON.parse(savedPosition));
       }
       
       setIsHydrated(true);
@@ -60,6 +66,13 @@ const Terminal: React.FC<TerminalProps> = ({
     }
   }, [terminalHeight, isHydrated]);
 
+  // Save position to localStorage whenever it changes (only after hydration)
+  useEffect(() => {
+    if (isHydrated && typeof window !== 'undefined') {
+      localStorage.setItem('terminal-right-side', JSON.stringify(isRightSide));
+    }
+  }, [isRightSide, isHydrated]);
+
   // Auto-scroll to bottom when messages change
   useEffect(() => {
     if (messageContainerRef.current && !isMinimized) {
@@ -71,10 +84,19 @@ const Terminal: React.FC<TerminalProps> = ({
     setIsMinimized(!isMinimized);
   };
 
+  const handlePositionToggle = () => {
+    setIsRightSide(!isRightSide);
+  };
+
   const handleResizeStart = (e: React.MouseEvent) => {
     setIsResizing(true);
-    resizeStartY.current = e.clientY;
-    resizeStartHeight.current = terminalHeight;
+    if (isRightSide) {
+      resizeStartY.current = e.clientX; // Use X coordinate for horizontal resize
+      resizeStartHeight.current = terminalHeight; // This will be width when right-side
+    } else {
+      resizeStartY.current = e.clientY;
+      resizeStartHeight.current = terminalHeight;
+    }
     e.preventDefault();
   };
 
@@ -82,9 +104,17 @@ const Terminal: React.FC<TerminalProps> = ({
     const handleMouseMove = (e: MouseEvent) => {
       if (!isResizing) return;
       
-      const deltaY = resizeStartY.current - e.clientY;
-      const newHeight = Math.max(80, Math.min(400, resizeStartHeight.current + deltaY));
-      setTerminalHeight(newHeight);
+      if (isRightSide) {
+        // Horizontal resizing for right-side terminal
+        const deltaX = resizeStartY.current - e.clientX;
+        const newWidth = Math.max(200, Math.min(600, resizeStartHeight.current + deltaX));
+        setTerminalHeight(newWidth); // Store width in terminalHeight state
+      } else {
+        // Vertical resizing for bottom terminal
+        const deltaY = resizeStartY.current - e.clientY;
+        const newHeight = Math.max(80, Math.min(400, resizeStartHeight.current + deltaY));
+        setTerminalHeight(newHeight);
+      }
     };
 
     const handleMouseUp = () => {
@@ -100,12 +130,15 @@ const Terminal: React.FC<TerminalProps> = ({
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isResizing]);
+  }, [isResizing, isRightSide]);
 
   return (
     <div 
-      className={`${styles.terminalContainer} ${isMinimized ? styles.minimized : ''}`}
-      style={{ height: isMinimized ? 'auto' : `${terminalHeight}px` }}
+      className={`${styles.terminalContainer} ${isMinimized ? styles.minimized : ''} ${isRightSide ? styles.rightSide : ''}`}
+      style={{ 
+        height: isMinimized ? 'auto' : (isRightSide ? '100vh' : `${terminalHeight}px`),
+        width: isRightSide && !isMinimized ? `${terminalHeight}px` : undefined
+      }}
     >
       {/* Resize handle */}
       {!isMinimized && (
@@ -115,16 +148,25 @@ const Terminal: React.FC<TerminalProps> = ({
         />
       )}
       
-      {/* Header with minimize/maximize button */}
+      {/* Header with minimize/maximize and position buttons */}
       <div className={styles.terminalHeader}>
         <span className={styles.terminalTitle}>Terminal</span>
-        <button 
-          className={styles.minimizeButton}
-          onClick={handleMinimizeToggle}
-          title={isMinimized ? "Maximize" : "Minimize"}
-        >
-          {isMinimized ? "▲" : "▼"}
-        </button>
+        <div className={styles.headerButtons}>
+          <button 
+            className={styles.positionButton}
+            onClick={handlePositionToggle}
+            title={isRightSide ? "Move to bottom" : "Move to right side"}
+          >
+            {isRightSide ? "⬇" : "➡"}
+          </button>
+          <button 
+            className={styles.minimizeButton}
+            onClick={handleMinimizeToggle}
+            title={isMinimized ? "Maximize" : "Minimize"}
+          >
+            {isMinimized ? "▲" : "▼"}
+          </button>
+        </div>
       </div>
 
       {!isMinimized && (
@@ -132,7 +174,11 @@ const Terminal: React.FC<TerminalProps> = ({
           <div 
             className={styles.messageContainer} 
             ref={messageContainerRef}
-            style={{ height: `${terminalHeight - 80}px` }} // Subtract header and input row height
+            style={{ 
+              height: isRightSide 
+                ? 'calc(100vh - 80px)' // Full height minus header and input
+                : `${terminalHeight - 80}px` // Subtract header and input row height
+            }}
           >
             {messages.map((msg, i) => (
               <div
