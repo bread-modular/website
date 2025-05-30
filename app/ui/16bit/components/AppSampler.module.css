@@ -32,7 +32,7 @@
   color: #888;
 }
 
-.sendButton {
+.uploadButton {
   padding: 6px 16px;
   font-size: 1rem;
   border: 1px solid #ccc;
@@ -41,7 +41,7 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-.sendButton:disabled {
+.uploadButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 } 

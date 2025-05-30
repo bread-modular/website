@@ -5,7 +5,10 @@ import { WebSerialManager, MessageType, MessageObj } from "@/app/lib/webserial";
 import Header from "./components/Header";
 import Terminal from "./components/Terminal";
 import AppSampler from "./components/AppSampler";
-import Keyboard from "./components/Keyboard";
+
+export interface AppSamplerState {
+  
+}
 
 const PicoWebSerial = () => {
   const [connected, setConnected] = useState(false);
@@ -13,9 +16,6 @@ const PicoWebSerial = () => {
   const [messages, setMessages] = useState<MessageObj[]>([]);
   const [input, setInput] = useState("");
   const [unsupported, setUnsupported] = useState(false);
-  const [sampleId, setSampleId] = useState(0);
-  const [sampleFile, setSampleFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
   const [selectedApp, setSelectedApp] = useState("");
   const [switchingApp, setSwitchingApp] = useState(false);
   const [selectedKey, setSelectedKey] = useState<number | undefined>(undefined);
@@ -119,17 +119,9 @@ const PicoWebSerial = () => {
     }
   };
 
-  const sendSample = async () => {
-    if (!serialManagerRef.current || !sampleFile || uploading) return;
-    setUploading(true);
-    try {
-      await serialManagerRef.current.sendSampleFile(sampleId, sampleFile);
-      setSampleFile(null);
-    } catch (error) {
-      // Error is already handled in the WebSerialManager
-    } finally {
-      setUploading(false);
-    }
+  const handleUploadSample = async (key: number, file: File) => {
+    if (!serialManagerRef.current) return;
+    await serialManagerRef.current.sendSampleFile(key, file);
   };
 
   const disconnectFromPico = async () => {
@@ -183,21 +175,13 @@ const PicoWebSerial = () => {
       
       {selectedApp === "sampler" && (
         <AppSampler 
-          sampleId={sampleId}
-          setSampleId={setSampleId}
-          sampleFile={sampleFile}
-          setSampleFile={setSampleFile}
-          sendSample={sendSample}
-            connected={connected}
-            uploading={uploading}
+          onKeySelect={handleKeyPress}
+          uploadSample={handleUploadSample}
+          appState={{
+            selectedKey: selectedKey,
+          }}
         />
       )}
-
-      <Keyboard 
-        selectedKey={selectedKey}
-        onKeyPress={handleKeyPress}
-        disabled={!connected}
-      />
 
       <Terminal 
         messages={messages}

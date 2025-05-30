@@ -1,61 +1,84 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import styles from "./AppSampler.module.css";
+import Keyboard from "./Keyboard";
+import { AppSamplerState } from "../page";
 
 interface AppSamplerProps {
-  sampleId: number;
-  setSampleId: (id: number) => void;
-  sampleFile: File | null;
-  setSampleFile: (file: File | null) => void;
-  sendSample: () => Promise<void>;
-  connected: boolean;
-  uploading: boolean;
+  appState: AppSamplerState;
+  onKeySelect: (key: number) => void;
+  uploadSample: (key: number, file: File) => Promise<void>;
 }
 
 const AppSampler: React.FC<AppSamplerProps> = ({
-  sampleId,
-  setSampleId,
-  sampleFile,
-  setSampleFile,
-  sendSample,
-  connected,
-  uploading,
+  appState,
+  uploadSample,
+  onKeySelect
 }) => {
+
+  const [selectedKey, setSelectedKey] = useState<number | undefined>(undefined);
+  const [uploadingSample, setUploadingSample] = useState<boolean>(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleKeySelect = (key: number) => {
+    setSelectedKey(key);
+    onKeySelect(key);
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setSelectedFile(file);
+  };
+
+  const handleUploadSample = async () => {
+    if (!selectedKey || !selectedFile) {
+      return;
+    }
+
+    try {
+      setUploadingSample(true);
+      await uploadSample(selectedKey, selectedFile);
+      setUploadingSample(false);
+    } catch (error) {
+      console.error('Error uploading sample:', error);
+    } finally {
+      setUploadingSample(false);
+    }
+  };
+
   return (
     <div className={styles.sampleUploadContainer}>
-      <h2 className={styles.sampleUploadTitle}>Upload Sample</h2>
-      <div className={styles.sampleUploadControls}>
-        <label htmlFor="sample-id">Sample Number:</label>
-        <select
-          id="sample-id"
-          value={sampleId}
-          onChange={e => setSampleId(Number(e.target.value))}
-          disabled={!connected || uploading}
-          className={styles.sampleSelect}
-        >
-          {Array.from({ length: 12 }, (_, i) => (
-            <option key={i} value={i}>{i}</option>
-          ))}
-        </select>
-        <input
-          type="file"
-          accept="audio/*,.raw"
-          onChange={e => setSampleFile(e.target.files?.[0] || null)}
-          disabled={!connected || uploading}
-          className={styles.fileInput}
-        />
-        <button
-          className={styles.sendButton}
-          onClick={sendSample}
-          disabled={!connected || !sampleFile || uploading}
-        >
-          {uploading ? 'Uploading...' : 'Send Sample'}
-        </button>
-      </div>
-      <div className={styles.sampleUploadInfo}>
-        Select a sample number (0-11) and upload a file to send to the Pico.<br />
-        The file will be sent as binary after issuing the <code>write-sample</code> command.
-      </div>
+      <Keyboard 
+        selectedKey={selectedKey}
+        onKeyPress={handleKeySelect}
+      />
+      {!selectedKey && (
+        <div>
+          Select a key to upload a sample.
+        </div>
+      )}
+      {selectedKey && (
+        <div>
+          <h2 className={styles.sampleUploadTitle}>Upload Sample</h2>
+          <div className={styles.sampleUploadControls}>
+          <input
+            type="file"
+            accept="audio/*,.raw"
+            onChange={handleFileSelect}
+            disabled={uploadingSample}
+            className={styles.fileInput}
+          />
+          <button
+            className={styles.uploadButton}
+            onClick={handleUploadSample}
+            disabled={!selectedFile || uploadingSample}
+          >
+            {uploadingSample ? 'Uploading...' : 'Upload'}
+            </button>
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 };
