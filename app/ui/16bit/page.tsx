@@ -205,6 +205,9 @@ const PicoWebSerial = () => {
         />
       )}
 
+      {/* Empty space at the end of the page */}
+      <div style={{ height: '100px' }}></div>
+
       <Terminal 
         messages={messages}
         input={input}

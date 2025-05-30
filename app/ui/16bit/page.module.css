@@ -1,5 +1,9 @@
 .container {
   max-width: 480px;
-  margin: 40px auto;
+  margin: 40px auto 100px auto;
   font-family: sans-serif;
 } 
+
+.terminalSpacing {
+  margin-top: 100px;
+}
