@@ -23,6 +23,7 @@ const AppSampler: React.FC<AppSamplerProps> = ({
   const [uploadingSample, setUploadingSample] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [settingFx, setSettingFx] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleKeySelect = (key: number) => {
     setSelectedKey(key);
@@ -39,12 +40,15 @@ const AppSampler: React.FC<AppSamplerProps> = ({
       return;
     }
 
+    setError(null);
+
     try {
       setUploadingSample(true);
       await uploadSample(selectedKey, selectedFile);
       setUploadingSample(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading sample:', error);
+      setError(error.message || "Unknown error");
     } finally {
       setUploadingSample(false);
     }
@@ -79,20 +83,24 @@ const AppSampler: React.FC<AppSamplerProps> = ({
       <div>
         <div>
           <div className={styles.sampleUploadControls}>
-          <input
-            type="file"
-            accept="audio/*,.raw"
-            onChange={handleFileSelect}
-            disabled={uploadingSample}
-            className={styles.fileInput}
-          />
-          <button
-            className={styles.uploadButton}
-            onClick={handleUploadSample}
-            disabled={!selectedFile || uploadingSample}
-          >
-            {uploadingSample ? 'Uploading...' : 'Upload'}
+            <div>
+              Select a 16bit mono wavefile with 44.1kHz sample rate.
+            </div>
+            <input
+              type="file"
+              accept="audio/*,.raw"
+              onChange={handleFileSelect}
+              disabled={uploadingSample}
+              className={styles.fileInput}
+            />
+            <button
+              className={styles.uploadButton}
+              onClick={handleUploadSample}
+              disabled={!selectedFile || uploadingSample}
+            >
+              {uploadingSample ? 'Uploading...' : 'Upload'}
             </button>
+            {error && <div className={styles.errorBox}>{error}</div>}
           </div>
         </div>
       </div>

@@ -189,12 +189,79 @@ export class WebSerialManager {
     return (~crc) >>> 0;
   }
 
+  // Validate WAV file format (44.1kHz, 16-bit, mono, PCM)
+  private async validateWavFile(file: File): Promise<{ valid: boolean; error?: string }> {
+    try {
+      // Read the first 44 bytes (standard WAV header size)
+      const headerBuffer = await file.slice(0, 44).arrayBuffer();
+      const header = new Uint8Array(headerBuffer);
+
+      // Check if file is large enough to contain a WAV header
+      if (header.length < 44) {
+        return { valid: false, error: "File too small to be a valid WAV file" };
+      }
+
+      // Check RIFF header (bytes 0-3)
+      const riffHeader = String.fromCharCode(header[0], header[1], header[2], header[3]);
+      if (riffHeader !== "RIFF") {
+        return { valid: false, error: "Not a valid WAV file (missing RIFF header)" };
+      }
+
+      // Check WAVE format (bytes 8-11)
+      const waveFormat = String.fromCharCode(header[8], header[9], header[10], header[11]);
+      if (waveFormat !== "WAVE") {
+        return { valid: false, error: "Not a valid WAV file (missing WAVE format)" };
+      }
+
+      // Check fmt chunk (bytes 12-15)
+      const fmtChunk = String.fromCharCode(header[12], header[13], header[14], header[15]);
+      if (fmtChunk !== "fmt ") {
+        return { valid: false, error: "Invalid WAV file (missing fmt chunk)" };
+      }
+
+      // Check audio format (bytes 20-21) - should be 1 for PCM
+      const audioFormat = header[20] | (header[21] << 8);
+      if (audioFormat !== 1) {
+        return { valid: false, error: "Only PCM format is supported (found format: " + audioFormat + ")" };
+      }
+
+      // Check number of channels (bytes 22-23) - should be 1 for mono
+      const numChannels = header[22] | (header[23] << 8);
+      if (numChannels !== 1) {
+        return { valid: false, error: "Only mono audio is supported (found " + numChannels + " channels)" };
+      }
+
+      // Check sample rate (bytes 24-27) - should be 44100
+      const sampleRate = header[24] | (header[25] << 8) | (header[26] << 16) | (header[27] << 24);
+      if (sampleRate !== 44100) {
+        return { valid: false, error: "Only 44.1kHz sample rate is supported (found " + sampleRate + " Hz)" };
+      }
+
+      // Check bits per sample (bytes 34-35) - should be 16
+      const bitsPerSample = header[34] | (header[35] << 8);
+      if (bitsPerSample !== 16) {
+        return { valid: false, error: "Only 16-bit audio is supported (found " + bitsPerSample + " bits)" };
+      }
+
+      return { valid: true };
+    } catch (error: any) {
+      return { valid: false, error: "Error reading WAV file: " + (error?.message || String(error)) };
+    }
+  }
+
   async sendSampleFile(sampleId: number, sampleFile: File): Promise<void> {
     if (!this.port || !this.writer) {
       throw new Error("Not connected to device");
     }
 
     try {
+      // Validate WAV file format
+      const validationResult = await this.validateWavFile(sampleFile);
+      if (!validationResult.valid) {
+        // this.onMessageCallback(validationResult.error || "Unknown error", "error");
+        throw new Error(validationResult.error || "Unknown error");
+      }
+
       // Convert file to binary
       const arrayBuffer = await sampleFile.arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);

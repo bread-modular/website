@@ -12,6 +12,13 @@
   padding-bottom: 24px;
 }
 
+.errorBox {
+  color: red;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
 .sampleSubTitle {
   font-size: 1.35rem;
   font-weight: 600;
