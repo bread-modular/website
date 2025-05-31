@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import Terminal from "./components/Terminal";
 import AppSampler from "./components/AppSampler";
 import AppPolysynth from "./components/AppPolysynth";
+import Image from "next/image";
 
 export interface AppSamplerState {
   fx1: string;
@@ -209,6 +210,14 @@ const PicoWebSerial = () => {
   return (
     <div className={styles.container}>
       <div className={styles.pageHeader}>
+        <Image
+          src="/images/bread-modular-logo.png"
+          alt="BreadModular Logo"
+          className={styles.logo}
+          width={256}
+          height={64}
+          priority
+        />
         <h1 className={styles.pageTitle}>16bit UI</h1>
       </div>
 
