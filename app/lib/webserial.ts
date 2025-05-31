@@ -1,9 +1,29 @@
+declare global {
+  interface Navigator {
+    serial?: {
+      requestPort: () => Promise<SerialPort>;
+    };
+  }
+  interface Window {
+    TextDecoderStream: typeof TextDecoderStream;
+    TextEncoderStream: typeof TextEncoderStream;
+  }
+}
+
 // Minimal SerialPort type for TS
 export interface SerialPort {
-  open(options: any): Promise<void>;
+  open(options: SerialPortOpenOptions): Promise<void>;
   close(): Promise<void>;
-  readable: ReadableStream<any>;
-  writable: WritableStream<any>;
+  readable: ReadableStream<Uint8Array>;
+  writable: WritableStream<Uint8Array>;
+}
+
+export interface SerialPortOpenOptions {
+  baudRate: number;
+  dataBits: number;
+  stopBits: number;
+  parity: string;
+  flowControl: string;
 }
 
 export type MessageType = "received" | "sent" | "status" | "error";
@@ -34,8 +54,10 @@ export class WebSerialManager {
 
   async connect(): Promise<void> {
     try {
-      // @ts-ignore
-      const port = await (navigator as any).serial.requestPort();
+      if (!navigator.serial) {
+        throw new Error("Web Serial API not supported");
+      }
+      const port = await navigator.serial.requestPort();
       await port.open({
         baudRate: 115200,
         dataBits: 8,
@@ -47,8 +69,9 @@ export class WebSerialManager {
       this.onMessageCallback("Connected", "status");
       this.setupCommunication();
       this.readLoop();
-    } catch (error: any) {
-      this.onMessageCallback("Connection error: " + (error?.message || String(error)), "error");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.onMessageCallback("Connection error: " + errorMessage, "error");
       throw error;
     }
   }
@@ -57,16 +80,16 @@ export class WebSerialManager {
     if (!this.port) return;
     this.abortController = new AbortController();
 
-    const textDecoder = new (window as any).TextDecoderStream();
-    this.readPipePromise = this.port.readable.pipeTo(
+    const textDecoder = new window.TextDecoderStream();
+    this.readPipePromise = (this.port.readable as ReadableStream).pipeTo(
       textDecoder.writable,
       { signal: this.abortController.signal }
     );
     this.reader = textDecoder.readable.getReader();
 
-    const textEncoder = new (window as any).TextEncoderStream();
+    const textEncoder = new window.TextEncoderStream();
     this.writer = textEncoder.writable.getWriter();
-    this.writePipePromise = textEncoder.readable.pipeTo(
+    this.writePipePromise = (textEncoder.readable as ReadableStream).pipeTo(
       this.port.writable,
       { signal: this.abortController.signal }
     );
@@ -81,8 +104,9 @@ export class WebSerialManager {
         if (done) break;
         if (value) this.onMessageCallback(value, "received");
       }
-    } catch (error: any) {
-      this.onMessageCallback("Read error: " + (error?.message || String(error)), "error");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.onMessageCallback("Read error: " + errorMessage, "error");
       if (this.port) this.disconnect();
     } finally {
       this.readLoopActive = false;
@@ -94,8 +118,9 @@ export class WebSerialManager {
     try {
       await this.writer.write(message + "\n");
       this.onMessageCallback("Sent: " + message, "sent");
-    } catch (error: any) {
-      this.onMessageCallback("Send error: " + (error?.message || String(error)), "error");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.onMessageCallback("Send error: " + errorMessage, "error");
       throw error;
     }
   }
@@ -113,7 +138,7 @@ export class WebSerialManager {
 
     let timeoutId = 0;
     let responseBuffer = "";
-    let originalCallback = this.onMessageCallback;
+    const originalCallback = this.onMessageCallback;
     
     try {
       // Create a promise that will resolve when we get a matching response or timeout
@@ -159,11 +184,12 @@ export class WebSerialManager {
       this.onMessageCallback = originalCallback;
       
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Restore the original callback in case of error
       this.onMessageCallback = originalCallback;
       
-      this.onMessageCallback("Send error: " + (error?.message || String(error)), "error");
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.onMessageCallback("Send error: " + errorMessage, "error");
       return null;
     }
   }
@@ -244,8 +270,9 @@ export class WebSerialManager {
       }
 
       return { valid: true };
-    } catch (error: any) {
-      return { valid: false, error: "Error reading WAV file: " + (error?.message || String(error)) };
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      return { valid: false, error: "Error reading WAV file: " + errorMessage };
     }
   }
 
@@ -304,8 +331,9 @@ export class WebSerialManager {
       // Send end marker
       await this.writer.write("\n");
       this.onMessageCallback(`Sample file sent (${arrayBuffer.byteLength} bytes as ${length} base64 chars)`, "sent");
-    } catch (error: any) {
-      this.onMessageCallback("Sample upload error: " + (error?.message || String(error)), "error");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.onMessageCallback("Sample upload error: " + errorMessage, "error");
       throw error;
     }
   }
@@ -316,37 +344,33 @@ export class WebSerialManager {
     if (this.reader) {
       try {
         await this.reader.cancel();
-      } catch (e) {
-        // Ignore errors during cleanup
+      } finally {
+        this.reader = null;
       }
-      this.reader = null;
     }
     
     if (this.writer) {
       try {
         await this.writer.close();
-      } catch (e) {
-        // Ignore errors during cleanup
+      } finally {
+        this.writer = null;
       }
-      this.writer = null;
     }
     
     if (this.abortController) {
       try {
         this.abortController.abort();
-      } catch (e) {
-        // Ignore errors during cleanup
+      } finally {
+        this.abortController = null;
       }
-      this.abortController = null;
     }
     
     if (this.port) {
       try {
         await this.port.close();
-      } catch (e) {
-        // Ignore errors during cleanup
+      } finally {
+        this.port = null;
       }
-      this.port = null;
     }
     
     this.readPipePromise = null;

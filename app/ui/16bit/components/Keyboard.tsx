@@ -22,8 +22,6 @@ interface BlackKey {
   whiteKeyIndex: number;
 }
 
-type Key = WhiteKey | BlackKey;
-
 const Keyboard: React.FC<KeyboardProps> = ({
   selectedKey,
   onKeyPress,

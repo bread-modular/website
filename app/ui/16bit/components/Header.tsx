@@ -15,7 +15,6 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({
   connected,
-  status,
   connectToPico,
   disconnectFromPico,
   selectedApp,

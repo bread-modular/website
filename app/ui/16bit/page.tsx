@@ -130,7 +130,7 @@ const PicoWebSerial = () => {
       };
       
       setTimeout(waitForConnection, 500);
-    } catch (error: any) {
+    } catch {
       setConnected(false);
       setStatus("Disconnected");
     }
@@ -140,9 +140,8 @@ const PicoWebSerial = () => {
     if (!input.trim() || !serialManagerRef.current) return;
     try {
       await serialManagerRef.current.sendMessage(input);
+    } finally {
       setInput("");
-    } catch (error) {
-      // Error is already handled in the WebSerialManager
     }
   };
 

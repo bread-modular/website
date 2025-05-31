@@ -46,9 +46,9 @@ const AppSampler: React.FC<AppSamplerProps> = ({
       setUploadingSample(true);
       await uploadSample(selectedKey, selectedFile);
       setUploadingSample(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error uploading sample:', error);
-      setError(error.message || "Unknown error");
+      setError(error instanceof Error ? error.message : "Unknown error");
     } finally {
       setUploadingSample(false);
     }
@@ -74,8 +74,8 @@ const AppSampler: React.FC<AppSamplerProps> = ({
 
     if (selectedKey === 0) {
       return <div>
-        The sample at "C" is the default sample.<br/>
-        It's not possible to upload a new one.
+        {'The sample at "C" is the default sample.'}<br/>
+        {'It\'s not possible to upload a new one.'}
       </div>;
     }
 
