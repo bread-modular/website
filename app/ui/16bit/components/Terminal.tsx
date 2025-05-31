@@ -21,9 +21,9 @@ const Terminal: React.FC<TerminalProps> = ({
   const messageContainerRef = useRef<HTMLDivElement>(null);
   
   // Initialize with default values to match server-side rendering
-  const [isMinimized, setIsMinimized] = useState(true);
-  const [terminalHeight, setTerminalHeight] = useState(150);
-  const [isRightSide, setIsRightSide] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [terminalHeight, setTerminalHeight] = useState(300);
+  const [isRightSide, setIsRightSide] = useState(true);
   const [isResizing, setIsResizing] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const resizeStartY = useRef(0);
@@ -44,6 +44,7 @@ const Terminal: React.FC<TerminalProps> = ({
         setTerminalHeight(parseInt(savedHeight, 10));
       }
       
+      // Only load saved position if it exists, otherwise keep default (left/bottom)
       if (savedPosition !== null) {
         setIsRightSide(JSON.parse(savedPosition));
       }
@@ -132,6 +133,10 @@ const Terminal: React.FC<TerminalProps> = ({
     };
   }, [isResizing, isRightSide]);
 
+  if (!isHydrated) {
+    return null;
+  }
+
   return (
     <div 
       className={`${styles.terminalContainer} ${isMinimized ? styles.minimized : ''} ${isRightSide ? styles.rightSide : ''}`}
@@ -150,7 +155,7 @@ const Terminal: React.FC<TerminalProps> = ({
       
       {/* Header with minimize/maximize and position buttons */}
       <div className={styles.terminalHeader}>
-        <span className={styles.terminalTitle}>Terminal</span>
+        <span className={styles.terminalTitle}>16bit Console</span>
         <div className={styles.headerButtons}>
           <button 
             className={styles.positionButton}
