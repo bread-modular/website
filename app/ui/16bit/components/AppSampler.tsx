@@ -74,8 +74,7 @@ const AppSampler: React.FC<AppSamplerProps> = ({
 
     if (selectedKey === 0) {
       return <div>
-        {'The sample at "C" is the default sample.'}<br/>
-        {'It\'s not possible to upload a new one.'}
+        {'The sample at "C" is the default sample. It\'s not possible to upload a new one.'}
       </div>;
     }
 
