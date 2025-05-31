@@ -13,6 +13,10 @@ export interface AppSamplerState {
   fx3: string;
 }
 
+export interface AppPolysynthState {
+  waveform: string;
+}
+
 const PicoWebSerial = () => {
   const [connected, setConnected] = useState(false);
   const [status, setStatus] = useState("Disconnected");
@@ -25,6 +29,9 @@ const PicoWebSerial = () => {
     fx1: "noop",
     fx2: "noop",
     fx3: "noop",
+  });
+  const [polysynthState, setPolysynthState] = useState<AppPolysynthState>({
+    waveform: "saw",
   });
   
   const serialManagerRef = useRef<WebSerialManager | null>(null);
@@ -67,6 +74,11 @@ const PicoWebSerial = () => {
         const fx2 = await serialManagerRef.current.sendAndReceive("get-fx2") || "noop";
         const fx3 = await serialManagerRef.current.sendAndReceive("get-fx3") || "noop";
         setSamplerState({ fx1, fx2, fx3 });
+      }
+
+      if (result === "polysynth") {
+        const waveform = await serialManagerRef.current.sendAndReceive("get-waveform") || "saw";
+        setPolysynthState({ waveform });
       }
 
     } catch (error) {
@@ -150,6 +162,16 @@ const PicoWebSerial = () => {
     }
   };
 
+  const handleWaveformChange = async (waveform: string) => {
+    if (!serialManagerRef.current) return;
+    try {
+      await serialManagerRef.current.sendMessage(`set-waveform ${waveform}`);
+      await getAppInfo();
+    } catch (error) {
+      console.error("Error changing waveform:", error); 
+    }
+  };
+
   const disconnectFromPico = async () => {
     if (serialManagerRef.current) {      
       // Reload the page after disconnection
@@ -225,7 +247,10 @@ const PicoWebSerial = () => {
             <p className={styles.sectionDescription}>
               A 9-voice polyphonic synthesizer with a ladder filter.
             </p>
-            <AppPolysynth />
+            <AppPolysynth 
+              appState={polysynthState}
+              onWaveformChange={handleWaveformChange}
+            />
           </div>
         )}
 

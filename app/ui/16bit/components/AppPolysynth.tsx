@@ -1,19 +1,43 @@
 "use client";
 import React from "react";
 import styles from "./AppPolysynth.module.css";
+import { AppPolysynthState } from "../page";
 
 interface AppPolysynthProps {
-  // No props needed for now
+  appState: AppPolysynthState;
+  onWaveformChange?: (waveform: string) => void;
 }
 
-const AppPolysynth: React.FC<AppPolysynthProps> = () => {
+const AppPolysynth: React.FC<AppPolysynthProps> = ({ 
+  appState, 
+  onWaveformChange 
+}) => {
+
+  const handleWaveformChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedWaveform = event.target.value;
+    onWaveformChange?.(selectedWaveform);
+  };
 
   return (
     <div className={styles.polysynthContainer}>
       <div className={styles.polysynthSection}>
         <h2 className={styles.polysynthSubTitle}>Voices</h2>
         <div className={styles.voicesInfo}>
-          <div className={styles.voiceCount}>9 voices</div>
+          <div className={styles.waveformSelector}>
+            <label htmlFor="waveform-select" className={styles.waveformLabel}>
+              Waveform:
+            </label>
+            <select
+              id="waveform-select"
+              value={appState.waveform}
+              onChange={handleWaveformChange}
+              className={styles.waveformDropdown}
+            >
+              <option value="saw">Saw</option>
+              <option value="square">Square</option>
+              <option value="tri">Triangle</option>
+            </select>
+          </div>
           <div className={styles.cvLabels}>
             <div className={styles.cvLabel}>CV1: Amp Attack</div>
             <div className={styles.cvLabel}>CV2: Amp Release</div>
