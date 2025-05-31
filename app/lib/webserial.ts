@@ -44,7 +44,7 @@ export class WebSerialManager {
         flowControl: "none",
       });
       this.port = port;
-      this.onMessageCallback("Connected to Pico device", "status");
+      this.onMessageCallback("Connected", "status");
       this.setupCommunication();
       this.readLoop();
     } catch (error: any) {

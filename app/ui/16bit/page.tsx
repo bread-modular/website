@@ -5,6 +5,7 @@ import { WebSerialManager, MessageType, MessageObj } from "@/app/lib/webserial";
 import Header from "./components/Header";
 import Terminal from "./components/Terminal";
 import AppSampler from "./components/AppSampler";
+import AppPolysynth from "./components/AppPolysynth";
 
 export interface AppSamplerState {
   fx1: string;
@@ -215,6 +216,25 @@ const PicoWebSerial = () => {
               appState={samplerState}
               onFxChange={handleFxChange}
             />
+          </div>
+        )}
+
+        {selectedApp === "polysynth" && (
+          <div className={styles.section}>
+            <h2 className={styles.sectionHeader}>App: PolySynth</h2>
+            <p className={styles.sectionDescription}>
+              A 9-voice polyphonic synthesizer with a ladder filter.
+            </p>
+            <AppPolysynth />
+          </div>
+        )}
+
+        {selectedApp === "noop" && (
+          <div className={styles.section}>
+            <h2 className={styles.sectionHeader}>App: Noop</h2>
+            <p className={styles.sectionDescription}>
+              This is just an empty app. It does literally nothing.
+            </p>
           </div>
         )}
 
