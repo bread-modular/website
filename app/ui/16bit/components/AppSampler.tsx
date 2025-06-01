@@ -157,11 +157,22 @@ const AppSampler: React.FC<AppSamplerProps> = ({
         </div>
         <div className={styles.filterInfoContainer}>
           <div className={styles.filterInfoGroupA}>
-            <div>CV1: Highpass</div>
-            <div>CV2: Lowpass</div>
+            <div className={styles.filterKnobsContainer}>
+              <div className={styles.filterKnob}>
+                <div className={styles.filterKnobCircle}></div>
+                <div className={styles.filterKnobLabel}>CV1: Highpass</div>
+              </div>
+              <div className={styles.filterKnob}>
+                <div className={styles.filterKnobCircle}></div>
+                <div className={styles.filterKnobLabel}>CV2: Lowpass</div>
+              </div>
+            </div>
           </div>
           <div className={styles.filterInfoGroupB}>
-            Bypass the filter
+            <div className={styles.bypassIndicator}>
+              <div className={styles.crossIcon}>✕</div>
+              <div className={styles.bypassText}>Bypass the Filter</div>
+            </div>
           </div>
         </div>
       </div>

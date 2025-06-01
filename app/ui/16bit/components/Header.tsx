@@ -51,25 +51,6 @@ const Header: React.FC<HeaderProps> = ({
         </div>
       ) : (
         <div className={styles.buttonRow}>
-          <div className={styles.connectionSection}>
-            {connected && (
-              <button
-                className={styles.button}
-                onClick={disconnectFromPico}  
-              >
-                Disconnect
-              </button>
-            )}
-            {!connected && (
-              <button
-                className={styles.button}
-                onClick={connectToPico}
-              >
-                Connect
-              </button>
-            )}    
-          </div>
-          
           {connected && (
             <div className={styles.appSwitcher}>
               <label htmlFor="app-select" className={styles.appSwitcherLabel}>
@@ -94,6 +75,25 @@ const Header: React.FC<HeaderProps> = ({
               )}
             </div>
           )}
+
+          <div className={styles.connectionSection}>
+            {connected && (
+              <button
+                className={styles.button}
+                onClick={disconnectFromPico}  
+              >
+                Disconnect
+              </button>
+            )}
+            {!connected && (
+              <button
+                className={styles.button}
+                onClick={connectToPico}
+              >
+                Connect
+              </button>
+            )}    
+          </div>
         </div>
       )}
     </>

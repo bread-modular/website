@@ -12,6 +12,10 @@
   padding-bottom: 24px;
 }
 
+.sampleSection:last-child {
+  border-bottom: none;
+}
+
 .errorBox {
   color: red;
   font-size: 0.875rem;
@@ -147,4 +151,83 @@
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   color: var(--neutral-600, #525252);
   text-align: center;
+}
+
+.filterKnobsContainer {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+}
+
+.filterKnob {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterKnobCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #6c757d;
+  position: relative;
+  cursor: pointer;
+  transition: none;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.filterKnobCircle::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 16px;
+  background: #495057;
+  border-radius: 1px;
+}
+
+.filterKnobLabel {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #495057;
+  text-align: center;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  max-width: 80px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.bypassIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 100%;
+}
+
+.crossIcon {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #dc2626;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  line-height: 1;
+}
+
+.bypassText {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #495057;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 } 

@@ -12,6 +12,10 @@
   padding-bottom: 24px;
 }
 
+.polysynthSection:last-child {
+  border-bottom: none;
+}
+
 .polysynthSubTitle {
   font-size: 1.35rem;
   font-weight: 600;

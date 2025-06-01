@@ -34,10 +34,10 @@
 
 .bankLabel {
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 500;
   color: #495057;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .bankBoxes {
@@ -70,10 +70,10 @@
 
 .mccTitle {
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 800;
   color: #495057;
   text-align: center;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   text-transform: uppercase;
   background: none;
   -webkit-background-clip: unset;
@@ -90,7 +90,7 @@
 
 .ccToggle {
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 500;
   color: #495057;
   background: #ffffff;
   border: 1px solid #6c757d;
@@ -100,7 +100,7 @@
   transition: none;
   box-shadow: none;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .ccToggle:hover {
@@ -189,13 +189,15 @@
   hyphens: auto;
   text-transform: uppercase;
   letter-spacing: 0.3px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
 .ccValue {
-  font-size: 0.6rem;
-  font-weight: 600;
+  font-size: 0.65rem;
+  font-weight: 500;
   color: #6c757d;
   text-align: center;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   text-transform: uppercase;
+  letter-spacing: 0.2px;
 } 
