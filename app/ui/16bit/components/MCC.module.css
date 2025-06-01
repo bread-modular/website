@@ -1,0 +1,157 @@
+.mccBox {
+  padding: 20px;
+  background: rgba(167, 199, 255, 0.12);
+  border: 1px solid rgba(167, 199, 255, 0.3);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mccHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.bankSelector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bankLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.bankBoxes {
+  display: flex;
+  gap: 2px;
+}
+
+.bankBox {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 1px solid rgba(167, 199, 255, 0.4);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #6c757d;
+  transition: all 0.2s ease;
+}
+
+.bankBoxActive {
+  background: #4a5568;
+  border-color: #4a5568;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 2px 4px rgba(74, 85, 104, 0.3);
+}
+
+.mccTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--foreground, #171717);
+  text-align: center;
+}
+
+.mccFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.ccToggle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6c757d;
+  background: rgba(108, 117, 125, 0.1);
+  border: 1px solid rgba(108, 117, 125, 0.3);
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ccToggle:hover {
+  background: rgba(108, 117, 125, 0.2);
+  transform: translateY(-1px);
+}
+
+.ccToggle:active {
+  transform: translateY(0);
+}
+
+.knobsContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  justify-items: center;
+}
+
+.knob {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.knobCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 2px solid #a7c7ff;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(167, 199, 255, 0.3);
+}
+
+.knobCircle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(167, 199, 255, 0.4);
+}
+
+.knobCircle::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 12px;
+  background: #6c757d;
+  border-radius: 2px;
+}
+
+.knobLabelContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.knobLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--foreground, #171717);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.ccValue {
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: #6c757d;
+  text-align: center;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+} 

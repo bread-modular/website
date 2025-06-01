@@ -122,4 +122,73 @@
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   color: var(--foreground, #171717);
   text-align: center;
+}
+
+.filterBox {
+  padding: 20px;
+  background: rgba(167, 199, 255, 0.12);
+  border: 1px solid rgba(167, 199, 255, 0.3);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filterTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--foreground, #171717);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.knobsContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  justify-items: center;
+}
+
+.knob {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.knobCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 2px solid #a7c7ff;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(167, 199, 255, 0.3);
+}
+
+.knobCircle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(167, 199, 255, 0.4);
+}
+
+.knobCircle::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 12px;
+  background: #6c757d;
+  border-radius: 2px;
+}
+
+.knobLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--foreground, #171717);
+  text-align: center;
+  line-height: 1.2;
 } 

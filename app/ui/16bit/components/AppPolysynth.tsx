@@ -2,6 +2,7 @@
 import React from "react";
 import styles from "./AppPolysynth.module.css";
 import { AppPolysynthState } from "../page";
+import MCC from "./MCC";
 
 interface AppPolysynthProps {
   appState: AppPolysynthState;
@@ -46,10 +47,12 @@ const AppPolysynth: React.FC<AppPolysynthProps> = ({
       </div>
 
       <div className={styles.polysynthSection}>
-        <h2 className={styles.polysynthSubTitle}>Ladder Filter (MCC A)</h2>
-        <div className={styles.filterInfo}>
-          <div className={styles.filterLabel}>Ladder Filter controlled by MCC A</div>
-        </div>
+        <h2 className={styles.polysynthSubTitle}>Ladder Filter</h2>
+        <MCC 
+          knobs={["Envelope", "Mod Depth", "Resonance", "CutOff"]}
+          bank="A"
+          title="Moog Style Ladder Filter"
+        />
       </div>
 
       <div className={styles.polysynthSection}>
