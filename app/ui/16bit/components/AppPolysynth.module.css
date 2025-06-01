@@ -1,0 +1,198 @@
+.polysynthContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.polysynthSection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  border-bottom: 1px solid #e1dfdf;
+  padding-bottom: 24px;
+}
+
+.polysynthSection:last-child {
+  border-bottom: none;
+}
+
+.polysynthSubTitle {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--foreground, #171717);
+}
+
+.voicesInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.voiceCount {
+  padding: 12px 16px;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  color: var(--foreground, #171717);
+  text-align: center;
+}
+
+.waveformSelector {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 6px;
+}
+
+.waveformLabel {
+  font-size: 0.875rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  color: var(--foreground, #171717);
+  font-weight: 500;
+}
+
+.waveformDropdown {
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  color: var(--foreground, #171717);
+  cursor: pointer;
+  min-width: 100px;
+}
+
+.waveformDropdown:focus {
+  outline: none;
+  border-color: rgba(99, 102, 241, 0.6);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+
+.cvLabels {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.cvLabel {
+  flex: 1;
+  padding: 12px 16px;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  color: var(--foreground, #171717);
+  text-align: center;
+}
+
+.filterInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filterLabel {
+  padding: 12px 16px;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  color: var(--foreground, #171717);
+  text-align: center;
+}
+
+.outputInfo {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.outputLabel {
+  flex: 1;
+  padding: 12px 16px;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  color: var(--foreground, #171717);
+  text-align: center;
+}
+
+.filterBox {
+  padding: 20px;
+  background: rgba(167, 199, 255, 0.12);
+  border: 1px solid rgba(167, 199, 255, 0.3);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filterTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--foreground, #171717);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.knobsContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  justify-items: center;
+}
+
+.knob {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.knobCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 2px solid #a7c7ff;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(167, 199, 255, 0.3);
+}
+
+.knobCircle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(167, 199, 255, 0.4);
+}
+
+.knobCircle::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 12px;
+  background: #6c757d;
+  border-radius: 2px;
+}
+
+.knobLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--foreground, #171717);
+  text-align: center;
+  line-height: 1.2;
+} 

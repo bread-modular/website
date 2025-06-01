@@ -1,0 +1,233 @@
+.sampleContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.sampleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  border-bottom: 1px solid #e1dfdf;
+  padding-bottom: 24px;
+}
+
+.sampleSection:last-child {
+  border-bottom: none;
+}
+
+.errorBox {
+  color: red;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.sampleSubTitle {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--foreground, #171717);
+}
+
+.sampleUploadControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sampleSelect {
+  font-size: 0.875rem;
+  padding: 8px 12px;
+  border: 1px solid var(--neutral-200, #e5e7eb);
+  border-radius: 6px;
+  background: white;
+}
+
+.fileInput {
+  font-size: 0.875rem;
+  padding: 8px 12px;
+  border: 1px solid var(--neutral-200, #e5e7eb);
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.fileInput:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.sampleUploadInfo {
+  font-size: 0.75rem;
+  color: var(--neutral-600, #525252);
+  margin-top: 8px;
+}
+
+.uploadButton {
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.uploadButton:hover:not(:disabled) {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+}
+
+.uploadButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #9ca3af;
+  border-color: #9ca3af;
+  transform: none;
+} 
+
+.groupLabelsContainer {
+  display: flex;
+  width: 100%;
+  gap: 2px;
+}
+
+.groupLabel {
+  padding: 8px 0;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 6px;
+  color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.groupA {
+  background: linear-gradient(135deg, #a7c7ff 0%, #d1c4e9 100%);
+  width: 50%; /* Equal width - Group A now includes C to F */
+  margin-right: 2px;
+  color: #232323;
+}
+
+.groupB {
+  background: linear-gradient(135deg, #ffd6a5 0%, #ffb7b2 100%);
+  width: 50%; /* Equal width - Group B now includes G to B */
+  color: #232323;
+}
+
+.filterInfoContainer {
+  display: flex;
+  width: 100%;
+  margin-bottom: 16px;
+  gap: 2px;
+}
+
+.filterInfoGroupA {
+  width: 50%; /* Match Group A width */
+  padding: 12px 16px;
+  background: rgba(167, 199, 255, 0.18); /* Light pastel blue background */
+  border: 1px solid rgba(167, 199, 255, 0.35);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  color: var(--foreground, #171717);
+  margin-right: 2px;
+  text-align: center;
+}
+
+.filterInfoGroupB {
+  width: 50%; /* Match Group B width */
+  padding: 12px 16px;
+  background: rgba(255, 214, 165, 0.18); /* Light pastel orange background */
+  border: 1px solid rgba(255, 214, 165, 0.35);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  color: var(--neutral-600, #525252);
+  text-align: center;
+}
+
+.filterKnobsContainer {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+}
+
+.filterKnob {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterKnobCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #6c757d;
+  position: relative;
+  cursor: pointer;
+  transition: none;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.filterKnobCircle::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 16px;
+  background: #495057;
+  border-radius: 1px;
+}
+
+.filterKnobLabel {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #495057;
+  text-align: center;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  max-width: 80px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.bypassIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 100%;
+}
+
+.crossIcon {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #dc2626;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  line-height: 1;
+}
+
+.bypassText {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #495057;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+} 
