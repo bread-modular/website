@@ -83,7 +83,11 @@ const Keyboard: React.FC<KeyboardProps> = ({
           // Calculate position at the boundary between white keys
           // Since CSS has translateX(-50%), we position at the right edge of the white key
           const whiteKeyWidth = 100 / 7; // Each white key takes 1/7 of the width
-          const leftPosition = (key.whiteKeyIndex + 1) * whiteKeyWidth;
+          let leftPosition = (key.whiteKeyIndex + 1) * whiteKeyWidth;
+
+          if (key.index === 6) {
+            leftPosition = 55;
+          }
           
           return (
             <button

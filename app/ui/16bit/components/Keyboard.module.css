@@ -23,19 +23,19 @@
 }
 
 .groupABackground {
-  width: 42.85%; /* 3/7 of the keyboard width (C to E) */
+  width: 50%; /* Equal width - Group A now includes C to F (4 keys) */
   height: calc(100% - 20px);
-  background-color: rgba(99, 102, 241, 0.1); /* Light indigo background */
-  border: 2px solid rgba(99, 102, 241, 0.3);
+  background-color: rgba(167, 199, 255, 0.18); /* Match the pastel blue theme */
+  border: 2px solid rgba(167, 199, 255, 0.35);
   border-radius: 6px;
   margin-right: 2px;
 }
 
 .groupBBackground {
-  width: 57.15%; /* 4/7 of the keyboard width (F to B) */
+  width: 50%; /* Equal width - Group B now includes G to B (3 keys) */
   height: calc(100% - 20px);
-  background-color: rgba(234, 88, 12, 0.1); /* Orangish background */
-  border: 2px solid rgba(234, 88, 12, 0.3);
+  background-color: rgba(255, 214, 165, 0.18); /* Match the pastel orange theme */
+  border: 2px solid rgba(255, 214, 165, 0.35);
   border-radius: 6px;
 }
 
