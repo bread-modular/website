@@ -5,12 +5,33 @@ import Keyboard from "./Keyboard";
 import SampleFX from "./SampleFX";
 import { AppSamplerState } from "../page";
 
-interface AppSamplerProps {
+export interface AppSamplerProps {
   appState: AppSamplerState;
   onKeySelect: (key: number) => void;
   uploadSample: (key: number, file: File) => Promise<void>;
   onFxChange?: (fxIndex: string, fxValue: string) => Promise<void>;
 }
+
+export interface FX {
+  title: string;
+  knobs: string[];
+}
+
+export const FX_LIBRARY: Record<string, FX> = {
+  "noop": {
+    title: "Noop",
+    knobs: ["N/A", "N/A", "N/A", "N/A"]
+  },
+  "delay": {
+    title: "Delay",
+    knobs: ["Beats", "Feedback", "Wet/Dry", "Lowpass Cutoff"]
+  },
+  "metalverb": {
+    title: "MetalVerb",
+    knobs: ["Shakeness", "Decay", "Wet/Dry", "Lowpass Cutoff"]
+  }
+};
+
 
 const AppSampler: React.FC<AppSamplerProps> = ({
   appState, 

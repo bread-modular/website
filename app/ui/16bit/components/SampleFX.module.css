@@ -147,4 +147,44 @@
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border: 1px solid var(--neutral-200, #e5e7eb);
+}
+
+.fxSelectorSimple {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.fxLabelSimple {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--foreground, #171717);
+}
+
+.fxSelectSimple {
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  border: 1px solid var(--neutral-200, #e5e7eb);
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  max-width: 200px;
+}
+
+.fxSelectSimple:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.fxSelectSimple:hover:not(:disabled) {
+  border-color: var(--neutral-600, #525252);
+}
+
+.fxSelectSimple:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #f9fafb;
 } 

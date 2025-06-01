@@ -138,6 +138,8 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
+  min-height: 36px;
+  justify-content: flex-start;
 }
 
 .knobLabel {
@@ -146,6 +148,13 @@
   color: var(--foreground, #171717);
   text-align: center;
   line-height: 1.2;
+  min-height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 80px;
+  word-wrap: break-word;
+  hyphens: auto;
 }
 
 .ccValue {

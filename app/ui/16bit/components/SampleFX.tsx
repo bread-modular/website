@@ -1,6 +1,8 @@
 "use client";
 import React from "react";
 import styles from "./SampleFX.module.css";
+import { FX_LIBRARY, FX } from "./AppSampler";
+import MCC from "./MCC";
 
 interface SampleFXProps {
   fx1: string;
@@ -25,10 +27,10 @@ const SampleFX: React.FC<SampleFXProps> = ({
 
   const renderFXSelector = (fxIndex: string, fxValue: string, label: string, groupClass: string) => {
     return (
-      <div className={`${styles.fxSlot} ${styles[groupClass]}`}>
-        <label className={styles.fxLabel}>{label}</label>
+      <div className={styles.fxSelectorSimple}>
+        <label className={styles.fxLabelSimple}>{label}</label>
         <select
-          className={styles.fxSelect}
+          className={styles.fxSelectSimple}
           value={fxValue}
           onChange={(e) => handleFXChange(fxIndex, e.target.value)}
           disabled={loading}
@@ -43,6 +45,19 @@ const SampleFX: React.FC<SampleFXProps> = ({
     );
   };
 
+  const renderMCCForFX = (fxValue: string, bank: "A" | "B" | "C") => {
+    const fxData = FX_LIBRARY[fxValue];
+    if (!fxData) return null;
+
+    return (
+      <MCC
+        title={fxData.title}
+        knobs={fxData.knobs}
+        bank={bank}
+      />
+    );
+  };
+
   return (
     <div className={`${styles.sampleFxContainer} ${loading ? styles.loadingContainer : ''}`}>
       {loading && (
@@ -54,11 +69,14 @@ const SampleFX: React.FC<SampleFXProps> = ({
       <div className={styles.fxSlotsContainer}>
         <div className={styles.fxGroupContainer}>
           <div className={styles.fxGroupA}>
-            {renderFXSelector('fx1', fx1, 'FX1 (MCC: A)', 'fxSlotGroupA')}
-            {renderFXSelector('fx2', fx2, 'FX2 (MCC: B)', 'fxSlotGroupA')}
+            {renderFXSelector('fx1', fx1, 'FX1', 'fxSlotGroupA')}
+            {renderMCCForFX(fx1, 'A')}
+            {renderFXSelector('fx2', fx2, 'FX2', 'fxSlotGroupA')}
+            {renderMCCForFX(fx2, 'B')}
           </div>
           <div className={styles.fxGroupB}>
-            {renderFXSelector('fx3', fx3, 'FX3 (MCC: C)', 'fxSlotGroupB')}
+            {renderFXSelector('fx3', fx3, 'FX3', 'fxSlotGroupB')}
+            {renderMCCForFX(fx3, 'C')}
           </div>
         </div>
       </div>
