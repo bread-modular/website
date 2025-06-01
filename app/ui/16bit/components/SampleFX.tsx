@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import styles from "./SampleFX.module.css";
-import { FX, FX_LIBRARY } from "../data/fxLibrary";
+import { FX_LIBRARY } from "../data/fxLibrary";
 import MCC from "./MCC";
 
 interface SampleFXProps {
@@ -25,7 +25,7 @@ const SampleFX: React.FC<SampleFXProps> = ({
     await onFxChange(fxIndex, fxValue);
   };
 
-  const renderFXSelector = (fxIndex: string, fxValue: string, label: string, groupClass: string) => {
+  const renderFXSelector = (fxIndex: string, fxValue: string, label: string) => {
     return (
       <div className={styles.fxSelectorSimple}>
         <label className={styles.fxLabelSimple}>{label}</label>
@@ -71,17 +71,17 @@ const SampleFX: React.FC<SampleFXProps> = ({
         <div className={styles.fxGroupContainer}>
           <div className={styles.fxGroupA}>
             <div className={styles.fxUnit}>
-              {renderFXSelector('fx1', fx1, 'FX1', 'fxSlotGroupA')}
+              {renderFXSelector('fx1', fx1, 'FX1')}
               {renderMCCForFX(fx1, 'A')}
             </div>
             <div className={styles.fxUnit}>
-              {renderFXSelector('fx2', fx2, 'FX2', 'fxSlotGroupA')}
+              {renderFXSelector('fx2', fx2, 'FX2')}
               {renderMCCForFX(fx2, 'B')}
             </div>
           </div>
           <div className={styles.fxGroupB}>
             <div className={styles.fxUnit}>
-              {renderFXSelector('fx3', fx3, 'FX3', 'fxSlotGroupB')}
+              {renderFXSelector('fx3', fx3, 'FX3')}
               {renderMCCForFX(fx3, 'C')}
             </div>
           </div>
