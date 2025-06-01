@@ -4,6 +4,7 @@ import styles from "./AppPolysynth.module.css";
 import { AppPolysynthState } from "../page";
 import MCC from "./MCC";
 import CV16Bit from "./CV16Bit";
+import { FX_LIBRARY } from "../data/fxLibrary";
 
 interface AppPolysynthProps {
   appState: AppPolysynthState;
@@ -47,9 +48,10 @@ const AppPolysynth: React.FC<AppPolysynthProps> = ({
       <div className={styles.polysynthSection}>
         <h2 className={styles.polysynthSubTitle}>Ladder Filter</h2>
         <MCC 
-          knobs={["Envelope", "Mod Depth", "Resonance", "CutOff"]}
+          knobs={FX_LIBRARY["ladder-filter"].knobs}
+          knobDescriptions={FX_LIBRARY["ladder-filter"].knobDescriptions}
           bank="A"
-          title="Moog Style Ladder Filter"
+          title={FX_LIBRARY["ladder-filter"].title}
         />
       </div>
 

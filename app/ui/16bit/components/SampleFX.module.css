@@ -216,4 +216,16 @@
   cursor: not-allowed;
   background-color: #f9fafb;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
+
+.fxGroupB .fxUnit {
+  background: rgba(255, 214, 165, 0.18);
+  border: 1px solid rgba(255, 214, 165, 0.35);
+}
+
+.fxGroupB .fxUnit:hover {
+  background: rgba(255, 214, 165, 0.25);
+  border-color: rgba(255, 214, 165, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 } 

@@ -4,12 +4,14 @@ import styles from "./MCC.module.css";
 
 interface MCCProps {
   knobs: string[];
+  knobDescriptions?: string[];
   bank: "A" | "B" | "C";
   title: string;
 }
 
-const MCC: React.FC<MCCProps> = ({ knobs, bank, title }) => {
+const MCC: React.FC<MCCProps> = ({ knobs, knobDescriptions, bank, title }) => {
   const [showCCs, setShowCCs] = useState(false);
+  const [hoveredKnob, setHoveredKnob] = useState<number | null>(null);
 
   const getBankCCRange = (bank: string) => {
     switch (bank) {
@@ -29,7 +31,12 @@ const MCC: React.FC<MCCProps> = ({ knobs, bank, title }) => {
       </div>
       <div className={styles.knobsContainer}>
         {knobs.map((knobName, index) => (
-          <div key={index} className={styles.knob}>
+          <div 
+            key={index} 
+            className={styles.knob}
+            onMouseEnter={() => setHoveredKnob(index)}
+            onMouseLeave={() => setHoveredKnob(null)}
+          >
             <div className={styles.knobCircle}></div>
             <div className={styles.knobLabelContainer}>
               <div className={styles.knobLabel}>{knobName}</div>
@@ -37,6 +44,11 @@ const MCC: React.FC<MCCProps> = ({ knobs, bank, title }) => {
                 <div className={styles.ccValue}>CC {baseCCValue + index}</div>
               )}
             </div>
+            {hoveredKnob === index && knobDescriptions && knobDescriptions[index] && (
+              <div className={styles.tooltip}>
+                {knobDescriptions[index]}
+              </div>
+            )}
           </div>
         ))}
       </div>

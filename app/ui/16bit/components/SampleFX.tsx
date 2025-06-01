@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import styles from "./SampleFX.module.css";
-import { FX_LIBRARY, FX } from "./AppSampler";
+import { FX, FX_LIBRARY } from "../data/fxLibrary";
 import MCC from "./MCC";
 
 interface SampleFXProps {
@@ -53,6 +53,7 @@ const SampleFX: React.FC<SampleFXProps> = ({
       <MCC
         title={fxData.title}
         knobs={fxData.knobs}
+        knobDescriptions={fxData.knobDescriptions}
         bank={bank}
       />
     );
