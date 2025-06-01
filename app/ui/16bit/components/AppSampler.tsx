@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import styles from "./AppSampler.module.css";
 import Keyboard from "./Keyboard";
 import SampleFX from "./SampleFX";
+import CV16Bit from "./CV16Bit";
 import { AppSamplerState } from "../page";
 
 export interface AppSamplerProps {
@@ -157,16 +158,7 @@ const AppSampler: React.FC<AppSamplerProps> = ({
         </div>
         <div className={styles.filterInfoContainer}>
           <div className={styles.filterInfoGroupA}>
-            <div className={styles.filterKnobsContainer}>
-              <div className={styles.filterKnob}>
-                <div className={styles.filterKnobCircle}></div>
-                <div className={styles.filterKnobLabel}>CV1: Highpass</div>
-              </div>
-              <div className={styles.filterKnob}>
-                <div className={styles.filterKnobCircle}></div>
-                <div className={styles.filterKnobLabel}>CV2: Lowpass</div>
-              </div>
-            </div>
+            <CV16Bit cv1="Highpass" cv2="Lowpass" title="Filter" />
           </div>
           <div className={styles.filterInfoGroupB}>
             <div className={styles.bypassIndicator}>

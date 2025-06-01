@@ -3,6 +3,7 @@ import React from "react";
 import styles from "./AppPolysynth.module.css";
 import { AppPolysynthState } from "../page";
 import MCC from "./MCC";
+import CV16Bit from "./CV16Bit";
 
 interface AppPolysynthProps {
   appState: AppPolysynthState;
@@ -39,10 +40,7 @@ const AppPolysynth: React.FC<AppPolysynthProps> = ({
               <option value="tri">Triangle</option>
             </select>
           </div>
-          <div className={styles.cvLabels}>
-            <div className={styles.cvLabel}>CV1: Amp Attack</div>
-            <div className={styles.cvLabel}>CV2: Amp Release</div>
-          </div>
+          <CV16Bit cv1="Attack" cv2="Release" title="Amp Envelope" />
         </div>
       </div>
 
