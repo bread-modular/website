@@ -69,14 +69,20 @@ const SampleFX: React.FC<SampleFXProps> = ({
       <div className={styles.fxSlotsContainer}>
         <div className={styles.fxGroupContainer}>
           <div className={styles.fxGroupA}>
-            {renderFXSelector('fx1', fx1, 'FX1', 'fxSlotGroupA')}
-            {renderMCCForFX(fx1, 'A')}
-            {renderFXSelector('fx2', fx2, 'FX2', 'fxSlotGroupA')}
-            {renderMCCForFX(fx2, 'B')}
+            <div className={styles.fxUnit}>
+              {renderFXSelector('fx1', fx1, 'FX1', 'fxSlotGroupA')}
+              {renderMCCForFX(fx1, 'A')}
+            </div>
+            <div className={styles.fxUnit}>
+              {renderFXSelector('fx2', fx2, 'FX2', 'fxSlotGroupA')}
+              {renderMCCForFX(fx2, 'B')}
+            </div>
           </div>
           <div className={styles.fxGroupB}>
-            {renderFXSelector('fx3', fx3, 'FX3', 'fxSlotGroupB')}
-            {renderMCCForFX(fx3, 'C')}
+            <div className={styles.fxUnit}>
+              {renderFXSelector('fx3', fx3, 'FX3', 'fxSlotGroupB')}
+              {renderMCCForFX(fx3, 'C')}
+            </div>
           </div>
         </div>
       </div>
