@@ -21,6 +21,7 @@ export default function Header() {
             <li><Link href="/modules">MODULES</Link></li>
             <li><Link href="/docs">DOCS</Link></li>
             <li><Link href="/blog">BLOG</Link></li>
+            <li><Link href="/ui/16bit">16BIT UI</Link></li>
             <li><CartIcon /></li>
           </ul>
         </nav>

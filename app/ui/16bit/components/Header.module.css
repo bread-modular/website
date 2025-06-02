@@ -108,15 +108,30 @@
 }
 
 .unsupportedMessage {
-  color: #dc2626;
-  font-weight: 600;
-  font-size: 1.125rem;
-  margin-top: 32px;
-  padding: 24px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 8px;
+  color: #495057;
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+  padding: 32px;
+  background: #f8f9fa;
+  border: 2px solid #dee2e6;
+  border-radius: 12px;
   text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.unsupportedMessage::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #6c757d 0%, #495057 50%, #6c757d 100%);
+  border-radius: 12px 12px 0 0;
 }
 
 .browserHighlight {

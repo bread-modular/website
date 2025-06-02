@@ -193,16 +193,32 @@ const PicoWebSerial = () => {
   if (unsupported) {
     return (
       <div className={styles.container}>
-        <Header 
-          connected={connected}
-          status={status}
-          connectToPico={connectToPico}
-          disconnectFromPico={disconnectFromPico}
-          selectedApp={selectedApp}
-          switchingApp={switchingApp}
-          onAppChange={handleAppChange}
-          unsupported={true}
-        />
+        <div className={styles.pageHeader}>
+          <Image
+            src="/images/bread-modular-logo.png"
+            alt="BreadModular Logo"
+            className={styles.logo}
+            width={256}
+            height={64}
+            priority
+          />
+          <h1 className={styles.pageTitle}>16bit UI</h1>
+        </div>
+
+        <div className={styles.mainContent}>
+          <div className={styles.section}>
+            <Header 
+              connected={connected}
+              status={status}
+              connectToPico={connectToPico}
+              disconnectFromPico={disconnectFromPico}
+              selectedApp={selectedApp}
+              switchingApp={switchingApp}
+              onAppChange={handleAppChange}
+              unsupported={true}
+            />
+          </div>
+        </div>
       </div>
     );
   }
