@@ -56,6 +56,21 @@ function addHeadingIds(html: string): string {
     });
 }
 
+// Function to process images with custom max-width syntax
+function processImagesWithMaxWidth(html: string): string {
+  // Match img tags and check for #max-width parameter in src
+  return html.replace(/<img([^>]*?)src="([^"]*?)(#max-width=([^"]*?))?"\s*([^>]*?)>/g, (match, beforeSrc, imageSrc, maxWidthParam, maxWidthValue, afterSrc) => {
+    if (maxWidthParam && maxWidthValue) {
+      // Remove the #max-width parameter from the src
+      const cleanSrc = imageSrc;
+      // Add inline style for max-width
+      const style = `style="max-width: ${maxWidthValue};"`;
+      return `<img${beforeSrc}src="${cleanSrc}" ${style}${afterSrc}>`;
+    }
+    return match;
+  });
+}
+
 // Enhance code blocks with syntax highlighting and better formatting
 function enhanceCodeBlocks(html: string): string {
   // First handle pre/code blocks from standard markdown format
@@ -277,6 +292,7 @@ export default function MarkdownContent({ content }: Props) {
           if (index % 2 === 0) {
             // Process regular markdown content
             let processedPart = addHeadingIds(part);
+            processedPart = processImagesWithMaxWidth(processedPart);
             processedPart = enhanceCodeBlocks(processedPart);
             return <div key={index} dangerouslySetInnerHTML={{ __html: processedPart }} />;
           } else {
