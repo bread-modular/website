@@ -16,6 +16,8 @@ This is a MIDI CC Controller with 4 knobs for controlling MIDI parameters. You c
 
 This module is designed to work with the [16bit](/modules/16bit) as a way to extend its features.
 
+> To learn more about how to use the MCC module, visit [the MCC documentation](/docs/16bit/mcc-module).
+
 ## Functionality
 
 * Control up to 4 CCs simultaneously
