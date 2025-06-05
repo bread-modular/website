@@ -19,11 +19,11 @@ Then you can feed the output MIDI into the 16bit module.
 
 Here's how a basic patch looks like:
 
-<!-- Show an image. -->
+![Using MCC with 16bit](/images/docs/16bit-mcc-patch.png)
 
 Here's how to cascade 3 MCCs together:
 
-<!-- Show an image. -->
+![Cascading 3 MCC modules with 16bit](/images/docs/16bit-mcc-cascade-patch.png)
 
 ## CC Assignment
 

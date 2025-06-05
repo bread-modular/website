@@ -18,4 +18,4 @@ With the 16bit UI, you can:
 
 Watch the following video on how to use the sampler with the 16bit UI:
 
-<!-- Video goes here --> 
+[embed]https://youtu.be/0i2NINsH2Cg[/embed]
