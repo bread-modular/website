@@ -1,6 +1,6 @@
 ---
 title: App - Sampler
-summary: Learn about the 12-voice drum sampler app with three effects slots and dual group functionality.
+summary: Learn about the 12-voice drum sampler app with three effects.
 ---
 
 This is a 12-voice drum sampler with three effects slots. It divides samples into two groups (A & B), and you can assign separate effects for both groups. 

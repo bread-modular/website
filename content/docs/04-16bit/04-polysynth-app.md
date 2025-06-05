@@ -1,6 +1,6 @@
 ---
 title: App - Polysynth
-summary: Learn about the 9-voice polyphonic synth with Moog-like ladder filter and envelope controls.
+summary: Learn about the 9-voice polyphonic synth with Moog-like ladder filter.
 ---
 
 This is a 9-voice polyphonic synth with a Moog-like ladder filter attached. By default, it uses sawtooth oscillators, but you can change this using the 16bit UI.
@@ -16,4 +16,6 @@ To access the filter, you need to use the MCC module and select bank A. Here are
 3. **Resonance** - Controls the resonance of the filter
 4. **Lowpass Cutoff** - Increasing will reduce the cutoff frequency and close the filter
 
-<!-- See how this app sounds like & use the controls: --> 
+Watch the following video on how the polysynth app behave:
+
+[embed]https://youtu.be/vCnn0n45Mxw[/embed]

@@ -3,7 +3,7 @@ title: Using the MCC Module
 summary: Learn how to use the MCC module to control MIDI CCs and patch multiple modules together.
 ---
 
-This is a very simple module where you can control four different CCs using knobs. You can choose CCs from three banks:
+[MCC](/modules/mcc) is a very simple module where you can control four different CCs using knobs. You can choose CCs from three banks:
 
 - **Bank A**: 20-24
 - **Bank B**: 27-30
