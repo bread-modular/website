@@ -43,4 +43,14 @@
   height: 1px;
   background: var(--neutral-200);
   margin-top: 32px;
+}
+
+.hiddenOnMobile {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .hiddenOnMobile {
+    display: block;
+  }
 } 
