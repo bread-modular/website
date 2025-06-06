@@ -29,7 +29,7 @@ Following modules are included in the Starter Kit:
 * [MIDI](/modules/midi)
 * [Noise](/modules/noise)
 * [HiHat](/modules/hihat)
-* [Line In](/modules/line_in)
+* [16bit](/modules/16bit)
 * [Drive](/modules/drive)
 * [IMix](/modules/imix)
 * [MCO](/modules/mco)
@@ -44,6 +44,12 @@ Following modules are included in the Starter Kit:
 * **UPDI Programmer** - to update the firmwares of various modules including 8-bit, midi, mco, noise, hihat
 * 10 x 10cm patch cables
 * 05 x 20cm patch cables
+
+### Addons
+
+This kit contains our real-time audio computer, the [16bit](/modules/16bit) module. It's a capable module, but when you couple it with a few [MCC](/modules/mcc) modules, you can accomplish much more.
+
+Previously, the Starter Kit came with a [Line In](/modules/line_in) module, but we've now replaced it with the 16bit. If you want to feed external audio into your setup, you may want to consider getting the Line In module separately.
 
 ## Size
 

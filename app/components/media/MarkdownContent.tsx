@@ -9,27 +9,44 @@ interface Props {
   content: string;
 }
 
-function getYouTubeId(url: string): string {
-  if (!url) return '';
+function getYouTubeData(url: string): { videoId: string; startTime?: string } {
+  if (!url) return { videoId: '' };
   
-  // Clean the URL - remove @ prefix if present
+  // Clean the URL - remove @ prefix if present and decode HTML entities
   url = url.trim();
   if (url.startsWith('@')) {
     url = url.substring(1);
   }
   
-  // Remove any parameters after the video ID for youtu.be links
+  // Decode HTML entities (like &#x26; back to &)
+  url = url.replace(/&#x26;/g, '&').replace(/&amp;/g, '&');
+  
+  let videoId = '';
+  let startTime: string | undefined;
+  
+  // Handle youtu.be links
   if (url.includes('youtu.be/')) {
-    return url.split('youtu.be/')[1].split(/[?#]/)[0];
+    const parts = url.split('youtu.be/')[1];
+    const [id, params] = parts.split('?');
+    videoId = id;
+    
+    // Extract start time from parameters
+    if (params) {
+      const urlParams = new URLSearchParams(params);
+      const t = urlParams.get('t');
+      if (t) startTime = t;
+    }
   }
   
-  // Extract video ID from youtube.com URLs
+  // Handle youtube.com URLs
   if (url.includes('youtube.com/watch')) {
     const urlParams = new URLSearchParams(url.split('?')[1]);
-    return urlParams.get('v') || '';
+    videoId = urlParams.get('v') || '';
+    const t = urlParams.get('t');
+    if (t) startTime = t;
   }
   
-  return '';
+  return { videoId, startTime };
 }
 
 // Function to add IDs to heading tags for anchor links
@@ -145,8 +162,8 @@ export default function MarkdownContent({ content }: Props) {
   processedContent = processedContent.replace(
     /\[embed\](https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/).+?)\[\/embed\]/g,
     (match, url) => {
-      const videoId = getYouTubeId(url);
-      return videoId ? `<div data-youtube-id="${videoId}"></div>` : match;
+      const { videoId, startTime } = getYouTubeData(url);
+      return videoId ? `<div data-youtube-id="${videoId}" data-youtube-start="${startTime || ''}"></div>` : match;
     }
   );
   
@@ -154,13 +171,13 @@ export default function MarkdownContent({ content }: Props) {
   processedContent = processedContent.replace(
     /@(https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/).+?)(?:\s|$)/g,
     (match, url) => {
-      const videoId = getYouTubeId(url);
-      return videoId ? `<div data-youtube-id="${videoId}"></div>` : match;
+      const { videoId, startTime } = getYouTubeData(url);
+      return videoId ? `<div data-youtube-id="${videoId}" data-youtube-start="${startTime || ''}"></div>` : match;
     }
   );
 
   // Split content into parts, separating YouTube embeds
-  const parts = processedContent.split(/<div data-youtube-id="([^"]+)"><\/div>/);
+  const parts = processedContent.split(/<div data-youtube-id="([^"]+)" data-youtube-start="([^"]*)"><\/div>/);
 
   // Handle image click events with the hook
   useImagePreview({
@@ -289,16 +306,20 @@ export default function MarkdownContent({ content }: Props) {
     <>
       <div className={styles.content}>
         {parts.map((part, index) => {
-          if (index % 2 === 0) {
+          if (index % 3 === 0) {
             // Process regular markdown content
             let processedPart = addHeadingIds(part);
             processedPart = processImagesWithMaxWidth(processedPart);
             processedPart = enhanceCodeBlocks(processedPart);
             return <div key={index} dangerouslySetInnerHTML={{ __html: processedPart }} />;
-          } else {
-            // YouTube embed
-            return <YouTubeEmbed key={index} videoId={part} />;
+          } else if (index % 3 === 1) {
+            // YouTube embed - part is videoId
+            const videoId = part;
+            const startTime = parts[index + 1]; // Next part is startTime
+            return <YouTubeEmbed key={index} videoId={videoId} startTime={startTime || undefined} />;
           }
+          // Skip startTime parts (index % 3 === 2) as they're handled above
+          return null;
         })}
       </div>
     </>
