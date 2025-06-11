@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import styles from "./AppSampler.module.css";
-import Keyboard from "./Keyboard";
-import SampleFX from "./SampleFX";
-import CV16Bit from "./CV16Bit";
-import { AppSamplerState } from "../page";
+import Keyboard from "../common/Keyboard";
+import SampleFX from "../common/SampleFX";
+import CV16Bit from "../common/CV16Bit";
+import { AppSamplerState } from "../../page";
 
 export interface AppSamplerProps {
   appState: AppSamplerState;

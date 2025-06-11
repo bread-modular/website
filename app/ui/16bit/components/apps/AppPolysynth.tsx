@@ -1,10 +1,11 @@
 "use client";
-import React from "react";
+import AppFxRack from "./AppFxRack";
+import AppSampler from "./AppSampler";
 import styles from "./AppPolysynth.module.css";
-import { AppPolysynthState } from "../page";
-import MCC from "./MCC";
-import CV16Bit from "./CV16Bit";
-import { FX_LIBRARY } from "../data/fxLibrary";
+import { AppPolysynthState } from "../../page";
+import MCC from "../common/MCC";
+import CV16Bit from "../common/CV16Bit";
+import { FX_LIBRARY } from "../../data/fxLibrary";
 
 interface AppPolysynthProps {
   appState: AppPolysynthState;

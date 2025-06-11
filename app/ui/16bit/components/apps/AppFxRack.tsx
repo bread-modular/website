@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import styles from "./AppFxRack.module.css";
-import SampleFX from "./SampleFX";
-import CV16Bit from "./CV16Bit";
-import { AppFXRackState } from "../page";
+import SampleFX from "../common/SampleFX";
+import CV16Bit from "../common/CV16Bit";
+import { AppFXRackState } from "../../page";
 
 export interface AppFxRackProps {
   appState: AppFXRackState;

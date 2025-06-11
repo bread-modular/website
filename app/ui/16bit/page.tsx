@@ -4,9 +4,9 @@ import styles from "./page.module.css";
 import { WebSerialManager, MessageType, MessageObj } from "@/app/lib/webserial";
 import Header from "./components/Header";
 import Terminal from "./components/Terminal";
-import AppSampler from "./components/AppSampler";
-import AppFxRack from "./components/AppFxRack";
-import AppPolysynth from "./components/AppPolysynth";
+import AppSampler from "./components/apps/AppSampler";
+import AppFxRack from "./components/apps/AppFxRack";
+import AppPolysynth from "./components/apps/AppPolysynth";
 import Image from "next/image";
 
 export interface AppSamplerState {
