@@ -5,6 +5,7 @@ import { WebSerialManager, MessageType, MessageObj } from "@/app/lib/webserial";
 import Header from "./components/Header";
 import Terminal from "./components/Terminal";
 import AppSampler from "./components/AppSampler";
+import AppFxRack from "./components/AppFxRack";
 import AppPolysynth from "./components/AppPolysynth";
 import Image from "next/image";
 
@@ -16,6 +17,12 @@ export interface AppSamplerState {
 
 export interface AppPolysynthState {
   waveform: string;
+}
+
+export interface AppFXRackState {
+  fx1: string;
+  fx2: string;
+  fx3: string;
 }
 
 const PicoWebSerial = () => {
@@ -33,6 +40,11 @@ const PicoWebSerial = () => {
   });
   const [polysynthState, setPolysynthState] = useState<AppPolysynthState>({
     waveform: "saw",
+  });
+  const [fxrackState, setFXRackState] = useState<AppFXRackState>({
+    fx1: "noop",
+    fx2: "noop",
+    fx3: "noop",
   });
   
   const serialManagerRef = useRef<WebSerialManager | null>(null);
@@ -82,6 +94,12 @@ const PicoWebSerial = () => {
         setPolysynthState({ waveform });
       }
 
+      if (result === "fxrack") {
+        const fx1 = await serialManagerRef.current.sendAndReceive("get-fx1") || "noop";
+        const fx2 = await serialManagerRef.current.sendAndReceive("get-fx2") || "noop";
+        const fx3 = await serialManagerRef.current.sendAndReceive("get-fx3") || "noop";
+        setFXRackState({ fx1, fx2, fx3 });
+      }
     } catch (error) {
       setSelectedApp("");
       displayMessage(`Error getting app info: ${error}`, "error");
@@ -260,6 +278,19 @@ const PicoWebSerial = () => {
               onKeySelect={handleKeyPress}
               uploadSample={handleUploadSample}
               appState={samplerState}
+              onFxChange={handleFxChange}
+            />
+          </div>
+        )}
+
+        {selectedApp === "fxrack" && (
+          <div className={styles.section}>
+            <h2 className={styles.sectionHeader}>App: FX Rack</h2>
+            <p className={styles.sectionDescription}>
+              A versatile FX rack pluggable effects.
+            </p>
+            <AppFxRack
+              appState={fxrackState}
               onFxChange={handleFxChange}
             />
           </div>

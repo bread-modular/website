@@ -25,6 +25,7 @@ const Header: React.FC<HeaderProps> = ({
   const appOptions = [
     { value: "sampler", label: "Sampler" },
     { value: "polysynth", label: "PolySynth" },
+    { value: "fxrack", label: "FX Rack" },
     { value: "noop", label: "Noop" }
   ];
 
