@@ -1,8 +1,5 @@
 "use client";
 import React from "react";
-import AppSampler from "./apps/AppSampler";
-import AppPolysynth from "./apps/AppPolysynth";
-import AppFxRack from "./apps/AppFxRack";
 import styles from "./Header.module.css";
 
 interface HeaderProps {

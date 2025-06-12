@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import styles from "./AppFxRack.module.css";
 import common from "./AppCommon.module.css";
 import SampleFX from "../common/SampleFX";
-import CV16Bit from "../common/CV16Bit";
 import { AppFXRackState } from "../../page";
 
 export interface AppFxRackProps {
