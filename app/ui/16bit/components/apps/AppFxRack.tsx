@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import styles from "./AppFxRack.module.css";
+import common from "./AppCommon.module.css";
 import SampleFX from "../common/SampleFX";
 import CV16Bit from "../common/CV16Bit";
 import { AppFXRackState } from "../../page";
@@ -27,36 +28,36 @@ const AppFxRack: React.FC<AppFxRackProps> = ({ appState, onFxChange }) => {
   };
 
   return (
-    <div className={styles.fxrackContainer}>
-      <div className={styles.fxrackSection}>
-        <h2 className={styles.fxrackSubTitle}>Input</h2>
-        <div className={styles.fxrackFilterInfoContainer}>
-          <div className={styles.fxrackFilterInfoLeft}>
+    <div className={common.appContainer}>
+      <div className={common.appSection}>
+        <h2 className={common.appSubTitle}>Input</h2>
+        <div className={common.appDualContainer}>
+          <div className={common.appDualLeft}>
             A1
           </div>
-          <div className={styles.fxrackFilterInfoRight}>
+          <div className={common.appDualRight}>
             A2
           </div>
         </div>
         <div className={`${styles.text} ${styles.centerText}`}>
             Inputs from A1 and A2 to will be send to Group A and Group B.
         </div>
-        <div className={styles.fxrackGroupLabelsContainer}>
-          <div className={`${styles.fxrackGroupLabel} ${styles.fxrackGroupLeft}`}>
+        <div className={common.appGroupLabelsContainer}>
+          <div className={common.appGroupLabel + ' ' + common.appGroupLeft}>
             Group A
           </div>
-          <div className={`${styles.fxrackGroupLabel} ${styles.fxrackGroupRight}`}>
+          <div className={common.appGroupLabel + ' ' + common.appGroupRight}>
             Group B
           </div>
         </div>
       </div>
-      <div className={styles.fxrackSection}>
-        <h2 className={styles.fxrackSubTitle}>FX</h2>
-        <div className={styles.fxrackGroupLabelsContainer}>
-          <div className={`${styles.fxrackGroupLabel} ${styles.fxrackGroupLeft}`}>
+      <div className={common.appSection}>
+        <h2 className={common.appSubTitle}>FX</h2>
+        <div className={common.appGroupLabelsContainer}>
+          <div className={common.appGroupLabel + ' ' + common.appGroupLeft}>
             Group A
           </div>
-          <div className={`${styles.fxrackGroupLabel} ${styles.fxrackGroupRight}`}>
+          <div className={common.appGroupLabel + ' ' + common.appGroupRight}>
             Group B
           </div>
         </div>
@@ -68,21 +69,21 @@ const AppFxRack: React.FC<AppFxRackProps> = ({ appState, onFxChange }) => {
           loading={settingFx}
         />
       </div>
-      <div className={styles.fxrackSection}>
-        <h2 className={styles.fxrackSubTitle}>Output</h2>
-        <div className={styles.fxrackGroupLabelsContainer}>
-          <div className={`${styles.fxrackGroupLabel} ${styles.fxrackGroupLeft}`}>
+      <div className={common.appSection}>
+        <h2 className={common.appSubTitle}>Output</h2>
+        <div className={common.appGroupLabelsContainer}>
+          <div className={common.appGroupLabel + ' ' + common.appGroupLeft}>
             Group A
           </div>
-          <div className={`${styles.fxrackGroupLabel} ${styles.fxrackGroupRight}`}>
+          <div className={common.appGroupLabel + ' ' + common.appGroupRight}>
             Group B
           </div>
         </div>
-        <div className={styles.fxrackFilterInfoContainer}>
-          <div className={styles.fxrackFilterInfoLeft}>
+        <div className={common.appDualContainer}>
+          <div className={common.appDualLeft}>
             A1
           </div>
-          <div className={styles.fxrackFilterInfoRight}>
+          <div className={common.appDualRight}>
             A2
           </div>
         </div>

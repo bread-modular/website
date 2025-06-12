@@ -287,7 +287,7 @@ const PicoWebSerial = () => {
           <div className={styles.section}>
             <h2 className={styles.sectionHeader}>App: FX Rack</h2>
             <p className={styles.sectionDescription}>
-              A versatile FX rack pluggable effects.
+              A versatile FX rack withpluggable effects.
             </p>
             <AppFxRack
               appState={fxrackState}
