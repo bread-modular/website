@@ -1,10 +1,10 @@
 "use client";
-import React from "react";
 import styles from "./AppPolysynth.module.css";
-import { AppPolysynthState } from "../page";
-import MCC from "./MCC";
-import CV16Bit from "./CV16Bit";
-import { FX_LIBRARY } from "../data/fxLibrary";
+import common from "./AppCommon.module.css";
+import { AppPolysynthState } from "../../page";
+import MCC from "../common/MCC";
+import CV16Bit from "../common/CV16Bit";
+import { FX_LIBRARY } from "../../data/fxLibrary";
 
 interface AppPolysynthProps {
   appState: AppPolysynthState;
@@ -22,10 +22,10 @@ const AppPolysynth: React.FC<AppPolysynthProps> = ({
   };
 
   return (
-    <div className={styles.polysynthContainer}>
-      <div className={styles.polysynthSection}>
-        <h2 className={styles.polysynthSubTitle}>Voices</h2>
-        <div className={styles.voicesInfo}>
+    <div className={common.appContainer + ' ' + styles.polysynthContainer}>
+      <div className={common.appSection}>
+        <h2 className={common.appSubTitle}>Voices</h2>
+        <div className={common.appGroupLabelsContainer}>
           <div className={styles.waveformSelector}>
             <label htmlFor="waveform-select" className={styles.waveformLabel}>
               Waveform:
@@ -41,12 +41,14 @@ const AppPolysynth: React.FC<AppPolysynthProps> = ({
               <option value="tri">Triangle</option>
             </select>
           </div>
+        </div>
+        <div className={common.appGroupLabelsContainer}>
           <CV16Bit cv1="Attack" cv2="Release" title="Amp Envelope" />
         </div>
       </div>
 
-      <div className={styles.polysynthSection}>
-        <h2 className={styles.polysynthSubTitle}>Ladder Filter</h2>
+      <div className={common.appSection}>
+        <h2 className={common.appSubTitle}>Ladder Filter</h2>
         <MCC 
           knobs={FX_LIBRARY["ladder-filter"].knobs}
           knobDescriptions={FX_LIBRARY["ladder-filter"].knobDescriptions}
@@ -55,11 +57,11 @@ const AppPolysynth: React.FC<AppPolysynthProps> = ({
         />
       </div>
 
-      <div className={styles.polysynthSection}>
-        <h2 className={styles.polysynthSubTitle}>Output</h2>
-        <div className={styles.outputInfo}>
-          <div className={styles.outputLabel}>A1: With filter</div>
-          <div className={styles.outputLabel}>A2: Without filter</div>
+      <div className={common.appSection}>
+        <h2 className={common.appSubTitle}>Output</h2>
+        <div className={common.appDualContainer}>
+          <div className={common.appDualLeft}>A1: With filter</div>
+          <div className={common.appDualRight}>A2: Without filter</div>
         </div>
       </div>
     </div>

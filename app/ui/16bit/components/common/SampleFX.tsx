@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import styles from "./SampleFX.module.css";
-import { FX_LIBRARY } from "../data/fxLibrary";
+import { FX_LIBRARY } from "../../data/fxLibrary";
 import MCC from "./MCC";
 
 interface SampleFXProps {

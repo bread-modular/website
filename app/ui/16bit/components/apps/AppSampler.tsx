@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import styles from "./AppSampler.module.css";
-import Keyboard from "./Keyboard";
-import SampleFX from "./SampleFX";
-import CV16Bit from "./CV16Bit";
-import { AppSamplerState } from "../page";
+import common from "./AppCommon.module.css";
+import Keyboard from "../common/Keyboard";
+import SampleFX from "../common/SampleFX";
+import CV16Bit from "../common/CV16Bit";
+import { AppSamplerState } from "../../page";
 
 export interface AppSamplerProps {
   appState: AppSamplerState;
@@ -108,14 +109,14 @@ const AppSampler: React.FC<AppSamplerProps> = ({
   };
 
   return (
-    <div className={styles.sampleContainer}>
-      <div className={styles.sampleSection}>
-        <h2 className={styles.sampleSubTitle}>Samples</h2>
-        <div className={styles.groupLabelsContainer}>
-          <div className={`${styles.groupLabel} ${styles.groupA}`}>
+    <div className={common.appContainer + ' ' + styles.sampleContainer}>
+      <div className={common.appSection}>
+        <h2 className={common.appSubTitle}>Samples</h2>
+        <div className={common.appGroupLabelsContainer}>
+          <div className={`${common.appGroupLabel} ${common.appGroupLeft}`}>
             Group A
           </div>
-          <div className={`${styles.groupLabel} ${styles.groupB}`}>
+          <div className={`${common.appGroupLabel} ${common.appGroupRight}`}>
             Group B
           </div>
         </div>
@@ -125,13 +126,13 @@ const AppSampler: React.FC<AppSamplerProps> = ({
         />
         {renderUploadControls()}
       </div>
-      <div className={styles.sampleSection}>
-        <h2 className={styles.sampleSubTitle}>Filter</h2>
-        <div className={styles.groupLabelsContainer}>
-          <div className={`${styles.groupLabel} ${styles.groupA}`}>
+      <div className={common.appSection}>
+        <h2 className={common.appSubTitle}>Filter</h2>
+        <div className={common.appGroupLabelsContainer}>
+          <div className={`${common.appGroupLabel} ${common.appGroupLeft}`}>
             Group A
           </div>
-          <div className={`${styles.groupLabel} ${styles.groupB}`}>
+          <div className={`${common.appGroupLabel} ${common.appGroupRight}`}>
             Group B
           </div>
         </div>
@@ -147,13 +148,13 @@ const AppSampler: React.FC<AppSamplerProps> = ({
           </div>
         </div>
       </div>
-      <div className={styles.sampleSection}>
-        <h2 className={styles.sampleSubTitle}>FX</h2>
-        <div className={styles.groupLabelsContainer}>
-          <div className={`${styles.groupLabel} ${styles.groupA}`}>
+      <div className={common.appSection}>
+        <h2 className={common.appSubTitle}>FX</h2>
+        <div className={common.appGroupLabelsContainer}>
+          <div className={`${common.appGroupLabel} ${common.appGroupLeft}`}>
             Group A
           </div>
-          <div className={`${styles.groupLabel} ${styles.groupB}`}>
+          <div className={`${common.appGroupLabel} ${common.appGroupRight}`}>
             Group B
           </div>
         </div>
@@ -165,21 +166,21 @@ const AppSampler: React.FC<AppSamplerProps> = ({
           loading={settingFx}
         />
       </div>
-      <div className={styles.sampleSection}>
-        <h2 className={styles.sampleSubTitle}>Output</h2>
-        <div className={styles.groupLabelsContainer}>
-          <div className={`${styles.groupLabel} ${styles.groupA}`}>
+      <div className={common.appSection}>
+        <h2 className={common.appSubTitle}>Output</h2>
+        <div className={common.appGroupLabelsContainer}>
+          <div className={`${common.appGroupLabel} ${common.appGroupLeft}`}>
             Group A
           </div>
-          <div className={`${styles.groupLabel} ${styles.groupB}`}>
+          <div className={`${common.appGroupLabel} ${common.appGroupRight}`}>
             Group B
           </div>
         </div>
-        <div className={styles.filterInfoContainer}>
-          <div className={styles.filterInfoGroupA}>
+        <div className={common.appDualContainer}>
+          <div className={common.appDualLeft}>
             A1 & A2
           </div>
-          <div className={styles.filterInfoGroupB}>
+          <div className={common.appDualRight}>
             A1 & A2
           </div>
         </div>

@@ -1,0 +1,37 @@
+
+.waveformSelector {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 6px;
+  width: 100%;
+}
+
+.waveformLabel {
+  font-size: 0.875rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  color: var(--foreground, #171717);
+  font-weight: 500;
+}
+
+.waveformDropdown {
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  color: var(--foreground, #171717);
+  cursor: pointer;
+  min-width: 100px;
+}
+
+.waveformDropdown:focus {
+  outline: none;
+  border-color: rgba(99, 102, 241, 0.6);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
