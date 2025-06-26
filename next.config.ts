@@ -2,6 +2,26 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  async rewrites() {
+    return [
+      {
+        source: '/llms.txt',
+        destination: '/api/llms',
+      },
+      {
+        source: '/docs/:path*.md',
+        destination: '/api/docs/:path*.md',
+      },
+      {
+        source: '/modules/:path*.md',
+        destination: '/api/modules/:path*.md',
+      },
+      {
+        source: '/blog/:path*.md',
+        destination: '/api/blog/:path*.md',
+      },
+    ];
+  },
   images: {
     domains: [
       'img.youtube.com',  // For YouTube thumbnails
