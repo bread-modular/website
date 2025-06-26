@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
         destination: '/api/llms',
       },
       {
+        source: '/llms-full.txt',
+        destination: '/api/llms-full',
+      },
+      {
         source: '/docs/:path*.md',
         destination: '/api/docs/:path*.md',
       },
