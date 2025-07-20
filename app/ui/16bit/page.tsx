@@ -46,8 +46,10 @@ const PicoWebSerial = () => {
     fx2: "noop",
     fx3: "noop",
   });
+  const [isListeningForBinary, setIsListeningForBinary] = useState(false);
   
   const serialManagerRef = useRef<WebSerialManager | null>(null);
+  const stopBinaryListenerRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     // Initialize the WebSerialManager
@@ -60,6 +62,10 @@ const PicoWebSerial = () => {
     
     // Cleanup on unmount
     return () => {
+      if (stopBinaryListenerRef.current) {
+        stopBinaryListenerRef.current();
+        stopBinaryListenerRef.current = null;
+      }
       if (serialManagerRef.current && connected) {
         serialManagerRef.current.disconnect();
       }
@@ -191,7 +197,14 @@ const PicoWebSerial = () => {
   };
 
   const disconnectFromPico = async () => {
-    if (serialManagerRef.current) {      
+    if (serialManagerRef.current) {
+      // Stop binary listening if active
+      if (stopBinaryListenerRef.current) {
+        stopBinaryListenerRef.current();
+        stopBinaryListenerRef.current = null;
+      }
+      setIsListeningForBinary(false);
+      
       // Reload the page after disconnection
       window.location.reload();
     }
@@ -204,6 +217,33 @@ const PicoWebSerial = () => {
         await serialManagerRef.current.sendMessage(`play-sample ${key}`);
       } catch (error) {
         console.error("Error sending keyboard press:", error);
+      }
+    }
+  };
+
+  const handleBinaryListening = () => {
+    if (!serialManagerRef.current || !connected) return;
+
+    if (isListeningForBinary) {
+      // Stop listening
+      if (stopBinaryListenerRef.current) {
+        stopBinaryListenerRef.current();
+        stopBinaryListenerRef.current = null;
+      }
+      setIsListeningForBinary(false);
+      displayMessage("Stopped listening for binary data", "status");
+    } else {
+      // Start listening
+      try {
+        const stopFunction = serialManagerRef.current.listenForBinary((binaryData: Uint8Array) => {
+          console.log(`Received binary data (${binaryData.length} bytes):`, binaryData);
+        });
+        stopBinaryListenerRef.current = stopFunction;
+        setIsListeningForBinary(true);
+        displayMessage("Started listening for binary data", "status");
+      } catch (error) {
+        console.error("Error starting binary listener:", error);
+        displayMessage("Error starting binary listener: " + error, "error");
       }
     }
   };
@@ -266,7 +306,28 @@ const PicoWebSerial = () => {
             switchingApp={switchingApp}
             onAppChange={handleAppChange}
           />
+          
+          {connected && (
+            <div style={{ marginTop: '10px' }}>
+              <button 
+                onClick={handleBinaryListening}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: isListeningForBinary ? '#ff4444' : '#4CAF50',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '14px'
+                }}
+              >
+                {isListeningForBinary ? 'Stop Binary Listening' : 'Listen for Binary'}
+              </button>
+            </div>
+          )}
         </div>
+
+
         
         {selectedApp === "sampler" && (
           <div className={styles.section}>

@@ -194,6 +194,68 @@ export class WebSerialManager {
     }
   }
 
+  /**
+   * Listens for binary data in the format ::bin::base64data::bin:: and decodes it
+   * @param callback Function to call with the decoded binary data
+   * @returns Function to stop listening
+   */
+  listenForBinary(callback: (data: Uint8Array) => void): () => void {
+    if (!this.port) {
+      throw new Error("Not connected to device");
+    }
+
+    let responseBuffer = "";
+    const originalCallback = this.onMessageCallback;
+    let isListening = true;
+    
+    // Set up a temporary callback to look for binary data
+    this.onMessageCallback = (data, type) => {
+      // We won't call the original callback to avoid cluttering the UI
+      
+      // Process the response if it's from the device and we're still listening
+      if (type === "received" && isListening) {
+        responseBuffer += data;
+        
+        // Check for the pattern ::bin::...::bin::
+        const pattern = /::bin::(.*?)::bin::/;
+        const match = responseBuffer.match(pattern);
+        
+        if (match) {
+          try {
+            // Extract the base64 data between ::bin:: markers
+            const base64Data = match[1];
+            
+            // Decode base64 to binary
+            const binaryString = atob(base64Data);
+            const uint8Array = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+              uint8Array[i] = binaryString.charCodeAt(i);
+            }
+            
+            // Call the callback with the decoded binary data
+            callback(uint8Array);
+            
+            // Remove the processed pattern from the buffer
+            responseBuffer = responseBuffer.replace(pattern, "");
+          } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            originalCallback("Binary decode error: " + errorMessage, "error");
+          }
+        } else {
+          // Call the original callback to maintain normal message display
+          // So we can still see other messages
+          originalCallback(data, type)
+        }
+      }
+    };
+    
+    // Return stop function
+    return () => {
+      isListening = false;
+      this.onMessageCallback = originalCallback;
+    };
+  }
+
   // Helper function to convert binary data to base64
   private encodeBinaryBase64(data: Uint8Array): string {
     let binary = '';
