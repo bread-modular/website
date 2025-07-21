@@ -153,3 +153,9 @@
 .dataRate {
   font-style: italic;
 }
+
+.oscilloscopeControls {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}

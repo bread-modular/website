@@ -2,6 +2,7 @@
 import React, { forwardRef, useImperativeHandle, useState, useRef } from "react";
 import styles from "./AppElab.module.css";
 import common from "./AppCommon.module.css";
+import Oscilloscope from "../common/Oscilloscope";
 
 export interface AppElabProps {
   isListeningForBinary: boolean;
@@ -66,6 +67,17 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
     });
   };
 
+  const resetVoltageData = () => {
+    voltageBuffer.current = [];
+    setVoltageStats({
+      current: 0,
+      average: 0,
+      min: 3.3,
+      max: 0,
+      samples: 0
+    });
+  };
+
   useImperativeHandle(ref, () => ({
     onBinaryData: (data: Uint8Array) => {
       console.log('AppElab received binary data:', data);
@@ -96,6 +108,16 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
             </div>
           )}
         </div>
+      </div>
+
+      <div className={common.appSection}>
+        <h2 className={common.appSubTitle}>Oscilloscope</h2>        
+        <Oscilloscope 
+          data={voltageBuffer.current}
+          maxVoltage={3.3}
+          displayPoints={500}
+          height={300}
+        />
       </div>
 
       <div className={common.appSection}>
