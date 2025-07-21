@@ -119,7 +119,6 @@ export class WebSerialManager {
             
             // Only send non-empty lines
             if (line.trim()) {
-              console.log("Received line:", line);
               this.onMessageCallback(line, "received");
             }
           }

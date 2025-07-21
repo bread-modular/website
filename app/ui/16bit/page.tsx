@@ -7,7 +7,7 @@ import Terminal from "./components/Terminal";
 import AppSampler from "./components/apps/AppSampler";
 import AppFxRack from "./components/apps/AppFxRack";
 import AppPolysynth from "./components/apps/AppPolysynth";
-import AppElab from "./components/apps/AppElab";
+import AppElab, { AppElabRef } from "./components/apps/AppElab";
 import Image from "next/image";
 
 export interface AppSamplerState {
@@ -51,6 +51,7 @@ const PicoWebSerial = () => {
   
   const serialManagerRef = useRef<WebSerialManager | null>(null);
   const stopBinaryListenerRef = useRef<(() => void) | null>(null);
+  const appElabRef = useRef<AppElabRef | null>(null);
 
   useEffect(() => {
     // Initialize the WebSerialManager
@@ -242,7 +243,10 @@ const PicoWebSerial = () => {
       // Start listening
       try {
         const stopFunction = serialManagerRef.current.listenForBinary((binaryData: Uint8Array) => {
-          console.log(`Received binary data (${binaryData.length} bytes):`, binaryData);
+          // Pass data to AppElab component if it's the selected app and ref is available
+          if (selectedApp === "elab" && appElabRef.current) {
+            appElabRef.current.onBinaryData(binaryData);
+          }
         });
         stopBinaryListenerRef.current = stopFunction;
         setIsListeningForBinary(true);
@@ -365,6 +369,7 @@ const PicoWebSerial = () => {
               Electronic laboratory for experimenting with binary data transmission and debugging.
             </p>
             <AppElab 
+              ref={appElabRef}
               isListeningForBinary={isListeningForBinary}
               onBinaryListeningToggle={handleBinaryListening}
             />
