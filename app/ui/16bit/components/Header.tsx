@@ -26,6 +26,7 @@ const Header: React.FC<HeaderProps> = ({
     { value: "sampler", label: "Sampler" },
     { value: "polysynth", label: "PolySynth" },
     { value: "fxrack", label: "FX Rack" },
+    { value: "elab", label: "Elab" },
     { value: "noop", label: "Noop" }
   ];
 

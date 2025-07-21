@@ -7,6 +7,7 @@ import Terminal from "./components/Terminal";
 import AppSampler from "./components/apps/AppSampler";
 import AppFxRack from "./components/apps/AppFxRack";
 import AppPolysynth from "./components/apps/AppPolysynth";
+import AppElab from "./components/apps/AppElab";
 import Image from "next/image";
 
 export interface AppSamplerState {
@@ -105,6 +106,10 @@ const PicoWebSerial = () => {
         const fx2 = await serialManagerRef.current.sendAndReceive("get-fx2") || "noop";
         const fx3 = await serialManagerRef.current.sendAndReceive("get-fx3") || "noop";
         setFXRackState({ fx1, fx2, fx3 });
+      }
+
+      if (result === "elab") {
+        // No specific state needed for elab app currently
       }
     } catch (error) {
       setSelectedApp("");
@@ -232,6 +237,7 @@ const PicoWebSerial = () => {
       }
       setIsListeningForBinary(false);
       displayMessage("Stopped listening for binary data", "status");
+      serialManagerRef.current.sendMessage("stop-send");
     } else {
       // Start listening
       try {
@@ -241,6 +247,7 @@ const PicoWebSerial = () => {
         stopBinaryListenerRef.current = stopFunction;
         setIsListeningForBinary(true);
         displayMessage("Started listening for binary data", "status");
+        serialManagerRef.current.sendMessage("start-send");
       } catch (error) {
         console.error("Error starting binary listener:", error);
         displayMessage("Error starting binary listener: " + error, "error");
@@ -306,25 +313,6 @@ const PicoWebSerial = () => {
             switchingApp={switchingApp}
             onAppChange={handleAppChange}
           />
-          
-          {connected && (
-            <div style={{ marginTop: '10px' }}>
-              <button 
-                onClick={handleBinaryListening}
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: isListeningForBinary ? '#ff4444' : '#4CAF50',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '14px'
-                }}
-              >
-                {isListeningForBinary ? 'Stop Binary Listening' : 'Listen for Binary'}
-              </button>
-            </div>
-          )}
         </div>
 
 
@@ -366,6 +354,19 @@ const PicoWebSerial = () => {
             <AppPolysynth 
               appState={polysynthState}
               onWaveformChange={handleWaveformChange}
+            />
+          </div>
+        )}
+
+        {selectedApp === "elab" && (
+          <div className={styles.section}>
+            <h2 className={styles.sectionHeader}>App: Elab</h2>
+            <p className={styles.sectionDescription}>
+              Electronic laboratory for experimenting with binary data transmission and debugging.
+            </p>
+            <AppElab 
+              isListeningForBinary={isListeningForBinary}
+              onBinaryListeningToggle={handleBinaryListening}
             />
           </div>
         )}
