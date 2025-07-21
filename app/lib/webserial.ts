@@ -97,12 +97,33 @@ export class WebSerialManager {
 
   private async readLoop(): Promise<void> {
     this.readLoopActive = true;
+    let buffer = "";
+    
     try {
       while (this.port && this.readLoopActive) {
         if (!this.reader) break;
         const { value, done } = await this.reader.read();
         if (done) break;
-        if (value) this.onMessageCallback(value, "received");
+        if (value) {
+          // Add received data to buffer
+          buffer += value;
+          
+          // Process complete lines
+          let newlineIndex;
+          while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
+            // Extract the complete line (without the newline)
+            const line = buffer.substring(0, newlineIndex);
+            
+            // Remove the processed line from buffer
+            buffer = buffer.substring(newlineIndex + 1);
+            
+            // Only send non-empty lines
+            if (line.trim()) {
+              console.log("Received line:", line);
+              this.onMessageCallback(line, "received");
+            }
+          }
+        }
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
