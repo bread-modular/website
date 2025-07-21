@@ -366,7 +366,7 @@ const PicoWebSerial = () => {
           <div className={styles.section}>
             <h2 className={styles.sectionHeader}>App: Elab</h2>
             <p className={styles.sectionDescription}>
-              Electronic laboratory for experimenting with binary data transmission and debugging.
+              Electronic Lab tool with data capturing and waveform generation.
             </p>
             <AppElab 
               ref={appElabRef}
