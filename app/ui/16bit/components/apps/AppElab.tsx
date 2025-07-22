@@ -35,9 +35,12 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
     samples: 0
   });
 
-  // Store more data for zoom functionality (up to 5 seconds of data)
-  const voltageBuffer = useRef<number[]>([]);
-  const maxBufferSize = Math.floor(5000 / sampleIntervalMs); // 5 seconds worth of samples
+  // Store voltage data in state so React can detect changes for the oscilloscope
+  const [voltageData, setVoltageData] = useState<number[]>([]);
+  const voltageDataRef = useRef<number[]>([]);
+  const maxBufferSize = Math.floor(10000 / sampleIntervalMs); // 10 seconds worth of samples
+  const lastStatsUpdate = useRef<number>(0);
+  const lastOscilloscopeUpdate = useRef<number>(0);
 
   const convertToVoltage = (byteValue: number): number => {
     return (byteValue / 255) * 3.3;
@@ -46,38 +49,52 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
   const updateVoltageStats = (newVoltages: number[]) => {
     if (newVoltages.length === 0) return;
 
-    // Add new voltages to buffer
-    voltageBuffer.current.push(...newVoltages);
+    // Update ref immediately
+    voltageDataRef.current.push(...newVoltages);
     
-    // Keep only last 5 seconds of data
-    if (voltageBuffer.current.length > maxBufferSize) {
-      voltageBuffer.current = voltageBuffer.current.slice(-maxBufferSize);
+    // Keep only last 10 seconds of data
+    if (voltageDataRef.current.length > maxBufferSize) {
+      voltageDataRef.current = voltageDataRef.current.slice(-maxBufferSize);
     }
 
-    const buffer = voltageBuffer.current;
-    const currentVoltage = newVoltages[newVoltages.length - 1];
+    const now = Date.now();
     
-    // Calculate 1-second average (instead of 5-second)
-    const oneSecondSamples = Math.floor(1000 / sampleIntervalMs);
-    const recentSamples = buffer.slice(-oneSecondSamples);
-    const average = recentSamples.length > 0 
-      ? recentSamples.reduce((sum, v) => sum + v, 0) / recentSamples.length 
-      : currentVoltage;
-    
-    const min = Math.min(...buffer);
-    const max = Math.max(...buffer);
+    // Update oscilloscope more frequently but still throttled (every 50ms for smooth animation)
+    if (now - lastOscilloscopeUpdate.current > 50) {
+      lastOscilloscopeUpdate.current = now;
+      setVoltageData([...voltageDataRef.current]);
+    }
 
-    setVoltageStats({
-      current: currentVoltage,
-      average: average,
-      min: min,
-      max: max,
-      samples: buffer.length
-    });
+    // Throttle stats updates to avoid infinite loops (update max once every 100ms)
+    if (now - lastStatsUpdate.current > 100) {
+      lastStatsUpdate.current = now;
+      
+      const trimmedData = voltageDataRef.current;
+      const currentVoltage = newVoltages[newVoltages.length - 1];
+      
+      // Calculate 1-second average
+      const oneSecondSamples = Math.floor(1000 / sampleIntervalMs);
+      const recentSamples = trimmedData.slice(-oneSecondSamples);
+      const average = recentSamples.length > 0 
+        ? recentSamples.reduce((sum: number, v: number) => sum + v, 0) / recentSamples.length 
+        : currentVoltage;
+      
+      const min = trimmedData.length > 0 ? Math.min(...trimmedData) : currentVoltage;
+      const max = trimmedData.length > 0 ? Math.max(...trimmedData) : currentVoltage;
+
+      setVoltageStats({
+        current: currentVoltage,
+        average: average,
+        min: min,
+        max: max,
+        samples: trimmedData.length
+      });
+    }
   };
 
   const resetVoltageData = () => {
-    voltageBuffer.current = [];
+    voltageDataRef.current = [];
+    setVoltageData([]);
     setVoltageStats({
       current: 0,
       average: 0,
@@ -155,9 +172,9 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
       <div className={common.appSection}>
         <h2 className={common.appSubTitle}>Oscilloscope</h2>        
         <Oscilloscope 
-          data={voltageBuffer.current}
+          data={voltageData}
           maxVoltage={3.3}
-          maxDisplayPoints={2000}
+          maxDisplayPoints={10000}
           sampleIntervalMs={sampleIntervalMs}
           height={300}
           showZoomControls={true}

@@ -19,7 +19,7 @@ export interface OscilloscopeProps {
 const Oscilloscope: React.FC<OscilloscopeProps> = ({
   data,
   maxVoltage = 3.3,
-  maxDisplayPoints = 2000,
+  maxDisplayPoints = 10000,
   sampleIntervalMs = 1,
   width,
   height = 300,
@@ -30,7 +30,7 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
   triggerVoltage = 1.65
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [zoomLevel, setZoomLevel] = useState(50); // 1-100, where 100 shows all available points
+  const [zoomLevel, setZoomLevel] = useState(100); // Start at 100% to show all available data
   const [triggerMode, setTriggerMode] = useState(false);
   const [currentTriggerVoltage, setCurrentTriggerVoltage] = useState(triggerVoltage);
   const [capturedData, setCapturedData] = useState<number[]>([]);
@@ -288,19 +288,6 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
         className={styles.oscilloscopeCanvas}
         style={{ backgroundColor }}
       />
-      <div className={styles.oscilloscopeInfo}>
-        <span>Time scale: {formatTime(getTimePerDiv())}/div</span>
-        <span>Voltage scale: {(maxVoltage/10).toFixed(2)}V/div</span>
-        <span>Span: {formatTime(getTotalTimeSpan())} ({getDisplayPoints()} pts)</span>
-        {triggerMode && (
-          <>
-            <span style={{ color: '#ff6600' }}>TRIG: {currentTriggerVoltage.toFixed(2)}V ↗</span>
-            <span style={{ color: isTriggered ? '#00ff00' : '#ff4444', fontSize: '10px' }}>
-              {isTriggered ? '●CAPTURED' : '●WAITING'}
-            </span>
-          </>
-        )}
-      </div>
       {showZoomControls && (
         <div className={styles.zoomControls}>
           <label className={styles.zoomLabel}>
