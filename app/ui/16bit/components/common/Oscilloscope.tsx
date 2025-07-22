@@ -21,7 +21,6 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
   maxVoltage = 3.3,
   maxDisplayPoints = 10000,
   sampleIntervalMs = 1,
-  width,
   height = 300,
   gridColor = '#e0e0e0',
   waveformColor = '#00ff00',
@@ -46,14 +45,6 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
     const minPoints = 50; // Minimum zoom shows 50 points
     const maxPoints = Math.min(data.length, maxDisplayPoints);
     return Math.floor(minPoints + (maxPoints - minPoints) * (zoomLevel / 100));
-  };
-
-  // Calculate time per division based on sample interval
-  const getTimePerDiv = () => {
-    const points = getDisplayPoints();
-    const totalTimeMs = points * sampleIntervalMs;
-    const timePerDiv = totalTimeMs / 20; // 20 divisions horizontally
-    return timePerDiv;
   };
 
   // Format time value for display
@@ -89,20 +80,7 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
     
     return -1; // No trigger found
   };
-
-  // Get trigger status for debugging
-  const getTriggerStatus = () => {
-    if (!triggerMode) return null;
-    const triggerIndex = findTriggerPoint(data);
-    const recentVoltages = data.slice(-5); // Last 5 values for debugging
-    return {
-      triggered: triggerIndex !== -1,
-      triggerIndex,
-      recentVoltages,
-      dataLength: data.length
-    };
-  };
-
+  
   // Get the data range to display based on trigger mode
   const getDisplayRange = () => {
     const displayPoints = getDisplayPoints();

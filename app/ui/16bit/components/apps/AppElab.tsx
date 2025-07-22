@@ -1,5 +1,5 @@
 "use client";
-import React, { forwardRef, useImperativeHandle, useState, useRef, useEffect } from "react";
+import React, { forwardRef, useImperativeHandle, useState, useRef } from "react";
 import styles from "./AppElab.module.css";
 import common from "./AppCommon.module.css";
 import Oscilloscope from "../common/Oscilloscope";
@@ -90,18 +90,6 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
         samples: trimmedData.length
       });
     }
-  };
-
-  const resetVoltageData = () => {
-    voltageDataRef.current = [];
-    setVoltageData([]);
-    setVoltageStats({
-      current: 0,
-      average: 0,
-      min: 3.3,
-      max: 0,
-      samples: 0
-    });
   };
 
   useImperativeHandle(ref, () => ({
@@ -226,5 +214,7 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
     </div>
   );
 });
+
+AppElab.displayName = 'AppElab';
 
 export default AppElab;
