@@ -7,6 +7,7 @@ import Terminal from "./components/Terminal";
 import AppSampler from "./components/apps/AppSampler";
 import AppFxRack from "./components/apps/AppFxRack";
 import AppPolysynth from "./components/apps/AppPolysynth";
+import AppElab, { AppElabRef } from "./components/apps/AppElab";
 import Image from "next/image";
 
 export interface AppSamplerState {
@@ -46,8 +47,10 @@ const PicoWebSerial = () => {
     fx2: "noop",
     fx3: "noop",
   });
-  
+  const [isListeningForBinary, setIsListeningForBinary] = useState(false);  
   const serialManagerRef = useRef<WebSerialManager | null>(null);
+  const stopBinaryListenerRef = useRef<(() => void) | null>(null);
+  const appElabRef = useRef<AppElabRef | null>(null);
 
   useEffect(() => {
     // Initialize the WebSerialManager
@@ -60,6 +63,10 @@ const PicoWebSerial = () => {
     
     // Cleanup on unmount
     return () => {
+      if (stopBinaryListenerRef.current) {
+        stopBinaryListenerRef.current();
+        stopBinaryListenerRef.current = null;
+      }
       if (serialManagerRef.current && connected) {
         serialManagerRef.current.disconnect();
       }
@@ -99,6 +106,10 @@ const PicoWebSerial = () => {
         const fx2 = await serialManagerRef.current.sendAndReceive("get-fx2") || "noop";
         const fx3 = await serialManagerRef.current.sendAndReceive("get-fx3") || "noop";
         setFXRackState({ fx1, fx2, fx3 });
+      }
+
+      if (result === "elab") {
+        // No specific state needed for elab app currently
       }
     } catch (error) {
       setSelectedApp("");
@@ -191,7 +202,14 @@ const PicoWebSerial = () => {
   };
 
   const disconnectFromPico = async () => {
-    if (serialManagerRef.current) {      
+    if (serialManagerRef.current) {
+      // Stop binary listening if active
+      if (stopBinaryListenerRef.current) {
+        stopBinaryListenerRef.current();
+        stopBinaryListenerRef.current = null;
+      }
+      setIsListeningForBinary(false);
+      
       // Reload the page after disconnection
       window.location.reload();
     }
@@ -204,6 +222,38 @@ const PicoWebSerial = () => {
         await serialManagerRef.current.sendMessage(`play-sample ${key}`);
       } catch (error) {
         console.error("Error sending keyboard press:", error);
+      }
+    }
+  };
+
+  const handleBinaryListening = () => {
+    if (!serialManagerRef.current || !connected) return;
+
+    if (isListeningForBinary) {
+      // Stop listening
+      if (stopBinaryListenerRef.current) {
+        stopBinaryListenerRef.current();
+        stopBinaryListenerRef.current = null;
+      }
+      setIsListeningForBinary(false);
+      displayMessage("Stopped listening for binary data", "status");
+      serialManagerRef.current.sendMessage("stop-send");
+    } else {
+      // Start listening
+      try {
+        const stopFunction = serialManagerRef.current.listenForBinary((binaryData: Uint8Array) => {
+          // Pass data to AppElab component if it's the selected app and ref is available
+          if (selectedApp === "elab" && appElabRef.current) {
+            appElabRef.current.onBinaryData(binaryData);
+          }
+        });
+        stopBinaryListenerRef.current = stopFunction;
+        setIsListeningForBinary(true);
+        displayMessage("Started listening for binary data", "status");
+        serialManagerRef.current.sendMessage("start-send");
+      } catch (error) {
+        console.error("Error starting binary listener:", error);
+        displayMessage("Error starting binary listener: " + error, "error");
       }
     }
   };
@@ -267,6 +317,8 @@ const PicoWebSerial = () => {
             onAppChange={handleAppChange}
           />
         </div>
+
+
         
         {selectedApp === "sampler" && (
           <div className={styles.section}>
@@ -305,6 +357,21 @@ const PicoWebSerial = () => {
             <AppPolysynth 
               appState={polysynthState}
               onWaveformChange={handleWaveformChange}
+            />
+          </div>
+        )}
+
+        {selectedApp === "elab" && (
+          <div className={styles.section}>
+            <h2 className={styles.sectionHeader}>App: Elab</h2>
+            <p className={styles.sectionDescription}>
+              Electronic Lab tool with data capturing and waveform generation.
+            </p>
+            <AppElab 
+              ref={appElabRef}
+              isListeningForBinary={isListeningForBinary}
+              onBinaryListeningToggle={handleBinaryListening}
+              sampleIntervalMs={0.1}
             />
           </div>
         )}
