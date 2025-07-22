@@ -81,11 +81,7 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
   };
 
   useImperativeHandle(ref, () => ({
-    onBinaryData: (data: Uint8Array) => {
-      console.log('AppElab received binary data:', data);
-      console.log('Data length:', data.length);
-      console.log('First 10 bytes:', Array.from(data.slice(0, 10)));
-      
+    onBinaryData: (data: Uint8Array) => {      
       // Convert byte data to voltage values
       const voltages = Array.from(data).map(convertToVoltage);
       updateVoltageStats(voltages);

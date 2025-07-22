@@ -33,6 +33,8 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
   const [zoomLevel, setZoomLevel] = useState(50); // 1-100, where 100 shows all available points
   const [triggerMode, setTriggerMode] = useState(false);
   const [currentTriggerVoltage, setCurrentTriggerVoltage] = useState(triggerVoltage);
+  const [capturedData, setCapturedData] = useState<number[]>([]);
+  const [isTriggered, setIsTriggered] = useState(false);
   
   // Sync internal trigger voltage with prop when it changes
   useEffect(() => {
@@ -105,34 +107,41 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
   const getDisplayRange = () => {
     const displayPoints = getDisplayPoints();
     
-    if (!triggerMode) {
+    // Use captured data if triggered, otherwise use live data
+    const dataToUse = (triggerMode && isTriggered) ? capturedData : data;
+    
+    if (!triggerMode || !isTriggered) {
       // Normal mode: show most recent data
-      const pointsToShow = Math.min(data.length, displayPoints);
-      const startIndex = Math.max(0, data.length - pointsToShow);
-      return { startIndex, pointsToShow };
+      const pointsToShow = Math.min(dataToUse.length, displayPoints);
+      const startIndex = Math.max(0, dataToUse.length - pointsToShow);
+      return { startIndex, pointsToShow, dataToUse };
     }
     
-    // Trigger mode: find trigger and center display around it
-    const triggerIndex = findTriggerPoint(data);
+    // Triggered mode: find trigger point and center display around it
+    const triggerIndex = findTriggerPoint(dataToUse);
     
     if (triggerIndex === -1) {
       // No trigger found, show most recent data
-      const pointsToShow = Math.min(data.length, displayPoints);
-      const startIndex = Math.max(0, data.length - pointsToShow);
-      return { startIndex, pointsToShow };
+      const pointsToShow = Math.min(dataToUse.length, displayPoints);
+      const startIndex = Math.max(0, dataToUse.length - pointsToShow);
+      return { startIndex, pointsToShow, dataToUse };
     }
     
     // Center the display around the trigger point
     const preBuffer = Math.floor(displayPoints * 0.2); // Show 20% before trigger
     const startIndex = Math.max(0, triggerIndex - preBuffer);
-    const pointsToShow = Math.min(displayPoints, data.length - startIndex);
+    const pointsToShow = Math.min(displayPoints, dataToUse.length - startIndex);
     
-    return { startIndex, pointsToShow };
+    return { startIndex, pointsToShow, dataToUse };
   };
 
   const drawOscilloscope = () => {
     const canvas = canvasRef.current;
-    if (!canvas || data.length === 0) return;
+    
+    // Get display range based on trigger mode
+    const { startIndex, pointsToShow, dataToUse } = getDisplayRange();
+    
+    if (!canvas || dataToUse.length === 0) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -193,17 +202,14 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
     }
 
     // Draw waveform
-    if (data.length < 2) return;
+    if (dataToUse.length < 2) return;
 
     ctx.strokeStyle = waveformColor;
     ctx.lineWidth = 2;
-
-    // Get display range based on trigger mode
-    const { startIndex, pointsToShow } = getDisplayRange();
     
     ctx.beginPath();
     for (let i = 0; i < pointsToShow; i++) {
-      const voltage = data[startIndex + i];
+      const voltage = dataToUse[startIndex + i];
       const x = (canvasWidth / pointsToShow) * i;
       const y = canvasHeight - (voltage / maxVoltage) * canvasHeight;
       
@@ -217,9 +223,36 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
     ctx.stroke();
   };
 
+  // Simple trigger capture logic
+  useEffect(() => {
+    if (!triggerMode || isTriggered || data.length < 2) return;
+    
+    // Look for rising edge trigger
+    for (let i = data.length - 2; i >= 1; i--) {
+      const prev = data[i - 1];
+      const curr = data[i];
+      
+      // Rising edge trigger: previous value below trigger, current value above
+      if (prev < currentTriggerVoltage && curr >= currentTriggerVoltage) {
+        // Capture current data and freeze display
+        setCapturedData([...data]);
+        setIsTriggered(true);
+        break;
+      }
+    }
+  }, [data, triggerMode, currentTriggerVoltage, isTriggered]);
+
+  // Reset trigger when mode is disabled
+  useEffect(() => {
+    if (!triggerMode) {
+      setIsTriggered(false);
+      setCapturedData([]);
+    }
+  }, [triggerMode]);
+
   useEffect(() => {
     drawOscilloscope();
-  }, [data, maxVoltage, zoomLevel, gridColor, waveformColor, triggerMode, currentTriggerVoltage]);
+  }, [data, maxVoltage, zoomLevel, gridColor, waveformColor, triggerMode, currentTriggerVoltage, isTriggered, capturedData]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -262,14 +295,9 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
         {triggerMode && (
           <>
             <span style={{ color: '#ff6600' }}>TRIG: {currentTriggerVoltage.toFixed(2)}V ↗</span>
-            {(() => {
-              const status = getTriggerStatus();
-              return status && (
-                <span style={{ color: status.triggered ? '#00ff00' : '#ff4444', fontSize: '10px' }}>
-                  {status.triggered ? '●TRIGGERED' : '●WAITING'}
-                </span>
-              );
-            })()}
+            <span style={{ color: isTriggered ? '#00ff00' : '#ff4444', fontSize: '10px' }}>
+              {isTriggered ? '●CAPTURED' : '●WAITING'}
+            </span>
           </>
         )}
       </div>
@@ -291,24 +319,41 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
           </label>
           <div className={styles.triggerControls}>
             <button
-              onClick={() => setTriggerMode(!triggerMode)}
+              onClick={() => {
+                if (triggerMode && isTriggered) {
+                  // Reset trigger if already triggered
+                  setIsTriggered(false);
+                  setCapturedData([]);
+                } else {
+                  // Toggle trigger mode
+                  setTriggerMode(!triggerMode);
+                }
+              }}
               className={`${styles.triggerButton} ${triggerMode ? styles.triggerActive : ''}`}
             >
-              {triggerMode ? 'TRIG ON' : 'TRIG OFF'}
+              {triggerMode ? (isTriggered ? 'RESET' : 'TRIG ON') : 'SNAPSHOT'}
             </button>
             {triggerMode && (
-              <label className={styles.triggerVoltageLabel}>
-                Trigger V:
-                <input
-                  type="number"
-                  min="0"
-                  max={maxVoltage}
-                  step="0.01"
-                  value={currentTriggerVoltage}
-                  onChange={(e) => setCurrentTriggerVoltage(Number(e.target.value))}
-                  className={styles.triggerVoltageInput}
-                />
-              </label>
+              <>
+                <label className={styles.triggerVoltageLabel}>
+                  Trigger V:
+                  <input
+                    type="number"
+                    min="0"
+                    max={maxVoltage}
+                    step="0.01"
+                    value={currentTriggerVoltage}
+                    onChange={(e) => setCurrentTriggerVoltage(Number(e.target.value))}
+                    className={styles.triggerVoltageInput}
+                  />
+                </label>
+                <button
+                  onClick={() => setTriggerMode(false)}
+                  className={styles.triggerButton}
+                >
+                  GO BACK
+                </button>
+              </>
             )}
           </div>
         </div>
