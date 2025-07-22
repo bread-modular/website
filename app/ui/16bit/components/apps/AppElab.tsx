@@ -56,7 +56,14 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
 
     const buffer = voltageBuffer.current;
     const currentVoltage = newVoltages[newVoltages.length - 1];
-    const average = buffer.reduce((sum, v) => sum + v, 0) / buffer.length;
+    
+    // Calculate 1-second average (instead of 5-second)
+    const oneSecondSamples = Math.floor(1000 / sampleIntervalMs);
+    const recentSamples = buffer.slice(-oneSecondSamples);
+    const average = recentSamples.length > 0 
+      ? recentSamples.reduce((sum, v) => sum + v, 0) / recentSamples.length 
+      : currentVoltage;
+    
     const min = Math.min(...buffer);
     const max = Math.max(...buffer);
 
@@ -121,7 +128,7 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
             </div>
             
             <div className={styles.voltageItem}>
-              <label className={styles.voltageLabel}>Average (5s)</label>
+              <label className={styles.voltageLabel}>Average (1s)</label>
               <span className={styles.voltageValue}>
                 {voltageStats.average.toFixed(3)}V
               </span>
