@@ -73,6 +73,65 @@
   font-weight: bold;
 }
 
+.triggerButton {
+  padding: 6px 12px;
+  border: 2px solid #666;
+  border-radius: 4px;
+  background: #333;
+  color: #ccc;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.triggerButton:hover {
+  border-color: #999;
+  background: #444;
+}
+
+.triggerActive {
+  border-color: #ff6600 !important;
+  background: #ff6600 !important;
+  color: #000 !important;
+  box-shadow: 0 0 8px rgba(255, 102, 0, 0.5);
+}
+
+.triggerControls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.triggerVoltageLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ff6600;
+  font-size: 11px;
+  font-weight: bold;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.triggerVoltageInput {
+  width: 60px;
+  padding: 4px 6px;
+  border: 1px solid #ff6600;
+  border-radius: 3px;
+  background: #333;
+  color: #ff6600;
+  font-size: 11px;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: center;
+}
+
+.triggerVoltageInput:focus {
+  outline: none;
+  box-shadow: 0 0 4px rgba(255, 102, 0, 0.5);
+}
+
 @media (max-width: 768px) {
   .oscilloscopeInfo {
     flex-direction: column;
