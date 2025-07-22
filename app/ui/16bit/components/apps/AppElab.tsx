@@ -129,6 +129,9 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
               <span>Listening for incoming data...</span>
             </div>
           )}
+          <div className={styles.instructionsHighlight}>
+              Send voltage to the Input pin <code>A1</code> to see measurements.
+          </div>
         </div>
       </div>
 
@@ -179,6 +182,45 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
           height={300}
           showZoomControls={true}
         />
+      </div>
+
+      <div className={common.appSection}>
+        <h2 className={common.appSubTitle}>Waveform Generator</h2>
+        <div className={common.text}>
+          16bit generates saw-tooth waveforms and you can control the frequency using the <b>CV1 knob</b>.
+        </div>
+        <ul className={common.featureList}>
+            <li>
+              <strong>Output pin</strong> <code>A1</code>: Saw tooth waveform
+            </li>
+            <li>
+              <strong>Output pin</strong> <code>A2</code>: Supersaw waveform
+            </li>
+          </ul>
+      </div>
+
+      <div className={common.appSection}>
+        <h2 className={common.appSubTitle}>Pulse Generator</h2>
+        <div className={common.text}>
+          16bit acts as a pulse generator and you can control the frequency using the <b>CV2 knob</b>. This is ideal for LFOs.
+        </div>
+        <ul className={common.featureList}>
+            <li>
+              <strong>Output pin</strong> <code>G1</code>: Pulse output
+            </li>
+          </ul>
+      </div>
+
+      <div className={common.appSection}>
+        <h2 className={common.appSubTitle}>Button Trigger</h2>
+        <div className={common.text}>
+          You can trigger something using the <b>MODE</b> button. This will generate a pulse as you press the button.
+        </div>
+        <ul className={common.featureList}>
+            <li>
+              <strong>Output pin</strong> <code>G2</code>: Pulse output
+            </li>
+          </ul>
       </div>
 
     </div>
