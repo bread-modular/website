@@ -25,6 +25,54 @@
   font-family: 'Courier New', Courier, monospace;
 }
 
+.zoomControls {
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+.zoomLabel {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #ccc;
+  font-size: 12px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.zoomSlider {
+  flex: 1;
+  height: 4px;
+  background: #333;
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.zoomSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #00ff00;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.zoomSlider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #00ff00;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.zoomValue {
+  min-width: 60px;
+  text-align: right;
+  font-weight: bold;
+}
+
 @media (max-width: 768px) {
   .oscilloscopeInfo {
     flex-direction: column;

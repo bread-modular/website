@@ -47,8 +47,7 @@ const PicoWebSerial = () => {
     fx2: "noop",
     fx3: "noop",
   });
-  const [isListeningForBinary, setIsListeningForBinary] = useState(false);
-  
+  const [isListeningForBinary, setIsListeningForBinary] = useState(false);  
   const serialManagerRef = useRef<WebSerialManager | null>(null);
   const stopBinaryListenerRef = useRef<(() => void) | null>(null);
   const appElabRef = useRef<AppElabRef | null>(null);
@@ -372,6 +371,7 @@ const PicoWebSerial = () => {
               ref={appElabRef}
               isListeningForBinary={isListeningForBinary}
               onBinaryListeningToggle={handleBinaryListening}
+              sampleIntervalMs={0.1}
             />
           </div>
         )}

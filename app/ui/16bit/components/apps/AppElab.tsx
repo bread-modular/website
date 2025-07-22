@@ -1,5 +1,5 @@
 "use client";
-import React, { forwardRef, useImperativeHandle, useState, useRef } from "react";
+import React, { forwardRef, useImperativeHandle, useState, useRef, useEffect } from "react";
 import styles from "./AppElab.module.css";
 import common from "./AppCommon.module.css";
 import Oscilloscope from "../common/Oscilloscope";
@@ -7,6 +7,7 @@ import Oscilloscope from "../common/Oscilloscope";
 export interface AppElabProps {
   isListeningForBinary: boolean;
   onBinaryListeningToggle: () => void;
+  sampleIntervalMs?: number;
 }
 
 export interface AppElabRef {
@@ -24,6 +25,7 @@ interface VoltageStats {
 const AppElab = forwardRef<AppElabRef, AppElabProps>(({
   isListeningForBinary,
   onBinaryListeningToggle,
+  sampleIntervalMs = 1,
 }, ref) => {
   const [voltageStats, setVoltageStats] = useState<VoltageStats>({
     current: 0,
@@ -33,9 +35,9 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
     samples: 0
   });
 
-  // Store last 1000ms of data (1 data point per ms)
+  // Store more data for zoom functionality (up to 5 seconds of data)
   const voltageBuffer = useRef<number[]>([]);
-  const maxBufferSize = 1000;
+  const maxBufferSize = Math.floor(5000 / sampleIntervalMs); // 5 seconds worth of samples
 
   const convertToVoltage = (byteValue: number): number => {
     return (byteValue / 255) * 3.3;
@@ -47,7 +49,7 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
     // Add new voltages to buffer
     voltageBuffer.current.push(...newVoltages);
     
-    // Keep only last 1000ms of data
+    // Keep only last 5 seconds of data
     if (voltageBuffer.current.length > maxBufferSize) {
       voltageBuffer.current = voltageBuffer.current.slice(-maxBufferSize);
     }
@@ -111,16 +113,6 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
       </div>
 
       <div className={common.appSection}>
-        <h2 className={common.appSubTitle}>Oscilloscope</h2>        
-        <Oscilloscope 
-          data={voltageBuffer.current}
-          maxVoltage={3.3}
-          displayPoints={500}
-          height={300}
-        />
-      </div>
-
-      <div className={common.appSection}>
         <h2 className={common.appSubTitle}>Voltmeter</h2>
         
         <div className={styles.voltmeter}>
@@ -133,7 +125,7 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
             </div>
             
             <div className={styles.voltageItem}>
-              <label className={styles.voltageLabel}>Average (1s)</label>
+              <label className={styles.voltageLabel}>Average (5s)</label>
               <span className={styles.voltageValue}>
                 {voltageStats.average.toFixed(3)}V
               </span>
@@ -153,7 +145,20 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
               </span>
             </div>
           </div>
+          
         </div>
+      </div>
+
+      <div className={common.appSection}>
+        <h2 className={common.appSubTitle}>Oscilloscope</h2>        
+        <Oscilloscope 
+          data={voltageBuffer.current}
+          maxVoltage={3.3}
+          maxDisplayPoints={2000}
+          sampleIntervalMs={sampleIntervalMs}
+          height={300}
+          showZoomControls={true}
+        />
       </div>
 
     </div>

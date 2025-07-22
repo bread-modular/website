@@ -1,29 +1,65 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import styles from "./Oscilloscope.module.css";
 
 export interface OscilloscopeProps {
   data: number[];
   maxVoltage?: number;
-  displayPoints?: number;
+  maxDisplayPoints?: number;
+  sampleIntervalMs?: number;
   width?: number;
   height?: number;
   gridColor?: string;
   waveformColor?: string;
   backgroundColor?: string;
+  showZoomControls?: boolean;
 }
 
 const Oscilloscope: React.FC<OscilloscopeProps> = ({
   data,
   maxVoltage = 3.3,
-  displayPoints = 500,
+  maxDisplayPoints = 2000,
+  sampleIntervalMs = 1,
   width,
   height = 300,
   gridColor = '#e0e0e0',
   waveformColor = '#00ff00',
-  backgroundColor = '#000'
+  backgroundColor = '#000',
+  showZoomControls = true
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [zoomLevel, setZoomLevel] = useState(50); // 1-100, where 100 shows all available points
+  
+  // Calculate actual display points based on zoom level
+  const getDisplayPoints = () => {
+    const minPoints = 50; // Minimum zoom shows 50 points
+    const maxPoints = Math.min(data.length, maxDisplayPoints);
+    return Math.floor(minPoints + (maxPoints - minPoints) * (zoomLevel / 100));
+  };
+
+  // Calculate time per division based on sample interval
+  const getTimePerDiv = () => {
+    const points = getDisplayPoints();
+    const totalTimeMs = points * sampleIntervalMs;
+    const timePerDiv = totalTimeMs / 20; // 20 divisions horizontally
+    return timePerDiv;
+  };
+
+  // Format time value for display
+  const formatTime = (timeMs: number) => {
+    if (timeMs >= 1000) {
+      return `${(timeMs / 1000).toFixed(1)}s`;
+    } else if (timeMs >= 1) {
+      return `${timeMs.toFixed(1)}ms`;
+    } else {
+      return `${(timeMs * 1000).toFixed(0)}μs`;
+    }
+  };
+
+  // Calculate total time span being displayed
+  const getTotalTimeSpan = () => {
+    return getDisplayPoints() * sampleIntervalMs;
+  };
 
   const drawOscilloscope = () => {
     const canvas = canvasRef.current;
@@ -76,7 +112,8 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
     ctx.lineWidth = 2;
     ctx.beginPath();
 
-    // Show specified number of points for optimal visibility
+    // Show specified number of points based on zoom level
+    const displayPoints = getDisplayPoints();
     const pointsToShow = Math.min(data.length, displayPoints);
     const startIndex = Math.max(0, data.length - pointsToShow);
     
@@ -97,7 +134,7 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
 
   useEffect(() => {
     drawOscilloscope();
-  }, [data, maxVoltage, displayPoints, gridColor, waveformColor]);
+  }, [data, maxVoltage, zoomLevel, gridColor, waveformColor]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -133,11 +170,24 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
         className={styles.oscilloscopeCanvas}
         style={{ backgroundColor }}
       />
-      <div className={styles.oscilloscopeInfo}>
-        <span>Time scale: ~{Math.round(displayPoints/20)}ms/div</span>
-        <span>Voltage scale: {(maxVoltage/10).toFixed(2)}V/div</span>
-        <span>Points: {data.length}/{displayPoints}</span>
-      </div>
+      {showZoomControls && (
+        <div className={styles.zoomControls}>
+          <label className={styles.zoomLabel}>
+            Time Scale:
+            <input
+              type="range"
+              min="1"
+              max="100"
+              value={zoomLevel}
+              onChange={(e) => setZoomLevel(Number(e.target.value))}
+              className={styles.zoomSlider}
+            />
+            <span className={styles.zoomValue}>
+              {zoomLevel === 100 ? 'Max' : formatTime(getTotalTimeSpan())}
+            </span>
+          </label>
+        </div>
+      )}
     </div>
   );
 };
