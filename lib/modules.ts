@@ -36,7 +36,7 @@ const MODULES_DIRECTORY = path.join(process.cwd(), 'content/modules');
 
 // Helper function to get the clean ID without numeric prefix
 function getCleanId(filename: string): string {
-  return filename.replace(/^\d+-/, '').replace(/\.md$/, '');
+  return filename.replace(/^[\d.]+\-/, '').replace(/\.md$/, '');
 }
 
 export async function getAllModuleIds() {
@@ -93,10 +93,10 @@ export async function getAllModules(): Promise<ModuleSpec[]> {
   const sortedFilenames = filenames
     .filter(filename => filename.endsWith('.md'))
     .sort((a, b) => {
-      const aMatch = a.match(/^(\d+)-/);
-      const bMatch = b.match(/^(\d+)-/);
-      const aNum = aMatch ? parseInt(aMatch[1]) : 0;
-      const bNum = bMatch ? parseInt(bMatch[1]) : 0;
+      const aMatch = a.match(/^([\d.]+)-/);
+      const bMatch = b.match(/^([\d.]+)-/);
+      const aNum = aMatch ? parseFloat(aMatch[1]) : 0;
+      const bNum = bMatch ? parseFloat(bMatch[1]) : 0;
       return aNum - bNum;
     });
 
