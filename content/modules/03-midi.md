@@ -10,6 +10,14 @@ versions:
     price: 10
     productId: price_1QyWLcDOvwMyUDfcr8Xe0xbV
 size: base
+inputs:
+  - shortname: "MIDI-TRS"
+    description: "A 3.5mm Socket for the incoming TRS MIDI cable"
+outputs:
+  - shortname: "GATE[n]"
+    description: "Access the gate output of the nth channel"
+  - shortname: "MIDI[n]"
+    description: "Access the MIDI stream of the nth channel"
 --- 
 
 Bread Modular [adopts MIDI](/docs/technical-details/modular-midi) as a communication protocol between modules. While using MIDI, we can replace multiple wires with a single wire, which is very important for a smaller system like Bread Modular.
@@ -38,6 +46,8 @@ This module does not come with any cables. Here's a guide on cables for you to s
 
 * **3.5mm TRS to TRS** - If your MIDI device supports TRS MIDI, you can use a "3.5mm stereo cable". It can be easily found at any local or online audio store.
 * **MIDI DIN to TRS MIDI** - If your MIDI device uses a DIN connector, you can use [this adapter](https://www.amazon.com/s?k=MIDI+to+TRS) along with a [MIDI DIN cable](https://www.amazon.com/s?k=MIDI+DIN+cable).
+
+[io/]
 
 ## Additional Parts
 

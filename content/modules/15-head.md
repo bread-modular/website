@@ -10,6 +10,28 @@ versions:
     price: 10
     productId: price_1QyWsADOvwMyUDfccbdNUrQV
 size: base
+inputs:
+  - shortname: "L"
+    description: "Left channel of the audio in"
+  - shortname: "R"
+    description: "Right channel of the audio in"
+  - shortname: "MULT"
+    description: "A socket of the multiplier for either audio or signal"
+  - shortname: "MULT"
+    description: "A socket of the multiplier for either audio or signal"
+  - shortname: "MULT"
+    description: "A socket of the multiplier for either audio or signal"
+outputs:
+  - shortname: "AUDIO-TRS"
+    description: "A 3.5mm Socket for the headphone jack"
+  - shortname: "AUDIO-TRS"
+    description: "A 3.5mm Socket for the headphone jack"
+  - shortname: "AUDIO-TRS"
+    description: "A 3.5mm Socket for the headphone jack"
+  - shortname: "AUDIO-TRS"
+    description: "A 3.5mm Socket for the headphone jack"
+  - shortname: "AUDIO-TRS"
+    description: "A 3.5mm Socket for the headphone jack"
 ---
 
 
@@ -24,13 +46,7 @@ This is a stereo headphone output module. It can drive any DJ or studio headphon
 * High impedance headphones can be used, but won't reach the maximum volume.
 
 
-## Inputs
-
-1. L Channel
-2. R Channel
-3. MULT
-4. MULT
-5. MULT
+[io/]
 
 ## Additional Parts
 

@@ -10,6 +10,28 @@ versions:
     price: 10
     productId: price_1QyWNCDOvwMyUDfcats4KTNp
 size: base
+inputs:
+  - shortname: "1"
+    description: "Audio in for the channel 1"
+  - shortname: "2"
+    description: "Audio in for the channel 2"
+  - shortname: "3"
+    description: "Audio in for the channel 3"
+  - shortname: "4"
+    description: "Audio in for the channel 4"
+  - shortname: "NC"
+    description: "Not connected"
+outputs:
+  - shortname: "MIXOUT"
+    description: "Mixed audio output"
+  - shortname: "MIXOUT"
+    description: "Mixed audio output"
+  - shortname: "MIXOUT"
+    description: "Mixed audio output"
+  - shortname: "MIXOUT"
+    description: "Mixed audio output"
+  - shortname: "MIXOUT"
+    description: "Mixed audio output"
 ---
 
 This is a 4 channel analog mixer meant for mixing audio signals. 
@@ -19,6 +41,8 @@ This is a 4 channel analog mixer meant for mixing audio signals.
 ## Functionality
 
 This can be used as a final mixer or as a submix. This module uses rail-to-rail opamps. So, even though we work with a 3.3V setup, it has capable headroom.
+
+[io/]
 
 ## Additional Parts
 

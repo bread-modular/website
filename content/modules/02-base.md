@@ -13,6 +13,17 @@ versions:
     productId: price_1QyTDGDOvwMyUDfcwRzSAGgi
     devProductId: price_1QyTNUDOvwMyUDfcWPMy3X6d
 size: double
+inputs:
+  - shortname: "L"
+    description: "Left channel of the audio in"
+  - shortname: "R"
+    description: "Right channel of the audio in"
+  - shortname: "MULT"
+    description: "A socket of the multiplier for either audio or signal"
+  - shortname: "MULT"
+    description: "A socket of the multiplier for either audio or signal"
+  - shortname: "MULT"
+    description: "A socket of the multiplier for either audio or signal"
 ---
 
 This is a minimalistic base for 12 Bread Modular modules. It features:
@@ -38,6 +49,8 @@ Once assembled with modules, the size is very similar to that of an Elektron Dig
 ## Additional Parts
 
 > This section is only relevant if you are buying the semi-assembled module. You have to source & solder the following parts. You can check our guide on [common parts](/docs/technical-details/common-parts) for where to source these components.
+
+[io/]
 
 * 3.5mm Stereo Sockets - 4
 * 50K Potentiometers - 2

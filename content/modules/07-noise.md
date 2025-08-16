@@ -11,32 +11,32 @@ versions:
     productId: price_1QyWj8DOvwMyUDfcjXNIsEDU
 size: base
 inputs:
-  - shortname: "MIDI In"
-    description: "MIDI input for controlling the noise generator"
-  - shortname: "N/C"
+  - shortname: "MIDI"
+    description: "MIDI input to control the noise generator"
+  - shortname: "NC"
     description: "Not connected"
-  - shortname: "N/C"
+  - shortname: "NC"
     description: "Not connected"
-  - shortname: "Debug"
+  - shortname: "TX"
     description: "Debug pin for the microcontroller"
-  - shortname: "Programming"
+  - shortname: "UPDI"
     description: "Programming pin for the microcontroller"
 outputs:
-  - shortname: "MIDI THRU"
-    description: "MIDI passthrough output"
-  - shortname: "White Noise"
+  - shortname: "MIDI"
+    description: "MIDI THRU (passthrough) output"
+  - shortname: "WHITE"
     description: "White noise output"
-  - shortname: "White Noise"
-    description: "White noise output (duplicate)"
-  - shortname: "Blue Noise"
-    description: "Blue noise output with high-frequency emphasis"
-  - shortname: "Pink Noise"
-    description: "Pink noise output with frequency-balanced characteristics"
+  - shortname: "WHITE"
+    description: "White noise output"
+  - shortname: "BLUE"
+    description: "Blue noise output"
+  - shortname: "PINK"
+    description: "Pink noise output"
 ---
 
-This a digital noise generator with multiple tone controling options. It also supports MIDI.
+This a digital noise generator with multiple tone controlling options. It also supports MIDI.
 
-> It's quite hard to make noise with analog circuits with a system running at 3.3V. That's why we using a Microcontroller (ATtiny1616) to generate noise.
+> It's quite hard to make noise with analog circuits in a system running at 3.3V. That's why we're using a Microcontroller (ATtiny1616) to generate noise.
 
 [io/]
 
@@ -49,6 +49,8 @@ This a digital noise generator with multiple tone controling options. It also su
 ## MIDI
 
 * CC 74: Adds to the **TONE** control value.
+
+[io/]
 
 ## Additional Parts
 

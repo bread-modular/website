@@ -10,6 +10,28 @@ versions:
     price: 10
     productId: price_1RVV72DOvwMyUDfceGGxSVru
 size: base
+inputs:
+  - shortname: "MIDI"
+    description: "MIDI input for control"
+  - shortname: "CV1"
+    description: "CV input for control channel 1"
+  - shortname: "CV2"
+    description: "CV input for control channel 2"
+  - shortname: "CV3"
+    description: "CV input for control channel 3"
+  - shortname: "CV4"
+    description: "CV input for control channel 4"
+outputs:
+  - shortname: "MIDI"
+    description: "MIDI output (MIDI THRU + CVs as CCs)"
+  - shortname: "MIDI"
+    description: "MIDI output (MIDI THRU + CVs as CCs)"
+  - shortname: "MIDI"
+    description: "MIDI output (MIDI THRU + CVs as CCs)"
+  - shortname: "MIDI"
+    description: "MIDI output (MIDI THRU + CVs as CCs)"
+  - shortname: "MIDI"
+    description: "MIDI output (MIDI THRU + CVs as CCs)"
 ---
 
 This is a MIDI CC Controller with 4 knobs for controlling MIDI parameters. You can also control each CC via a CV input, making it function as a CV to MIDI converter.
@@ -24,16 +46,7 @@ This module is designed to work with the [16bit](/modules/16bit) as a way to ext
 * 3 banks of selectable CC ranges
 * MIDI THRU support for cascading multiple MCC modules
 
-## Input
-1. MIDI In
-2. CV1
-3. CV2
-4. CV3
-5. CV4
-
-## Output
-
-1-5. MIDI Out
+[io/]
 
 ## Controls
 
@@ -45,4 +58,4 @@ This module is designed to work with the [16bit](/modules/16bit) as a way to ext
 
 * 2.54mm Header Pins (5-pin) - 2
 * Circular Pin Header Sockets (5-pin) - 4
-* 1M Potentiometers - 4 (FREQ)
+* 1M Potentiometers - 4 (for CV inputs)

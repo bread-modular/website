@@ -10,6 +10,28 @@ versions:
     price: 10
     productId: price_1QyWkQDOvwMyUDfcTEsuVsye
 size: base
+inputs:
+  - shortname: "MIDI"
+    description: "MIDI input to control the hi-hat generator"
+  - shortname: "NOISE"
+    description: "External noise (audio) input"
+  - shortname: "GATE"
+    description: "Gate input for triggering the hi-hat"
+  - shortname: "ACCENT"
+    description: "CV input for accent control"
+  - shortname: "OPEN"
+    description: "Gate input for open hi-hat"
+outputs:
+  - shortname: "MIDI"
+    description: "MIDI THRU (passthrough) output"
+  - shortname: "AUDIO"
+    description: "Hi-hat audio output"
+  - shortname: "AUDIO"
+    description: "Hi-hat audio output"
+  - shortname: "CV"
+    description: "Envelope CV of the hi-hat"
+  - shortname: "CV"
+    description: "Envelope CV of the hi-hat"
 ---
 
 This is a MIDI-controllable analog hi-hat module. You can also control the hi-hat via GATE & CV signals. 
@@ -25,21 +47,7 @@ This is a MIDI-controllable analog hi-hat module. You can also control the hi-ha
 * Feed Custom Noise Sources
 * Get the HiHat Envelope as CV
 
-## Inputs
-
-1. MIDI In
-2. Noise Source
-3. Gate Input (If not provided via MIDI)
-4. CV Input for the Accent Control
-5. Gate Input for the Open HiHat
-
-## Outputs
-
-1. MIDI THRU
-2. HiHat Output
-3. HiHat Output
-4. Envelope CV of the HiHat
-5. Envelope CV of the HiHat
+[io/]
 
 ## Controls
 

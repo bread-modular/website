@@ -11,28 +11,28 @@ versions:
     productId: price_1QyWmsDOvwMyUDfcuXOxg3k3
 size: base
 inputs:
-  - shortname: "MIDI In"
+  - shortname: "MIDI"
     description: "MIDI input for triggering and controlling the envelope"
-  - shortname: "GATE In"
+  - shortname: "GATE"
     description: "Gate input for triggering the envelope manually"
   - shortname: "CV1"
     description: "Control voltage input for CV1 parameter modulation"
   - shortname: "CV2"
     description: "Control voltage input for CV2 parameter modulation"
-  - shortname: "Debug"
+  - shortname: "TX"
     description: "Debug pin for the microcontroller"
-  - shortname: "Programming"
+  - shortname: "UPDI"
     description: "Programming pin for the microcontroller"
 outputs:
-  - shortname: "MIDI THRU"
-    description: "MIDI passthrough output"
-  - shortname: "Envelope Out"
+  - shortname: "MIDI"
+    description: "MIDI THRU (passthrough) output"
+  - shortname: "ENV"
     description: "Main envelope output signal"
-  - shortname: "Envelope Out"
+  - shortname: "ENV"
     description: "Envelope output signal (duplicate)"
-  - shortname: "Envelope Out"
+  - shortname: "ENV"
     description: "Envelope output signal (duplicate)"
-  - shortname: "Envelope Out"
+  - shortname: "ENV"
     description: "Envelope output signal (duplicate)"
 ---
 

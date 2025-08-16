@@ -11,26 +11,26 @@ versions:
     productId: price_1QyWp3DOvwMyUDfcYwTnbJW0
 size: base
 inputs:
-  - shortname: "Audio In"
+  - shortname: "AUDIO"
     description: "Main audio input to be filtered"
-  - shortname: "CV IN"
-    description: "Control voltage input for cutoff frequency modulation"
+  - shortname: "CV"
+    description: "CV input for cutoff frequency modulation"
   - shortname: "MULT"
-    description: "Multiple input/output connection point"
+    description: "A socket of the multiplier for either audio or signal"
   - shortname: "MULT"
-    description: "Multiple input/output connection point"
+    description: "A socket of the multiplier for either audio or signal"
   - shortname: "MULT"
-    description: "Multiple input/output connection point"
+    description: "A socket of the multiplier for either audio or signal"
 outputs:
-  - shortname: "LOWPASS"
+  - shortname: "LF"
     description: "Low-pass filtered output"
-  - shortname: "LOWPASS"
+  - shortname: "LF"
     description: "Low-pass filtered output (duplicate)"
-  - shortname: "HIGHPASS"
+  - shortname: "HF"
     description: "High-pass filtered output"
-  - shortname: "HIGHPASS"
+  - shortname: "HF"
     description: "High-pass filtered output (duplicate)"
-  - shortname: "BANDPASS"
+  - shortname: "BF"
     description: "Band-pass filtered output"
 ---
 
@@ -60,5 +60,5 @@ This is a traditional analog State Variable Filter (SVF) implementation that inc
 * Circular Pin Header Sockets (5-pin) - 2
 * 50K Potentiometers - 1 (FREQ CURVE)
 * 500K Potentiometers - 1 (RESONANCE)
-* 1M Potentiometers - (FREQ)
+* 1M Potentiometers - 1 (FREQUENCY)
 * Vactrols - 2

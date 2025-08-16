@@ -10,6 +10,28 @@ versions:
     price: 10
     productId: price_1QyWq5DOvwMyUDfcg0HxSomd
 size: base
+inputs:
+  - shortname: "AUDIO"
+    description: "Main audio input to be filtered"
+  - shortname: "GATE/CV"
+    description: "CV or GATE input to trigger the Low Pass Gate"
+  - shortname: "V+"
+    description: "3.3V outlet (this is not an input, but can be fed to CV input to act as a low pass filter)"
+  - shortname: "NC"
+    description: "Not connected"
+  - shortname: "NC"
+    description: "Not connected"
+outputs:
+  - shortname: "AUDIO"
+    description: "Filtered audio output"
+  - shortname: "AUDIO"
+    description: "Filtered audio output"
+  - shortname: "AUDIO"
+    description: "Filtered audio output"
+  - shortname: "AUDIO"
+    description: "Filtered audio output"
+  - shortname: "AUDIO"
+    description: "Filtered audio output"
 ---
 
 This is an analog low pass gate incorporating Vactrols. It uses 2nd order RC filter as the core of the circuit.
@@ -34,21 +56,7 @@ Here are some ways to use this module:
 * Feed a fixed voltage to the CV. (Probably 3.3V from the **+V** in the input section)
 * Use the CUTOFF control to set the cutoff frequency.
 
-## Inputs
-
-1. Audio In
-2. GATE/CV In
-3. +V of 3.3V (This is not an input, but can be feed for CV input to act as a low pass filter.)
-4. N/C (Not Connected)
-5. N/C (Not Connected)
-
-## Outputs
-
-1. Filter Output
-2. Filter Output
-3. Filter Output
-4. Filter Output
-5. Filter Output
+[io/]
 
 ## Controls
 
