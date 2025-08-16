@@ -14,6 +14,11 @@ export interface ModuleVersion {
   devProductId?: string;
 }
 
+export interface ModuleIO {
+  shortname: string;
+  description: string;
+}
+
 export interface ModuleSpec {
   id: string;
   title: string;
@@ -26,6 +31,8 @@ export interface ModuleSpec {
   };
   featured?: boolean;
   size?: 'base' | 'double' | 'triple';
+  inputs?: ModuleIO[];
+  outputs?: ModuleIO[];
 }
 
 export interface Module extends ModuleSpec {
@@ -78,6 +85,8 @@ export const getModuleData = cache(async (id: string): Promise<Module | null> =>
       checkout: data.checkout,
       featured: data.featured,
       size: data.size,
+      inputs: data.inputs || [],
+      outputs: data.outputs || [],
       contentHtml,
     };
   } catch (error) {

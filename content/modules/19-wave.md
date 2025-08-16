@@ -10,6 +10,17 @@ versions:
     price: 10
     productId: price_1QyWubDOvwMyUDfccMNmFymI
 size: base
+outputs:
+  - shortname: "SQR"
+    description: "Square Wave Output"
+  - shortname: "SQR"
+    description: "Square Wave Output"
+  - shortname: "TRI"
+    description: "Triangle Wave Output"
+  - shortname: "TRI"
+    description: "Triangle Wave Output"
+  - shortname: "SIN"
+    description: "Sine Wave Output (approximate)"
 ---
 
 This is an analog waveform generator with configurable frequency ranges.
@@ -20,12 +31,7 @@ This is an analog waveform generator with configurable frequency ranges.
 * Define the maximum frequency it can generate by connecting a column of two-pin sockets at the bottom
 * Better suited for LFOs
 
-## Outputs
-1. Square Wave Output
-2. Square Wave Output
-3. Triangle Wave Output
-4. Triangle Wave Output
-5. Sine Wave Output
+[io/]
 
 ## Controls
 

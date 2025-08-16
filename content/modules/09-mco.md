@@ -10,6 +10,28 @@ versions:
     price: 10
     productId: price_1QyWlbDOvwMyUDfcdoWGc97i
 size: base
+inputs:
+  - shortname: "MIDI"
+    description: "MIDI input to control the oscillator"
+  - shortname: "NC"
+    description: "Not connected"
+  - shortname: "NC"
+    description: "Not connected"
+  - shortname: "TX"
+    description: "Debug pin for the microcontroller"
+  - shortname: "UPDI"
+    description: "Programming pin for the microcontroller"
+outputs:
+  - shortname: "MIDI"
+    description: "MIDI THRU (passthrough) output"
+  - shortname: "OUT"
+    description: "Oscillator Output"
+  - shortname: "OUT"
+    description: "Oscillator Output"
+  - shortname: "GATE"
+    description: "Gate trigger from the MIDI input"
+  - shortname: "VEL"
+    description: "Velocity CV from the MIDI input"
 ---
 
 This is a MIDI Controllable Oscillator (MCO) that generates two square waves. One is the main oscillator, and the other is a detuned oscillator that can be tuned up to 12 semitones down.
@@ -27,19 +49,7 @@ Here are some ideas:
 
 ## Inputs
 
-1. MIDI In
-2. N/C
-3. N/C
-4. Debug pin for the microcontroller
-5. Programming pin for the microcontroller
-
-## Outputs
-
-1. MIDI THRU
-2. Oscillator Output
-3. Oscillator Output
-4. GATE from the MIDI
-5. Velocity from the MIDI
+[io/]
 
 ## Controls
 

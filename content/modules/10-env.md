@@ -10,11 +10,37 @@ versions:
     price: 10
     productId: price_1QyWmsDOvwMyUDfcuXOxg3k3
 size: base
+inputs:
+  - shortname: "MIDI"
+    description: "MIDI input for triggering and controlling the envelope"
+  - shortname: "GATE"
+    description: "Gate input for triggering the envelope manually"
+  - shortname: "CV1"
+    description: "Control voltage input for CV1 parameter modulation"
+  - shortname: "CV2"
+    description: "Control voltage input for CV2 parameter modulation"
+  - shortname: "TX"
+    description: "Debug pin for the microcontroller"
+  - shortname: "UPDI"
+    description: "Programming pin for the microcontroller"
+outputs:
+  - shortname: "MIDI"
+    description: "MIDI THRU (passthrough) output"
+  - shortname: "ENV"
+    description: "Main envelope output signal"
+  - shortname: "ENV"
+    description: "Envelope output signal (duplicate)"
+  - shortname: "ENV"
+    description: "Envelope output signal (duplicate)"
+  - shortname: "ENV"
+    description: "Envelope output signal (duplicate)"
 ---
 
 This is an envelope generator with three different algorithms. It can be controlled via MIDI or CV/Gate.
 
 It has two main control knobs, named **CV1** and **CV2**. They control parameters of the envelope algorithm.
+
+[io/]
 
 ## Algorithms
 
@@ -53,23 +79,6 @@ The envelope will be triggered using the MIDI Gate signal.
 
 ### 3. MIDI_VELOCITY MODE
 This is the same as MIDI MODE, but it will also modulate CV2 using the velocity. If you are using this mode, make sure to start with velocity = 0; otherwise, CV2 will be open regardless of the physical CV2 knob position.
-
-## Inputs
-
-1. MIDI In
-2. GATE In
-3. CV1
-4. CV2
-5. Debug pin for the microcontroller
-6. Programming pin for the microcontroller
-
-## Outputs
-
-1. MIDI THRU
-2. Envelope Output
-3. Envelope Output
-4. Envelope Output
-5. Envelope Output
 
 ## Controls
 

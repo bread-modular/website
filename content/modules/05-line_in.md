@@ -10,9 +10,25 @@ versions:
     price: 10
     productId: price_1QyWOkDOvwMyUDfcbZzi3noS
 size: base
+inputs:
+  - shortname: "AUDIO-TRS"
+    description: "A 3.5mm Socket for the incoming stereo audio input"
+outputs:
+  - shortname: "L"
+    description: "Left channel of the audio in"
+  - shortname: "R"
+    description: "Right channel of the audio in"
+  - shortname: "MONO"
+    description: "Mono mix of the audio in"
+  - shortname: "MONO"
+    description: "Mono mix of the audio in"
+  - shortname: "MONO"
+    description: "Mono mix of the audio in"
 ---
 
 This module is a stereo line input with separate gain controls for each channel. The independent gain controls enable you to process two mono signals separately if desired.
+
+[io/]
 
 ## Additional Parts
 

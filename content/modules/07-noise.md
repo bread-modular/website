@@ -10,27 +10,35 @@ versions:
     price: 10
     productId: price_1QyWj8DOvwMyUDfcjXNIsEDU
 size: base
+inputs:
+  - shortname: "MIDI"
+    description: "MIDI input to control the noise generator"
+  - shortname: "NC"
+    description: "Not connected"
+  - shortname: "NC"
+    description: "Not connected"
+  - shortname: "TX"
+    description: "Debug pin for the microcontroller"
+  - shortname: "UPDI"
+    description: "Programming pin for the microcontroller"
+outputs:
+  - shortname: "MIDI"
+    description: "MIDI THRU (passthrough) output"
+  - shortname: "WHITE"
+    description: "White noise output"
+  - shortname: "WHITE"
+    description: "White noise output"
+  - shortname: "BLUE"
+    description: "Blue noise output"
+  - shortname: "PINK"
+    description: "Pink noise output"
 ---
 
-This a digital noise generator with multiple tone controling options. It also supports MIDI.
+This a digital noise generator with multiple tone controlling options. It also supports MIDI.
 
-> It's quite hard to make noise with analog circuits with a system running at 3.3V. That's why we using a Microcontroller (ATtiny1616) to generate noise.
+> It's quite hard to make noise with analog circuits in a system running at 3.3V. That's why we're using a Microcontroller (ATtiny1616) to generate noise.
 
-## Inputs
-
-1. MIDI In
-2. N/C
-3. N/C
-4. Debug pin for the microcontroller
-5. Programming pin for the microcontroller
-
-## Outputs
-
-1. MIDI THRU
-2. White Noise
-3. White Noise
-4. Blue Noise
-5. Pink Noise
+[io/]
 
 ## Controls
 
@@ -41,6 +49,8 @@ This a digital noise generator with multiple tone controling options. It also su
 ## MIDI
 
 * CC 74: Adds to the **TONE** control value.
+
+[io/]
 
 ## Additional Parts
 

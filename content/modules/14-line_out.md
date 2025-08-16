@@ -10,6 +10,28 @@ versions:
     price: 10
     productId: price_1QyWrMDOvwMyUDfcSPPrAHok
 size: base
+inputs:
+  - shortname: "L"
+    description: "Left channel of the audio in"
+  - shortname: "R"
+    description: "Right channel of the audio in"
+  - shortname: "MULT"
+    description: "A socket of the multiplier for either audio or signal"
+  - shortname: "MULT"
+    description: "A socket of the multiplier for either audio or signal"
+  - shortname: "MULT"
+    description: "A socket of the multiplier for either audio or signal"
+outputs:
+  - shortname: "AUDIO-TRS"
+    description: "A 3.5mm Socket for the stereo audio output"
+  - shortname: "AUDIO-TRS"
+    description: "A 3.5mm Socket for the stereo audio output"
+  - shortname: "AUDIO-TRS"
+    description: "A 3.5mm Socket for the stereo audio output"
+  - shortname: "AUDIO-TRS"
+    description: "A 3.5mm Socket for the stereo audio output"
+  - shortname: "AUDIO-TRS"
+    description: "A 3.5mm Socket for the stereo audio output"
 ---
 
 This is a stereo line output module. It transforms the input signal (usually from a mixer) into a line-level output.
@@ -21,14 +43,7 @@ This is a stereo line output module. It transforms the input signal (usually fro
 * If the "R" channel input is not provided, the "L" channel input will be normalized to the right channel.
 * Can also be used as two mono line outputs.
 
-
-## Inputs
-
-1. L Channel
-2. R Channel
-3. MULT
-4. MULT
-5. MULT
+[io/]
 
 ## Additional Parts
 

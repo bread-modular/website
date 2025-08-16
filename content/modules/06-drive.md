@@ -10,6 +10,28 @@ versions:
     price: 10
     productId: price_1QyWPoDOvwMyUDfcjX9KKPOg
 size: base
+inputs:
+  - shortname: "AUDIO"
+    description: "Audio input for the Drive"
+  - shortname: "MULT"
+    description: "A socket of the multiplier for either audio or signal"
+  - shortname: "MULT"
+    description: "A socket of the multiplier for either audio or signal"
+  - shortname: "MULT"
+    description: "A socket of the multiplier for either audio or signal"
+  - shortname: "MULT"
+    description: "A socket of the multiplier for either audio or signal"
+outputs:
+  - shortname: "DIRTY"
+    description: "An output of the Drive which is always overdriven"
+  - shortname: "DIRTY"
+    description: "An output of the Drive which is always overdriven"
+  - shortname: "DIRTY"
+    description: "An output of the Drive which is always overdriven"
+  - shortname: "CLEAN"
+    description: "An output of the Drive which is clean by default and overdriven only if controls are engaged"
+  - shortname: "CLEAN"
+    description: "An output of the Drive which is clean by default and overdriven only if controls are engaged"
 ---
 
 This is a quite capable analog distortion module with multiple modes. 
@@ -28,7 +50,9 @@ Turning both **OD1** and **OD2** to the right will turn this module into an over
 
 ## Fuzz
 
-Output sockets labeled as **DIRTY** go through another diode-based drive circuit to add more harmonics. You can use the output socket labeled as **CLEN** to bypass this circuit.
+Output sockets labeled as **DIRTY** go through another diode-based drive circuit to add more harmonics. You can use the output socket labeled as **CLEAN** to bypass this circuit.
+
+[io/]
 
 ## Additional Parts
 

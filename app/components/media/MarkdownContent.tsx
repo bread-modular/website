@@ -4,9 +4,12 @@ import YouTubeEmbed from './YouTubeEmbed';
 import styles from './MarkdownContent.module.css';
 import { useEffect } from 'react';
 import useImagePreview from '../../utils/useImagePreview';
+import { ModuleIO } from '@/lib/modules';
 
 interface Props {
   content: string;
+  inputs?: ModuleIO[];
+  outputs?: ModuleIO[];
 }
 
 function getYouTubeData(url: string): { videoId: string; startTime?: string } {
@@ -88,6 +91,40 @@ function processImagesWithMaxWidth(html: string): string {
   });
 }
 
+// Function to render input/output sections
+function renderIOSection(inputs?: ModuleIO[], outputs?: ModuleIO[]): string {
+  if (!inputs || !outputs || (inputs.length === 0 && outputs.length === 0)) {
+    return '';
+  }
+
+  let html = '<div class="io-section">';
+  
+  if (inputs.length > 0) {
+    html += '<div class="io-group"><h2>Inputs</h2><ol class="io-list">';
+    inputs.forEach((input) => {
+      html += `<li class="io-item">
+        <span class="io-shortname">${input.shortname}</span>
+        <span class="io-description">${input.description}</span>
+      </li>`;
+    });
+    html += '</ol></div>';
+  }
+
+  if (outputs.length > 0) {
+    html += '<div class="io-group"><h2>Outputs</h2><ol class="io-list">';
+    outputs.forEach((output) => {
+      html += `<li class="io-item">
+        <span class="io-shortname">${output.shortname}</span>
+        <span class="io-description">${output.description}</span>
+      </li>`;
+    });
+    html += '</ol></div>';
+  }
+
+  html += '</div>';
+  return html;
+}
+
 // Enhance code blocks with syntax highlighting and better formatting
 function enhanceCodeBlocks(html: string): string {
   // First handle pre/code blocks from standard markdown format
@@ -154,9 +191,13 @@ function enhanceCodeBlocks(html: string): string {
   return enhanced;
 }
 
-export default function MarkdownContent({ content }: Props) {
+export default function MarkdownContent({ content, inputs, outputs }: Props) {
   // Process the content to replace YouTube embeds with the component
   let processedContent = content;
+  
+  // Handle [io/] replacement
+  const ioSectionHtml = renderIOSection(inputs, outputs);
+  processedContent = processedContent.replace(/\[io\/\]/g, ioSectionHtml);
   
   // Handle [embed]URL[/embed] format
   processedContent = processedContent.replace(
