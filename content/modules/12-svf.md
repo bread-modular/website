@@ -10,6 +10,28 @@ versions:
     price: 10
     productId: price_1QyWp3DOvwMyUDfcYwTnbJW0
 size: base
+inputs:
+  - shortname: "Audio In"
+    description: "Main audio input to be filtered"
+  - shortname: "CV IN"
+    description: "Control voltage input for cutoff frequency modulation"
+  - shortname: "MULT"
+    description: "Multiple input/output connection point"
+  - shortname: "MULT"
+    description: "Multiple input/output connection point"
+  - shortname: "MULT"
+    description: "Multiple input/output connection point"
+outputs:
+  - shortname: "LOWPASS"
+    description: "Low-pass filtered output"
+  - shortname: "LOWPASS"
+    description: "Low-pass filtered output (duplicate)"
+  - shortname: "HIGHPASS"
+    description: "High-pass filtered output"
+  - shortname: "HIGHPASS"
+    description: "High-pass filtered output (duplicate)"
+  - shortname: "BANDPASS"
+    description: "Band-pass filtered output"
 ---
 
 This is a traditional analog State Variable Filter (SVF) implementation that incorporates Vactrols.
@@ -22,21 +44,7 @@ This is a traditional analog State Variable Filter (SVF) implementation that inc
 * CUTOFF frequency control via CV input
 * Supports GATE signals as CV input thanks to Vactrol integration
 
-## Inputs
-
-1. Audio In
-2. CV IN
-3. MULT
-4. MULT
-5. MULT
-
-## Outputs
-
-1. LOWPASS
-2. LOWPASS
-3. HIGHPASS
-4. HIGHPASS
-5. BANDPASS
+[io/]
 
 ## Controls
 

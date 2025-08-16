@@ -73,7 +73,11 @@ export default async function ModulePage({ params }: {params: Promise<{ id: stri
       </div>
 
       <div className={styles.markdownWrapper}>
-        <MarkdownContent content={moduleData.contentHtml} />
+        <MarkdownContent 
+          content={moduleData.contentHtml} 
+          inputs={moduleData.inputs}
+          outputs={moduleData.outputs}
+        />
       </div>
     </Layout>
   );
