@@ -101,7 +101,7 @@ function renderIOSection(inputs?: ModuleIO[], outputs?: ModuleIO[]): string {
   
   if (inputs.length > 0) {
     html += '<div class="io-group"><h2>Inputs</h2><ol class="io-list">';
-    inputs.forEach((input, index) => {
+    inputs.forEach((input) => {
       html += `<li class="io-item">
         <span class="io-shortname">${input.shortname}</span>
         <span class="io-description">${input.description}</span>
@@ -112,7 +112,7 @@ function renderIOSection(inputs?: ModuleIO[], outputs?: ModuleIO[]): string {
 
   if (outputs.length > 0) {
     html += '<div class="io-group"><h2>Outputs</h2><ol class="io-list">';
-    outputs.forEach((output, index) => {
+    outputs.forEach((output) => {
       html += `<li class="io-item">
         <span class="io-shortname">${output.shortname}</span>
         <span class="io-description">${output.description}</span>
