@@ -324,6 +324,9 @@
 .knobCell:hover .knobInner { fill: #32404a; }
 .knobCell:hover .knobIndicator { stroke: #79c0ff; }
 .knobCell:hover .knobArc { stroke: #79c0ff; }
+.knobValue { fill: #0d1117; font-size: 8px; font-weight: 600; pointer-events: none; }
+.knobValueBg { fill: #ffffff; stroke: #c9d1d9; stroke-width: 0.5; opacity: 0.95; filter: drop-shadow(0 0 4px rgba(0,0,0,0.4)); }
+.knobValueGroup { pointer-events: none; }
 
 @keyframes fadeInSvg {
   from {

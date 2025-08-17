@@ -438,6 +438,7 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
   const [showText, setShowText] = useState(false); // toggle raw text view
+  const [hoveredKnob, setHoveredKnob] = useState<string | null>(null); // track hovered knob key
 
   // Observe container width for responsive layout
   useEffect(() => {
@@ -624,9 +625,9 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
                         const colCenterX = col === 0
                           ? pos.x + moduleWidth * 0.25
                           : pos.x + moduleWidth * 0.75;
-                        // Knob angle logic: 0 at 7 o'clock (120° here), max at 5 o'clock (420° -> 60° normalized), total sweep 300° clockwise
-                        const startAngleDeg = 120; // 7 o'clock relative to +x axis (0° = 3 o'clock, increasing clockwise)
-                        const sweepAngleDeg = 300; // total travel
+                        // Knob angle logic: 0 at 7:30 (120°), max at 4:30 (wrap to 45°), total sweep 285° clockwise
+                        const startAngleDeg = 120; // 7:30 position relative to +x axis (0° = 3 o'clock, increases clockwise)
+                        const sweepAngleDeg = 285; // total travel (120 -> 405 -> 45° normalized)
                         const angleDeg = startAngleDeg + sweepAngleDeg * k.value; // may exceed 360
                         const angleNormDeg = angleDeg % 360; // for rendering position
                         const angleRad = angleNormDeg * Math.PI / 180;
@@ -645,12 +646,56 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
                         const largeArcFlag = extentDeg > 180 ? 1 : 0; // use large arc when over half circle
                         const hasArc = extentDeg > 2; // render only if some rotation (> ~2°)
                         const arcPath = `M ${startX} ${startY} A ${arcR} ${arcR} 0 ${largeArcFlag} ${sweepFlag} ${endX} ${endY}`;
+                        const knobKey = `${name}-${k.name}-${kIdx}`;
+                        // Determine if indicator lies in bottom sector (prone to overlapping caption)
+                        const isBottomSector = angleNormDeg > 30 && angleNormDeg < 150; // 30° (down-right) to 150° (down-left)
+                        // Position numeric value slightly outside indicator along same angle
+                        const baseValueRadius = knobRadius + 6;
+                        const valueRadius = isBottomSector ? knobRadius + 2 : baseValueRadius; // tuck in a bit when bottom
+                        let valueX = colCenterX + Math.cos(angleRad) * valueRadius;
+                        let valueY = centerY + Math.sin(angleRad) * valueRadius + 1;
+                        if (isBottomSector) valueY -= 10; // lift above to avoid caption collision
+                        // Adjust text anchor for better readability depending on quadrant
+                        const quad = (angleNormDeg + 360) % 360;
+                        let anchor: 'start' | 'end' | 'middle' = 'middle';
+                        if (quad > 90 && quad < 270) anchor = 'end'; else if (quad < 90 || quad > 270) anchor = 'start';
+                        const valueStr = k.value.toFixed(2);
+                        const valWidth = valueStr.length * 5.6 + 6; // approximate char width + padding
+                        const valHeight = 12;
+                        let bgX = valueX - valWidth / 2; // middle default
+                        if (anchor === 'start') bgX = valueX - 3; // small left padding
+                        if (anchor === 'end') bgX = valueX - valWidth + 3; // small right padding
+                        const bgY = valueY - valHeight + 3; // position above baseline
                         return (
-                          <g key={`knob-${k.name}-${kIdx}`} className={styles.knobCell} onMouseEnter={(e) => k.description && showTooltip(e, k.description, colCenterX, centerY - knobRadius - 8)} onMouseLeave={hideTooltip}>
+                          <g
+                            key={`knob-${k.name}-${kIdx}`}
+                            className={styles.knobCell}
+                            onMouseEnter={(e) => {
+                              setHoveredKnob(knobKey);
+                              if (k.description) showTooltip(e, k.description, colCenterX, centerY - knobRadius - 8);
+                            }}
+                            onMouseLeave={() => {
+                              setHoveredKnob(prev => prev === knobKey ? null : prev);
+                              hideTooltip();
+                            }}
+                          >
                             <circle cx={colCenterX} cy={centerY} r={knobRadius + 2} className={styles.knobOuter} />
                             <circle cx={colCenterX} cy={centerY} r={knobRadius} className={styles.knobInner} />
                             {hasArc && <path d={arcPath} className={styles.knobArc} />}
                             <line x1={colCenterX} y1={centerY} x2={indX} y2={indY} className={styles.knobIndicator} />
+                            {hoveredKnob === knobKey && (
+                              <g className={styles.knobValueGroup}>
+                                <rect x={bgX} y={bgY} width={valWidth} height={valHeight} rx={3} className={styles.knobValueBg} />
+                                <text
+                                  x={valueX}
+                                  y={valueY}
+                                  textAnchor={anchor}
+                                  className={styles.knobValue}
+                                >
+                                  {valueStr}
+                                </text>
+                              </g>
+                            )}
                             <text x={colCenterX} y={centerY + knobRadius + 10} className={styles.knobCaption} textAnchor="middle">{k.name.toUpperCase()}</text>
                           </g>
                         );
