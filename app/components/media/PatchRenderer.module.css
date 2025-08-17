@@ -13,6 +13,7 @@
   background: #0d1117;
   border-radius: 8px;
   min-width: 100%;
+  max-width: 100%;
 }
 
 .moduleBackground {
@@ -168,18 +169,18 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .patchContainer {
-    padding: 0.5rem;
-    margin: 1rem -0.5rem;
+    padding: 0.5rem 0.25rem;
+    margin: 1rem -0.75rem; /* edge to edge */
     border-radius: 8px;
   }
-  
-  .moduleName {
-    font-size: 12px;
-  }
-  
-  .pinLabel {
-    font-size: 9px;
-  }
+  .moduleName { font-size: 12px; }
+  .pinLabel { font-size: 9px; }
+}
+
+@media (max-width: 480px) {
+  .moduleName { font-size: 11px; }
+  .pinLabel { font-size: 8px; }
+  .tooltipText { font-size: 9px; }
 }
 
 /* Permanent tooltip styles */

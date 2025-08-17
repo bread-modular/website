@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './PatchRenderer.module.css';
 
 export interface Connection {
@@ -79,36 +79,108 @@ function parsePatchData(patchData: string): { modules: Map<string, ModuleData>; 
   return { modules, connections };
 }
 
-function calculateModulePositions(moduleNames: string[]): Map<string, { x: number; y: number }> {
+interface LayoutParams {
+  moduleWidth: number;
+  moduleSpacing: number;
+  rowSpacing: number;
+  startX: number;
+  startY: number;
+  modulesPerRow: number;
+}
+
+function getLayoutParams(containerWidth: number | null, moduleCount: number): LayoutParams {
+  // Target / min values
+  const TARGET_MODULE_WIDTH = 180;
+  const MIN_MODULE_WIDTH = 140;
+  const TARGET_SPACING = 40;
+  const MIN_SPACING = 24;
+  const MIN_PADDING = 8;   // allow tighter side padding
+  const TOP_PADDING = 40;  // unified padding (also used for bottom)
+
+  let moduleWidth = TARGET_MODULE_WIDTH;
+  let moduleSpacing = TARGET_SPACING;
+  let rowSpacing = 140;  // slightly tighter vertical spacing
+  let startX = MIN_PADDING;
+  let startY = TOP_PADDING;
+  let modulesPerRow = 3; // strive for 3 whenever feasible (desktop >= 400 now)
+
+  if (containerWidth) {
+    // Mobile specific overrides
+    if (containerWidth < 300) {
+      // Extra small: single column
+      modulesPerRow = 1;
+      moduleSpacing = 28;
+      moduleWidth = Math.min(170, containerWidth - MIN_PADDING * 2);
+      rowSpacing = 130;
+      startX = Math.max(MIN_PADDING, (containerWidth - moduleWidth) / 2);
+      return { moduleWidth, moduleSpacing, rowSpacing, startX, startY, modulesPerRow };
+    } else if (containerWidth < 400) {
+      // Mobile (requested range 300-400): force 2 columns
+      modulesPerRow = 2;
+      moduleSpacing = 20; // tighter for small width
+      // Compute max module width that fits
+      const available = containerWidth - MIN_PADDING * 2 - moduleSpacing; // spacing between 2 cols
+      moduleWidth = Math.min(Math.max(MIN_MODULE_WIDTH, Math.floor(available / 2)), TARGET_MODULE_WIDTH);
+      rowSpacing = 130;
+      const rowWidth = modulesPerRow * moduleWidth + moduleSpacing;
+      startX = Math.max(MIN_PADDING, (containerWidth - rowWidth) / 2);
+      return { moduleWidth, moduleSpacing, rowSpacing, startX, startY, modulesPerRow };
+    }
+
+    // From 400 upwards we use previous adaptive desktop logic (attempt 3 cols)
+    const fits3 = () => (modulesPerRow === 3) && (
+      (3 * moduleWidth) + (2 * moduleSpacing) + (2 * MIN_PADDING) <= containerWidth
+    );
+    modulesPerRow = 3;
+    if (!fits3()) {
+      while (!fits3() && moduleWidth > MIN_MODULE_WIDTH) moduleWidth -= 2;
+      while (!fits3() && moduleSpacing > MIN_SPACING) moduleSpacing -= 2;
+    }
+    if (!fits3()) {
+      modulesPerRow = 2;
+      moduleWidth = Math.min(TARGET_MODULE_WIDTH, Math.max(moduleWidth, 170));
+      moduleSpacing = Math.min(TARGET_SPACING, Math.max(moduleSpacing, 32));
+    }
+    const rowWidth = modulesPerRow * moduleWidth + (modulesPerRow - 1) * moduleSpacing;
+    startX = Math.max(MIN_PADDING, (containerWidth - rowWidth) / 2);
+  }
+  return { moduleWidth, moduleSpacing, rowSpacing, startX, startY, modulesPerRow };
+}
+
+function calculateModulePositions(moduleNames: string[], layout: LayoutParams): Map<string, { x: number; y: number }> {
+  const { modulesPerRow, moduleWidth, moduleSpacing, rowSpacing, startX, startY } = layout;
   const positions = new Map<string, { x: number; y: number }>();
-  
-  // Layout: arrange modules in rows of 3 (more compact vertical spacing)
-  const modulesPerRow = 3;
-  const moduleWidth = 200;
-  const moduleSpacing = 50; // horizontal spacing unchanged
-  const rowSpacing = 160; // was 200
-  const startX = 50;
-  const startY = 60; // uniform top padding (match bottom padding later)
+  const total = moduleNames.length;
+  const fullRowWidth = modulesPerRow * moduleWidth + (modulesPerRow - 1) * moduleSpacing;
+  const remainder = total % modulesPerRow;
+  const lastRowIndex = Math.floor((total - 1) / modulesPerRow);
 
   moduleNames.forEach((name, index) => {
     const row = Math.floor(index / modulesPerRow);
     const col = index % modulesPerRow;
-    
+
+    // Center the final partial row (keep 3-column overall width) without changing earlier rows
+    let rowStartX = startX;
+    if (row === lastRowIndex && remainder !== 0 && remainder < modulesPerRow) {
+      const usedWidth = remainder * moduleWidth + (remainder - 1) * moduleSpacing;
+      const leftover = fullRowWidth - usedWidth;
+      rowStartX = startX + leftover / 2; // center the partial row
+    }
+
     positions.set(name, {
-      x: startX + col * (moduleWidth + moduleSpacing),
+      x: rowStartX + col * (moduleWidth + moduleSpacing),
       y: startY + row * rowSpacing
     });
   });
-
   return positions;
 }
 
 function renderConnections(
   connections: Connection[],
   modules: Map<string, ModuleData>,
-  positions: Map<string, { x: number; y: number }>
+  positions: Map<string, { x: number; y: number }>,
+  moduleWidth: number
 ): React.ReactElement[] {
-  const moduleWidth = 180;
   const pinHeight = 16;
   const pinSpacing = 20;
   
@@ -331,10 +403,24 @@ function renderConnections(
 export default function PatchRenderer({ patchData, moduleMetadata: externalMetadata }: PatchRendererProps) {
   const [moduleMetadata, setModuleMetadata] = useState<Map<string, ModuleMetadata>>(externalMetadata || new Map());
   const [tooltip, setTooltip] = useState<TooltipState>({ visible: false, x: 0, y: 0, content: '' });
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [containerWidth, setContainerWidth] = useState<number | null>(null);
+
+  // Observe container width for responsive layout
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const el = containerRef.current;
+    const update = () => setContainerWidth(el.clientWidth);
+    update();
+    const ro = new ResizeObserver(() => update());
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const { modules, connections } = parsePatchData(patchData);
   const moduleNames = Array.from(modules.keys());
-  const positions = calculateModulePositions(moduleNames);
+  const layout = getLayoutParams(containerWidth, moduleNames.length);
+  const positions = calculateModulePositions(moduleNames, layout);
 
   // Use external metadata if provided
   useEffect(() => {
@@ -343,7 +429,7 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
     }
   }, [externalMetadata]);
 
-  const moduleWidth = 180;
+  const moduleWidth = layout.moduleWidth;
   const pinHeight = 16;
   const pinSpacing = 20;
 
@@ -407,111 +493,101 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
 
   // Calculate SVG dimensions with extra space for cable sag (uniform padding top/bottom)
   const baseModuleHeight = 120;
-  const layoutPadding = 60; // matches startY in calculateModulePositions
-  const maxX = Math.max(...Array.from(positions.values()).map(p => p.x)) + moduleWidth + layoutPadding;
-  const maxY = Math.max(...Array.from(positions.values()).map(p => p.y)) + baseModuleHeight + layoutPadding; // uniform bottom padding
+  const layoutPadding = layout.startY;
+  const maxRowWidth = (() => {
+    // Always reserve width for the full column count (to keep consistent 3-column visual on desktop)
+    return layout.modulesPerRow * layout.moduleWidth + (layout.modulesPerRow - 1) * layout.moduleSpacing;
+  })();
+  const contentWidth = layout.startX * 2 + maxRowWidth;
+  const maxX = contentWidth;
+  const maxY = Math.max(...Array.from(positions.values()).map(p => p.y)) + baseModuleHeight + layoutPadding; // symmetric top/bottom
 
   return (
-    <div className={styles.patchContainer}>
-      <svg width={maxX} height={maxY} className={styles.patchSvg}>
+    <div className={styles.patchContainer} ref={containerRef}>
+      <svg
+        width={containerWidth || maxX}
+        height={maxY}
+        className={styles.patchSvg}
+        viewBox={`0 0 ${maxX} ${maxY}`}
+        preserveAspectRatio="xMidYMin meet"
+      >
         {/* Group for modules - render first so cables appear above */}
         <g className={styles.modulesLayer}>
           {Array.from(modules.entries()).map(([name, module]) => {
-          const pos = positions.get(name)!;
-          const inputCount = module.inputs.length;
-          const outputCount = module.outputs.length;
-          const calculatedHeight = Math.max(baseModuleHeight, Math.max(inputCount, outputCount) * pinSpacing + 60);
-          
-          return (
-            <g key={name}>
-              {/* Module background */}
-              <rect
-                x={pos.x}
-                y={pos.y}
-                width={moduleWidth}
-                height={calculatedHeight}
-                rx="8"
-                className={styles.moduleBackground}
-              />
-              
-              {/* Module name */}
-              <text
-                x={pos.x + moduleWidth / 2}
-                y={pos.y + 25}
-                textAnchor="middle"
-                className={styles.moduleName}
-              >
-                {name.toUpperCase()}
-              </text>
-              
-              {/* Input pins */}
-              {module.inputs.map((input, index) => {
-                const description = getPinDescription(name, input, 'input');
-                const pinY = pos.y + 40 + (index * pinSpacing);
-                const pinX = pos.x - 8;
-                
-                return (
-                  <g key={`input-${input}-${index}`}>
-                    <rect
-                      x={pinX}
-                      y={pinY}
-                      width="16"
-                      height={pinHeight}
-                      rx="2"
-                      className={styles.inputPin}
-                      onMouseEnter={(e) => description && showTooltip(e, description, pinX, pinY)}
-                      onMouseLeave={hideTooltip}
-                    />
-                    <text
-                      x={pos.x + 12}
-                      y={pinY + 12}
-                      className={styles.pinLabel}
-                    >
-                      {input}
-                    </text>
-                  </g>
-                );
-              })}
-              
-              {/* Output pins */}
-              {module.outputs.map((output, index) => {
-                const description = getPinDescription(name, output, 'output');
-                const pinY = pos.y + 40 + (index * pinSpacing);
-                const pinX = pos.x + moduleWidth - 8;
-                
-                return (
-                  <g key={`output-${output}-${index}`}>
-                    <rect
-                      x={pinX}
-                      y={pinY}
-                      width="16"
-                      height={pinHeight}
-                      rx="2"
-                      className={styles.outputPin}
-                      onMouseEnter={(e) => description && showTooltip(e, description, pinX + 16, pinY)}
-                      onMouseLeave={hideTooltip}
-                    />
-                    <text
-                      x={pos.x + moduleWidth - 12}
-                      y={pinY + 12}
-                      textAnchor="end"
-                      className={styles.pinLabel}
-                    >
-                      {output}
-                    </text>
-                  </g>
-                );
-              })}
-            </g>
-          );
-        })}
+            const pos = positions.get(name)!;
+            const inputCount = module.inputs.length;
+            const outputCount = module.outputs.length;
+            const calculatedHeight = Math.max(baseModuleHeight, Math.max(inputCount, outputCount) * pinSpacing + 60);
+            return (
+              <g key={name}>
+                {/* Module background */}
+                <rect
+                  x={pos.x}
+                  y={pos.y}
+                  width={moduleWidth}
+                  height={calculatedHeight}
+                  rx="8"
+                  className={styles.moduleBackground}
+                />
+                {/* Module name */}
+                <text
+                  x={pos.x + moduleWidth / 2}
+                  y={pos.y + 25}
+                  textAnchor="middle"
+                  className={styles.moduleName}
+                >
+                  {name.toUpperCase()}
+                </text>
+                {/* Input pins */}
+                {module.inputs.map((input, index) => {
+                  const description = getPinDescription(name, input, 'input');
+                  const pinY = pos.y + 40 + (index * pinSpacing);
+                  const pinX = pos.x - 8;
+                  return (
+                    <g key={`input-${input}-${index}`}>
+                      <rect
+                        x={pinX}
+                        y={pinY}
+                        width="16"
+                        height={pinHeight}
+                        rx="2"
+                        className={styles.inputPin}
+                        onMouseEnter={(e) => description && showTooltip(e, description, pinX, pinY)}
+                        onMouseLeave={hideTooltip}
+                      />
+                      <text x={pos.x + 12} y={pinY + 12} className={styles.pinLabel}>{input}</text>
+                    </g>
+                  );
+                })}
+                {/* Output pins */}
+                {module.outputs.map((output, index) => {
+                  const description = getPinDescription(name, output, 'output');
+                  const pinY = pos.y + 40 + (index * pinSpacing);
+                  const pinX = pos.x + moduleWidth - 8;
+                  return (
+                    <g key={`output-${output}-${index}`}>
+                      <rect
+                        x={pinX}
+                        y={pinY}
+                        width="16"
+                        height={pinHeight}
+                        rx="2"
+                        className={styles.outputPin}
+                        onMouseEnter={(e) => description && showTooltip(e, description, pinX + 16, pinY)}
+                        onMouseLeave={hideTooltip}
+                      />
+                      <text x={pos.x + moduleWidth - 12} y={pinY + 12} textAnchor="end" className={styles.pinLabel}>{output}</text>
+                    </g>
+                  );
+                })}
+              </g>
+            );
+          })}
         </g>
-        
         {/* Group for connections - render after modules so they appear above */}
         <g className={styles.connectionsLayer}>
-          {renderConnections(connections, modules, positions)}
+          {renderConnections(connections, modules, positions, moduleWidth)}
         </g>
-        
         {/* Hover tooltip - rendered on very top */}
         {tooltip.visible && (
           <g className={styles.hoverTooltip}>
