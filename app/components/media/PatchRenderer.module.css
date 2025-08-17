@@ -328,6 +328,21 @@
 .knobValueBg { fill: #ffffff; stroke: #c9d1d9; stroke-width: 0.5; opacity: 0.95; filter: drop-shadow(0 0 4px rgba(0,0,0,0.4)); }
 .knobValueGroup { pointer-events: none; }
 
+/* State indicator styles */
+.stateGroup { font-family: 'SF Mono', Monaco, monospace; }
+.stateCell { cursor: default; }
+.stateDot { fill: #3a444d; stroke: #58a6ff; stroke-width: 1; filter: drop-shadow(0 0 2px rgba(88,166,255,0.4)); }
+.stateCell:hover .stateDot { fill: #42505a; stroke: #79c0ff; }
+.stateLabel { fill: #9da7b3; font-size: 8px; letter-spacing: 0.5px; font-weight: 600; }
+
+.stateLine { font-family: 'SF Mono', Monaco, monospace; }
+.stateKey { fill: #9da7b3; font-size: 9px; font-weight: 600; letter-spacing: 0.5px; }
+.stateValue { fill: #58a6ff; font-size: 9px; font-weight: 600; letter-spacing: 0.5px; }
+.stateLine:hover .stateKey { fill: #c9d1d9; }
+.stateLine:hover .stateValue { fill: #79c0ff; }
+
+.stateSeparator { stroke: #30363d; stroke-width: 1; opacity: 0.7; }
+
 @keyframes fadeInSvg {
   from {
     opacity: 0;
