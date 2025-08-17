@@ -138,18 +138,19 @@ function parsePatchData(patchData: string): { modules: Map<string, ModuleData>; 
       const [fromModule, fromPin = ''] = fromRaw.split(':');
       const [toModule, toPin = ''] = toRaw.split(':');
       if (!fromModule || !toModule) continue;
-      if (!modules.has(fromModule)) modules.set(fromModule, { name: fromModule, inputs: [], outputs: [] });
-      if (!modules.has(toModule)) modules.set(toModule, { name: toModule, inputs: [], outputs: [] });
-      const fromModuleData = modules.get(fromModule)!;
-      const toModuleData = modules.get(toModule)!;
+      const isOpenEndedSource = (fromModule === '_' && fromPin === '_') || (fromModule.toLowerCase() === 'none' && fromPin.toLowerCase() === 'none');
+      const isOpenEndedDest = (toModule === '_' && toPin === '_') || (toModule.toLowerCase() === 'none' && toPin.toLowerCase() === 'none'); // future-proof (not used now)
+      if (!isOpenEndedSource && !modules.has(fromModule)) modules.set(fromModule, { name: fromModule, inputs: [], outputs: [] });
+      if (!isOpenEndedDest && !modules.has(toModule)) modules.set(toModule, { name: toModule, inputs: [], outputs: [] });
       let fromIndex = -1;
       let toIndex = -1;
-      if (fromPin) {
-        // always push to allow duplicates (separate physical jacks for each wire)
+      if (!isOpenEndedSource && fromPin) {
+        const fromModuleData = modules.get(fromModule)!;
         fromModuleData.outputs.push(fromPin);
         fromIndex = fromModuleData.outputs.length - 1;
       }
-      if (toPin) {
+      if (!isOpenEndedDest && toPin) {
+        const toModuleData = modules.get(toModule)!;
         toModuleData.inputs.push(toPin);
         toIndex = toModuleData.inputs.length - 1;
       }
@@ -274,25 +275,53 @@ function renderConnections(
   ];
 
   return connections.map((connection, index) => {
+    const openEndedSource = (connection.from.module === '_' && connection.from.pin === '_') || (connection.from.module.toLowerCase() === 'none' && connection.from.pin.toLowerCase() === 'none');
+    const openEndedDest = (connection.to.module === '_' && connection.to.pin === '_') || (connection.to.module.toLowerCase() === 'none' && connection.to.pin.toLowerCase() === 'none');
+    // Open-ended sources now handled separately (gravity drop cables)
+    if (openEndedSource) return <g key={index}></g>;
     const fromPos = positions.get(connection.from.module);
-    const toPos = positions.get(connection.to.module);
-    
+    const toPos = openEndedDest ? undefined : positions.get(connection.to.module);
     if (!fromPos || !toPos) return <g key={index}></g>;
 
-    const fromModule = modules.get(connection.from.module)!;
-    const toModule = modules.get(connection.to.module)!;
+    const toModuleData = openEndedDest ? undefined : modules.get(connection.to.module)!;
+    const fromModuleData = openEndedSource ? undefined : modules.get(connection.from.module)!;
 
-    // Use stored occurrence indices; fallback to indexOf if not present
-    const fromOutputIndex = connection.from.index >= 0 ? connection.from.index : fromModule.outputs.indexOf(connection.from.pin);
-    const toInputIndex = connection.to.index >= 0 ? connection.to.index : toModule.inputs.indexOf(connection.to.pin);
+    const pinHeight = 16;
+    const pinSpacing = 20;
 
-    const fromX = fromPos.x + moduleWidth;
-    const fromY = fromPos.y + 40 + (fromOutputIndex * pinSpacing) + (pinHeight / 2);
-    
-    const toX = toPos.x;
-    const toY = toPos.y + 40 + (toInputIndex * pinSpacing) + (pinHeight / 2);
+    if (openEndedSource) {
+      // Draw short stub cable into destination input
+      const toInputIndex = connection.to.index >= 0 ? connection.to.index : (toModuleData ? toModuleData.inputs.indexOf(connection.to.pin) : 0);
+      const toX = toPos!.x;
+      const toY = toPos!.y + 40 + (toInputIndex * pinSpacing) + (pinHeight / 2);
+      const stubLength = 48; // ~ a couple of cm in screen space
+      const fromX = toX - stubLength;
+      const fromY = toY;
+      const colorIndex = index % cableColors.length;
+      const cableColor = cableColors[colorIndex];
+      const pathData = `M ${fromX} ${fromY} L ${toX} ${toY}`;
+      return (
+        <g key={index} className={styles.cableGroup}>
+          <path d={pathData} stroke={cableColor.glow} strokeWidth="6" fill="none" className={styles.cableOuterGlow} />
+          <path d={pathData} stroke={cableColor.glow} strokeWidth="3.5" fill="none" className={styles.cableGlow} />
+          <path d={pathData} stroke={cableColor.main} strokeWidth="2.5" fill="none" className={styles.cable} />
+          {/* Input plug only */}
+          <g className={styles.plugGroup}>
+            <circle cx={toX} cy={toY} r="6" fill="#2d3436" stroke="#636e72" strokeWidth="1" className={styles.plugShadow} />
+            <circle cx={toX} cy={toY} r="5" fill={cableColor.main} stroke={cableColor.gradient[2]} strokeWidth="1" className={styles.connectionPlug} />
+            <circle cx={toX} cy={toY} r="2" fill="rgba(255, 255, 255, 0.6)" className={styles.plugHighlight} />
+          </g>
+        </g>
+      );
+    }
+    // Standard cable logic (original)
+    const fromOutputIndex = connection.from.index >= 0 ? connection.from.index : fromModuleData!.outputs.indexOf(connection.from.pin);
+    const toInputIndex = connection.to.index >= 0 ? connection.to.index : toModuleData!.inputs.indexOf(connection.to.pin);
+    const fromX = fromPos!.x + moduleWidth;
+    const fromY = fromPos!.y + 40 + (fromOutputIndex * pinSpacing) + (pinHeight / 2);
+    const toX = toPos!.x;
+    const toY = toPos!.y + 40 + (toInputIndex * pinSpacing) + (pinHeight / 2);
 
-    // Pick a color for this cable (consistent based on index)
     const colorIndex = index % cableColors.length;
     const cableColor = cableColors[colorIndex];
 
@@ -300,45 +329,23 @@ function renderConnections(
     const deltaX = toX - fromX;
     const deltaY = toY - fromY;
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-    
-    // Calculate natural cable sag based on distance and gravity
-    const sagFactor = Math.min(0.3, distance / 600); // Reduced sag factor
+    const sagFactor = Math.min(0.3, distance / 600);
     const baseSag = distance * sagFactor;
-    
-    // Always add downward sag due to gravity
-    const gravitySag = Math.max(20, distance * 0.15); // Minimum sag for gravity effect
+    const gravitySag = Math.max(20, distance * 0.15);
     const totalSag = baseSag + gravitySag;
-    
-    // Calculate control points for natural cable curve
     const horizontalInfluence = Math.min(Math.abs(deltaX) * 0.5, 100);
-    
-    // First control point - smooth exit from output with natural downward curve
     const control1X = fromX + Math.max(40, horizontalInfluence * 0.6);
-    const control1Y = fromY + totalSag * 0.6; // Always sag down from start point
-    
-    // Second control point - smooth approach to input with natural curve
+    const control1Y = fromY + totalSag * 0.6;
     const control2X = toX - Math.max(40, horizontalInfluence * 0.6);
-    const control2Y = toY + totalSag * 0.6; // Always sag down toward end point
-    
-    // For very short distances, use a gentler curve
+    const control2Y = toY + totalSag * 0.6;
     if (distance < 150) {
       const midX = (fromX + toX) / 2;
       const gentleSag = Math.max(15, distance * 0.1);
       const control1Y_simple = Math.max(fromY, toY) + gentleSag;
-      
       const pathData = `M ${fromX} ${fromY} Q ${midX} ${control1Y_simple} ${toX} ${toY}`;
-      
       return (
         <g key={index} className={styles.cableGroup}>
-          {/* Cable outer glow for depth */}
-          <path
-            d={pathData}
-            stroke={cableColor.glow}
-            strokeWidth="8"
-            fill="none"
-            className={styles.cableOuterGlow}
-          />
-          {/* Main cable with gradient */}
+          <path d={pathData} stroke={cableColor.glow} strokeWidth="8" fill="none" className={styles.cableOuterGlow} />
           <defs>
             <linearGradient id={`cableGradient${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor={cableColor.gradient[0]} />
@@ -346,21 +353,12 @@ function renderConnections(
               <stop offset="100%" stopColor={cableColor.gradient[2]} />
             </linearGradient>
           </defs>
-          <path
-            d={pathData}
-            stroke={`url(#cableGradient${index})`}
-            strokeWidth="3"
-            fill="none"
-            className={styles.cable}
-          />
-          {/* Connection plugs */}
+          <path d={pathData} stroke={`url(#cableGradient${index})`} strokeWidth="3" fill="none" className={styles.cable} />
           <circle cx={fromX} cy={fromY} r="5" fill={cableColor.main} className={styles.connectionPlug} />
           <circle cx={toX} cy={toY} r="5" fill={cableColor.main} className={styles.connectionPlug} />
         </g>
       );
     }
-    
-    // Create smooth bezier curve with natural gravity sag
     const pathData = `M ${fromX} ${fromY} C ${control1X} ${control1Y} ${control2X} ${control2Y} ${toX} ${toY}`;
 
     return (
@@ -485,8 +483,12 @@ export default function PatchRenderer({ patchData, moduleMetadataList }: PatchRe
   const [tooltip, setTooltip] = useState<TooltipState>({ visible: false, x: 0, y: 0, content: '' });
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
-  const [showText, setShowText] = useState(false); // toggle raw text view
-  const [hoveredKnob, setHoveredKnob] = useState<string | null>(null); // track hovered knob key
+  const [showText, setShowText] = useState(false);
+  const [hoveredKnob, setHoveredKnob] = useState<string | null>(null);
+  // Removed open-ended cable dragging state (now static)
+  // const [openEndedHandles, setOpenEndedHandles] = useState<Map<number, { x: number; y: number }>>(new Map());
+  // const [extraHeight, setExtraHeight] = useState(0);
+  // const draggingRef = useRef<{ index: number } | null>(null);
 
   // Observe container width for responsive layout
   useEffect(() => {
@@ -534,6 +536,14 @@ export default function PatchRenderer({ patchData, moduleMetadataList }: PatchRe
   });
 
   const { positions, totalHeight } = calculateModulePositionsDynamic(moduleNames, layout, moduleHeights);
+
+  // Removed effect that initialized and reconciled open-ended handles (static cables now)
+  /*
+  useEffect(() => { ...previous dynamic handle logic... }, [connections, positions, moduleWidth, totalHeight]);
+  */
+
+  // Removed dragging logic effect
+  /* useEffect(() => { ...drag logic removed... }, [connections, positions, modules, moduleHeights, moduleWidth]); */
 
   // Use external metadata if provided
   useEffect(() => {
@@ -619,7 +629,117 @@ export default function PatchRenderer({ patchData, moduleMetadataList }: PatchRe
   const maxRowWidth = layout.modulesPerRow * layout.moduleWidth + (layout.modulesPerRow - 1) * layout.moduleSpacing;
   const contentWidth = layout.startX * 2 + maxRowWidth;
   const maxX = contentWidth;
-  const maxY = totalHeight + layoutPadding; // already includes final gap + padding
+  // Compute extra height needed for static open-ended cables (drop = 2x module height + buffer)
+  const openEndedConnections = connections.filter(c => (c.from.module === '_' && c.from.pin === '_') || (c.from.module.toLowerCase() === 'none' && c.from.pin.toLowerCase() === 'none'));
+  const extraHeight = openEndedConnections.reduce((acc, conn) => {
+    const toPos = positions.get(conn.to.module);
+    const toModuleData = modules.get(conn.to.module);
+    if (!toPos || !toModuleData) return acc;
+    const toInputIndex = conn.to.index >= 0 ? conn.to.index : toModuleData.inputs.indexOf(conn.to.pin);
+    const toY = toPos.y + 40 + (toInputIndex * pinSpacing) + (pinHeight / 2);
+    const moduleH = moduleHeights.get(conn.to.module) || 120;
+    // Updated: open-ended cable length = 1x module height (was 2x). Small buffer for end cap.
+    const dropEndY = toY + moduleH + 20; 
+    const base = totalHeight + layoutPadding;
+    return Math.max(acc, Math.max(0, dropEndY - base));
+  }, 0);
+  const maxY = totalHeight + layoutPadding + extraHeight;
+
+  // Partition connections
+  // (openEndedConnections already computed above)
+  const normalConnections = connections.filter(c => !openEndedConnections.includes(c));
+
+  // Renderer for open-ended cables (static gravity drop)
+  const renderOpenEnded = () => {
+    return openEndedConnections.map(conn => {
+      const idx = connections.indexOf(conn);
+      const toPos = positions.get(conn.to.module);
+      const toModuleData = modules.get(conn.to.module);
+      if (!toPos || !toModuleData) return <g key={`oe-${idx}`}></g>;
+      const toInputIndex = conn.to.index >= 0 ? conn.to.index : toModuleData.inputs.indexOf(conn.to.pin);
+      const toX = toPos.x; // input side (left edge of module)
+      const toY = toPos.y + 40 + (toInputIndex * pinSpacing) + (pinHeight / 2);
+      const moduleH = moduleHeights.get(conn.to.module) || 120;
+
+      // Determine row peers (modules with roughly same y)
+      const ROW_TOL = 6; // y tolerance
+      const sameRow = Array.from(positions.entries())
+        .filter(([m, p]) => Math.abs(p.y - toPos.y) < ROW_TOL)
+        .sort((a, b) => a[1].x - b[1].x);
+      // Find previous and next modules in row
+      let prev: { x: number } | null = null;
+      let next: { x: number } | null = null;
+      for (let i = 0; i < sameRow.length; i++) {
+        if (sameRow[i][0] === conn.to.module) {
+          if (i > 0) prev = { x: sameRow[i - 1][1].x };
+          if (i < sameRow.length - 1) next = { x: sameRow[i + 1][1].x };
+          break;
+        }
+      }
+      const moduleW = moduleWidth; // current module width from layout
+      const prevRight = prev ? prev.x + moduleW : null;
+      const nextLeft = next ? next.x : null;
+      const leftGap = prevRight !== null ? (toPos.x - prevRight) : 0; // gap between prev right edge and this left edge
+      const rightGap = nextLeft !== null ? (nextLeft - (toPos.x + moduleW)) : 0; // gap between this right edge and next left edge
+
+      // Choose side with larger usable gap; require minimal width
+      const MIN_GAP = 16;
+      let useLeft = false;
+      if (leftGap >= MIN_GAP || rightGap >= MIN_GAP) {
+        if (leftGap >= rightGap) useLeft = leftGap >= MIN_GAP; else useLeft = false;
+      }
+
+      // Compute horizontal target (center of chosen gap) staying within SVG bounds
+      const svgWidth = maxX;
+      let targetX: number;
+      if (useLeft) {
+        const center = prevRight! + leftGap / 2;
+        targetX = Math.max(12, Math.min(svgWidth - 12, center));
+      } else if (rightGap >= MIN_GAP) {
+        const center = toPos.x + moduleW + rightGap / 2;
+        targetX = Math.max(12, Math.min(svgWidth - 12, center));
+      } else {
+        // Fallback: slight inward offset inside module (avoid knobs: stay near top area width 0.15)
+        targetX = toPos.x + moduleW * 0.15;
+      }
+
+      // Vertical drop: about one module height
+      const endY = toY + moduleH * 0.9;
+
+      // Bezier control points: smooth outward then mostly vertical descent
+      const c1X = toX + (targetX - toX) * 0.35; const c1Y = toY + 22;
+      const c2X = targetX; const c2Y = toY + (endY - toY) * 0.55;
+      const pathData = `M ${toX} ${toY} C ${c1X} ${c1Y} ${c2X} ${c2Y} ${targetX} ${endY}`;
+
+      const colorIndex = idx % 5;
+      const palettes = [
+        { main: '#ff6b35', glow: 'rgba(255,107,53,0.35)' },
+        { main: '#4834d4', glow: 'rgba(72,52,212,0.35)' },
+        { main: '#00d2d3', glow: 'rgba(0,210,211,0.35)' },
+        { main: '#ff9ff3', glow: 'rgba(255,159,243,0.35)' },
+        { main: '#ff7675', glow: 'rgba(255,118,117,0.35)' }
+      ];
+      const palette = palettes[colorIndex];
+      return (
+        <g key={`oe-${idx}`} className={styles.cableGroup}>
+          <path d={pathData} stroke={palette.glow} strokeWidth={8} fill="none" className={styles.cableOuterGlow} />
+          <path d={pathData} stroke={palette.glow} strokeWidth={5} fill="none" className={styles.cableGlow} />
+          <path d={pathData} stroke={palette.main} strokeWidth={2.5} fill="none" className={styles.cable} />
+          {/* Input plug */}
+          <g className={styles.plugGroup}>
+            <circle cx={toX} cy={toY} r={6} fill="#2d3436" stroke="#636e72" strokeWidth={1} className={styles.plugShadow} />
+            <circle cx={toX} cy={toY} r={5} fill={palette.main} stroke="#111" strokeWidth={1} className={styles.connectionPlug} />
+            <circle cx={toX} cy={toY} r={2} fill="rgba(255,255,255,0.6)" className={styles.plugHighlight} />
+          </g>
+          {/* Static end cap (no interaction) */}
+          <g className={styles.openEndedHandle}>
+            <circle cx={targetX} cy={endY} r={7} fill="#0d1117" stroke={palette.main} strokeWidth={2} />
+            <circle cx={targetX} cy={endY} r={3} fill={palette.main} />
+          </g>
+        </g>
+      );
+    });
+  };
 
   return (
     <div className={styles.patchContainer} ref={containerRef}>
@@ -659,7 +779,7 @@ export default function PatchRenderer({ patchData, moduleMetadataList }: PatchRe
               const calculatedHeight = moduleHeights.get(name)!;
               // compute states start Y after knobs
               const knobRows = knobs.length ? Math.ceil(knobs.length / 2) : 0;
-              const knobAreaHeight = knobRows ? knobRows * knobRowHeight + 4 : 0;
+              const knobAreaHeight = knobRows ? knobRows * knobRowHeight + 4 : 0; // slight top padding already accounted in pinAreaHeight
               const statesStartY = knobStartY + knobAreaHeight + (states.length ? STATE_TOP_GAP : 0);
               const separatorY = states.length ? (statesStartY - STATE_SEPARATOR_OFFSET) : null;
               return (
@@ -805,7 +925,8 @@ export default function PatchRenderer({ patchData, moduleMetadataList }: PatchRe
           </g>
           {/* Group for connections - render after modules so they appear above */}
           <g className={styles.connectionsLayer}>
-            {renderConnections(connections, modules, positions, moduleWidth)}
+            {renderConnections(normalConnections, modules, positions, moduleWidth)}
+            {renderOpenEnded()}
           </g>
           {/* Hover tooltip - rendered on very top */}
           {tooltip.visible && (
