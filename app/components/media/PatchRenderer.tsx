@@ -37,52 +37,84 @@ interface TooltipState {
   height?: number;
 }
 
-function parsePatchData(patchData: string): { modules: Map<string, ModuleData>; connections: Connection[] } {
-  const lines = patchData.trim().split('\n').filter(line => line.trim());
+interface KnobSetting { name: string; value: number; description?: string }
+
+function sanitizePatchRaw(raw: string): string {
+  // Replace paragraph and break tags with newlines first to preserve line structure
+  let s = raw
+    .replace(/\r\n?/g, '\n')
+    .replace(/<\/(p|div)>/gi, '\n')
+    .replace(/<(p|div)(\s+[^>]*)?>/gi, '')
+    .replace(/<br\s*\/?>(?=.)/gi, '\n');
+  // Remove any remaining HTML tags
+  s = s.replace(/<[^>]+>/g, '');
+  // Decode a few common HTML entities
+  s = s.replace(/&amp;/g, '&')
+       .replace(/&lt;/g, '<')
+       .replace(/&gt;/g, '>')
+       .replace(/&quot;/g, '"')
+       .replace(/&#39;/g, "'");
+  // Collapse multiple blank lines
+  s = s.split('\n').map(l => l.trimEnd()).join('\n');
+  return s.trim();
+}
+
+function parsePatchData(patchData: string): { modules: Map<string, ModuleData>; connections: Connection[]; knobSettings: Map<string, KnobSetting[]> } {
+  const lines = patchData.split('\n').map(l => l.trim()).filter(l => l.length);
   const modules = new Map<string, ModuleData>();
   const connections: Connection[] = [];
+  const knobSettings = new Map<string, KnobSetting[]>();
+  let inKnobSection = false;
 
-  lines.forEach(line => {
-    line = line.trim();
+  for (const rawLine of lines) {
+    let line = rawLine.trim();
+    if (!line) continue;
+    if (line.toLowerCase().startsWith('---knobs')) { inKnobSection = true; continue; }
+
+    if (inKnobSection) {
+      if (!line.includes(':') || !line.includes('@')) continue;
+      const [modPart, restAll] = line.split(/:(.+)/); // first ':' only
+      if (!restAll) continue;
+      const moduleName = modPart.trim();
+      const atIdx = restAll.indexOf('@');
+      if (atIdx === -1) continue;
+      const knobName = restAll.slice(0, atIdx).trim();
+      const afterAt = restAll.slice(atIdx + 1).trim();
+      const spaceIdx = afterAt.indexOf(' ');
+      let valueStr = spaceIdx === -1 ? afterAt : afterAt.slice(0, spaceIdx);
+      const description = spaceIdx === -1 ? '' : afterAt.slice(spaceIdx + 1).trim();
+      const value = parseFloat(valueStr);
+      if (isNaN(value)) continue;
+      if (!knobSettings.has(moduleName)) knobSettings.set(moduleName, []);
+      knobSettings.get(moduleName)!.push({ name: knobName, value: Math.min(Math.max(value, 0), 1), description: description || undefined });
+      if (!modules.has(moduleName)) modules.set(moduleName, { name: moduleName, inputs: [], outputs: [] });
+      continue;
+    }
+
     if (line.includes('->')) {
-      const [from, to] = line.split('->').map(s => s.trim());
-      const [fromModule, fromPin] = from.split(':');
-      const [toModule, toPin] = to.split(':');
-
-      // Add modules if not seen before
-      if (!modules.has(fromModule)) {
-        modules.set(fromModule, { name: fromModule, inputs: [], outputs: [] });
-      }
-      if (!modules.has(toModule)) {
-        modules.set(toModule, { name: toModule, inputs: [], outputs: [] });
-      }
-
-      // Add pins to modules
+      // Clean any stray HTML remnants (should be gone, but safe)
+      line = line.replace(/<[^>]+>/g, '');
+      const [fromRaw, toRaw] = line.split('->').map(s => s.trim());
+      if (!fromRaw || !toRaw) continue;
+      const [fromModule, fromPin = ''] = fromRaw.split(':');
+      const [toModule, toPin = ''] = toRaw.split(':');
+      if (!fromModule || !toModule) continue;
+      if (!modules.has(fromModule)) modules.set(fromModule, { name: fromModule, inputs: [], outputs: [] });
+      if (!modules.has(toModule)) modules.set(toModule, { name: toModule, inputs: [], outputs: [] });
       const fromModuleData = modules.get(fromModule)!;
       const toModuleData = modules.get(toModule)!;
-
-      if (!fromModuleData.outputs.includes(fromPin)) {
-        fromModuleData.outputs.push(fromPin);
-      }
-      if (!toModuleData.inputs.includes(toPin)) {
-        toModuleData.inputs.push(toPin);
-      }
-
-      // Add connection
-      connections.push({
-        from: { module: fromModule, pin: fromPin },
-        to: { module: toModule, pin: toPin }
-      });
+      if (fromPin && !fromModuleData.outputs.includes(fromPin)) fromModuleData.outputs.push(fromPin);
+      if (toPin && !toModuleData.inputs.includes(toPin)) toModuleData.inputs.push(toPin);
+      connections.push({ from: { module: fromModule, pin: fromPin }, to: { module: toModule, pin: toPin } });
     }
-  });
-
-  return { modules, connections };
+  }
+  return { modules, connections, knobSettings };
 }
 
 interface LayoutParams {
   moduleWidth: number;
   moduleSpacing: number;
-  rowSpacing: number;
+  rowSpacing: number; // baseline spacing (used as vertical gap)
   startX: number;
   startY: number;
   modulesPerRow: number;
@@ -147,32 +179,32 @@ function getLayoutParams(containerWidth: number | null): LayoutParams {
   return { moduleWidth, moduleSpacing, rowSpacing, startX, startY, modulesPerRow };
 }
 
-function calculateModulePositions(moduleNames: string[], layout: LayoutParams): Map<string, { x: number; y: number }> {
-  const { modulesPerRow, moduleWidth, moduleSpacing, rowSpacing, startX, startY } = layout;
-  const positions = new Map<string, { x: number; y: number }>();
+function calculateModulePositionsDynamic(moduleNames: string[], layout: LayoutParams, moduleHeights: Map<string, number>): { positions: Map<string, { x: number; y: number }>; totalHeight: number } {
+  const { modulesPerRow, moduleWidth, moduleSpacing, startX, startY, rowSpacing } = layout;
+  const positions = new Map<string, { x: number, y: number }>();
   const total = moduleNames.length;
   const fullRowWidth = modulesPerRow * moduleWidth + (modulesPerRow - 1) * moduleSpacing;
-  const remainder = total % modulesPerRow;
-  const lastRowIndex = Math.floor((total - 1) / modulesPerRow);
+  let currentY = startY;
 
-  moduleNames.forEach((name, index) => {
-    const row = Math.floor(index / modulesPerRow);
-    const col = index % modulesPerRow;
-
-    // Center the final partial row (keep 3-column overall width) without changing earlier rows
+  for (let i = 0; i < total; i += modulesPerRow) {
+    const rowModules = moduleNames.slice(i, i + modulesPerRow);
+    const remainder = rowModules.length;
+    // center partial row
     let rowStartX = startX;
-    if (row === lastRowIndex && remainder !== 0 && remainder < modulesPerRow) {
+    if (remainder < modulesPerRow) {
       const usedWidth = remainder * moduleWidth + (remainder - 1) * moduleSpacing;
       const leftover = fullRowWidth - usedWidth;
-      rowStartX = startX + leftover / 2; // center the partial row
+      rowStartX = startX + leftover / 2;
     }
-
-    positions.set(name, {
-      x: rowStartX + col * (moduleWidth + moduleSpacing),
-      y: startY + row * rowSpacing
+    // place modules
+    rowModules.forEach((name, idx) => {
+      positions.set(name, { x: rowStartX + idx * (moduleWidth + moduleSpacing), y: currentY });
     });
-  });
-  return positions;
+    // advance Y by tallest module in this row + vertical gap (rowSpacing acts as gap baseline)
+    const tallest = Math.max(...rowModules.map(n => moduleHeights.get(n) || 0));
+    currentY += tallest + Math.max(40, rowSpacing - 100); // ensure at least 40px gap (rowSpacing originally ~140 for base 120h)
+  }
+  return { positions, totalHeight: currentY };
 }
 
 function renderConnections(
@@ -305,7 +337,7 @@ function renderConnections(
         <path
           d={pathData}
           stroke="rgba(0, 0, 0, 0.3)"
-          strokeWidth="3"
+            strokeWidth="3"
           fill="none"
           transform="translate(1, 1)"
           className={styles.cableShadow}
@@ -418,10 +450,35 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
     return () => ro.disconnect();
   }, []);
 
-  const { modules, connections } = parsePatchData(patchData);
+  const sanitizedPatch = sanitizePatchRaw(patchData);
+  const { modules, connections, knobSettings } = parsePatchData(sanitizedPatch);
   const moduleNames = Array.from(modules.keys());
   const layout = getLayoutParams(containerWidth);
-  const positions = calculateModulePositions(moduleNames, layout);
+  const moduleWidth = layout.moduleWidth;
+  const pinHeight = 16;
+  const pinSpacing = 20;
+  const baseModuleHeight = 120;
+
+  // Pre-compute per-module heights including knob grid (2 per row)
+  const moduleHeights = new Map<string, number>();
+  modules.forEach((module, name) => {
+    const inputCount = module.inputs.length;
+    const outputCount = module.outputs.length;
+    const maxPinCount = Math.max(inputCount, outputCount);
+    const knobs = knobSettings.get(name) || [];
+    const pinAreaHeight = 40 + maxPinCount * pinSpacing + 14; // title + pins + spacing to knobs
+    // Dynamic knob sizing based on module width
+    const knobRadius = moduleWidth >= 170 ? 18 : moduleWidth >= 150 ? 16 : 14;
+    const knobDiameter = knobRadius * 2;
+    const captionHeight = 12; // text height below knob
+    const knobRowHeight = knobDiameter + captionHeight + 12; // knob + caption + gap
+    const knobRows = knobs.length ? Math.ceil(knobs.length / 2) : 0;
+    const knobAreaHeight = knobRows ? knobRows * knobRowHeight + 4 : 0; // slight top padding already accounted in pinAreaHeight
+    const h = Math.max(baseModuleHeight, pinAreaHeight + knobAreaHeight + 20); // bottom padding
+    moduleHeights.set(name, h);
+  });
+
+  const { positions, totalHeight } = calculateModulePositionsDynamic(moduleNames, layout, moduleHeights);
 
   // Use external metadata if provided
   useEffect(() => {
@@ -429,10 +486,6 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
       setModuleMetadata(externalMetadata);
     }
   }, [externalMetadata]);
-
-  const moduleWidth = layout.moduleWidth;
-  const pinHeight = 16;
-  const pinSpacing = 20;
 
   // Helper function to get pin description
   const getPinDescription = (moduleName: string, pinName: string, type: 'input' | 'output'): string | undefined => {
@@ -492,15 +545,11 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
   };
 
   // Calculate SVG dimensions with extra space for cable sag (uniform padding top/bottom)
-  const baseModuleHeight = 120;
   const layoutPadding = layout.startY;
-  const maxRowWidth = (() => {
-    // Always reserve width for the full column count (to keep consistent 3-column visual on desktop)
-    return layout.modulesPerRow * layout.moduleWidth + (layout.modulesPerRow - 1) * layout.moduleSpacing;
-  })();
+  const maxRowWidth = layout.modulesPerRow * layout.moduleWidth + (layout.modulesPerRow - 1) * layout.moduleSpacing;
   const contentWidth = layout.startX * 2 + maxRowWidth;
   const maxX = contentWidth;
-  const maxY = Math.max(...Array.from(positions.values()).map(p => p.y)) + baseModuleHeight + layoutPadding; // symmetric top/bottom
+  const maxY = totalHeight + layoutPadding; // already includes final gap + padding
 
   return (
     <div className={styles.patchContainer} ref={containerRef}>
@@ -513,7 +562,7 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
         {showText ? 'Patch View' : 'Text View'}
       </button>
       {showText ? (
-        <pre className={styles.patchText}>{patchData.trim()}</pre>
+        <pre className={styles.patchText}>{sanitizedPatch}</pre>
       ) : (
         <svg
           width={containerWidth || maxX}
@@ -528,69 +577,86 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
               const pos = positions.get(name)!;
               const inputCount = module.inputs.length;
               const outputCount = module.outputs.length;
-              const calculatedHeight = Math.max(baseModuleHeight, Math.max(inputCount, outputCount) * pinSpacing + 60);
+              const maxPinCount = Math.max(inputCount, outputCount);
+              const knobs = knobSettings.get(name) || [];
+              const pinAreaHeight = 40 + maxPinCount * pinSpacing + 14;
+              // knob metrics (must match height calc above)
+              const knobRadius = moduleWidth >= 170 ? 18 : moduleWidth >= 150 ? 16 : 14;
+              const knobDiameter = knobRadius * 2;
+              const captionHeight = 12;
+              const knobRowHeight = knobDiameter + captionHeight + 12;
+              const knobRows = knobs.length ? Math.ceil(knobs.length / 2) : 0;
+              const knobStartY = pos.y + pinAreaHeight; // top of knob area
+              const calculatedHeight = moduleHeights.get(name)!;
               return (
                 <g key={name}>
-                  {/* Module background */}
-                  <rect
-                    x={pos.x}
-                    y={pos.y}
-                    width={moduleWidth}
-                    height={calculatedHeight}
-                    rx="8"
-                    className={styles.moduleBackground}
-                  />
-                  {/* Module name */}
-                  <text
-                    x={pos.x + moduleWidth / 2}
-                    y={pos.y + 25}
-                    textAnchor="middle"
-                    className={styles.moduleName}
-                  >
-                    {name.toUpperCase()}
-                  </text>
-                  {/* Input pins */}
+                  <rect x={pos.x} y={pos.y} width={moduleWidth} height={calculatedHeight} rx={8} className={styles.moduleBackground} />
+                  <text x={pos.x + moduleWidth / 2} y={pos.y + 25} textAnchor="middle" className={styles.moduleName}>{name.toUpperCase()}</text>
                   {module.inputs.map((input, index) => {
                     const description = getPinDescription(name, input, 'input');
                     const pinY = pos.y + 40 + (index * pinSpacing);
                     const pinX = pos.x - 8;
                     return (
                       <g key={`input-${input}-${index}`}>
-                        <rect
-                          x={pinX}
-                          y={pinY}
-                          width="16"
-                          height={pinHeight}
-                          rx="2"
-                          className={styles.inputPin}
-                          onMouseEnter={(e) => description && showTooltip(e, description, pinX, pinY)}
-                          onMouseLeave={hideTooltip}
-                        />
+                        <rect x={pinX} y={pinY} width={16} height={pinHeight} rx={2} className={styles.inputPin} onMouseEnter={(e) => description && showTooltip(e, description, pinX, pinY)} onMouseLeave={hideTooltip} />
                         <text x={pos.x + 12} y={pinY + 12} className={styles.pinLabel}>{input}</text>
                       </g>
                     );
                   })}
-                  {/* Output pins */}
                   {module.outputs.map((output, index) => {
                     const description = getPinDescription(name, output, 'output');
                     const pinY = pos.y + 40 + (index * pinSpacing);
                     const pinX = pos.x + moduleWidth - 8;
                     return (
                       <g key={`output-${output}-${index}`}>
-                        <rect
-                          x={pinX}
-                          y={pinY}
-                          width="16"
-                          height={pinHeight}
-                          rx="2"
-                          className={styles.outputPin}
-                          onMouseEnter={(e) => description && showTooltip(e, description, pinX + 16, pinY)}
-                          onMouseLeave={hideTooltip}
-                        />
+                        <rect x={pinX} y={pinY} width={16} height={pinHeight} rx={2} className={styles.outputPin} onMouseEnter={(e) => description && showTooltip(e, description, pinX + 16, pinY)} onMouseLeave={hideTooltip} />
                         <text x={pos.x + moduleWidth - 12} y={pinY + 12} textAnchor="end" className={styles.pinLabel}>{output}</text>
                       </g>
                     );
                   })}
+                  {knobs.length > 0 && (
+                    <g className={styles.knobGroup}>
+                      {knobs.map((k, kIdx) => {
+                        const row = Math.floor(kIdx / 2);
+                        const col = kIdx % 2; // 0 or 1
+                        const rowBaseY = knobStartY + row * knobRowHeight;
+                        const centerY = rowBaseY + knobRadius; // center of knob
+                        const colCenterX = col === 0
+                          ? pos.x + moduleWidth * 0.25
+                          : pos.x + moduleWidth * 0.75;
+                        // Knob angle logic: 0 at 7 o'clock (120° here), max at 5 o'clock (420° -> 60° normalized), total sweep 300° clockwise
+                        const startAngleDeg = 120; // 7 o'clock relative to +x axis (0° = 3 o'clock, increasing clockwise)
+                        const sweepAngleDeg = 300; // total travel
+                        const angleDeg = startAngleDeg + sweepAngleDeg * k.value; // may exceed 360
+                        const angleNormDeg = angleDeg % 360; // for rendering position
+                        const angleRad = angleNormDeg * Math.PI / 180;
+                        const indX = colCenterX + Math.cos(angleRad) * (knobRadius - 4);
+                        const indY = centerY + Math.sin(angleRad) * (knobRadius - 4);
+                        // Arc from startAngle to current angle across clockwise, handling wrap
+                        const startRad = startAngleDeg * Math.PI / 180;
+                        const endRad = angleRad; // normalized end
+                        const extentDeg = ((angleNormDeg - startAngleDeg + 360) % 360); // current sweep amount (0..300)
+                        const arcR = knobRadius - 3; // slight inset
+                        const startX = colCenterX + Math.cos(startRad) * arcR;
+                        const startY = centerY + Math.sin(startRad) * arcR;
+                        const endX = colCenterX + Math.cos(endRad) * arcR;
+                        const endY = centerY + Math.sin(endRad) * arcR;
+                        const sweepFlag = 1; // clockwise
+                        const largeArcFlag = extentDeg > 180 ? 1 : 0; // use large arc when over half circle
+                        const hasArc = extentDeg > 2; // render only if some rotation (> ~2°)
+                        const arcPath = `M ${startX} ${startY} A ${arcR} ${arcR} 0 ${largeArcFlag} ${sweepFlag} ${endX} ${endY}`;
+                        return (
+                          <g key={`knob-${k.name}-${kIdx}`} className={styles.knobCell} onMouseEnter={(e) => k.description && showTooltip(e, k.description, colCenterX, centerY - knobRadius - 8)} onMouseLeave={hideTooltip}>
+                            <circle cx={colCenterX} cy={centerY} r={knobRadius + 2} className={styles.knobOuter} />
+                            <circle cx={colCenterX} cy={centerY} r={knobRadius} className={styles.knobInner} />
+                            {hasArc && <path d={arcPath} className={styles.knobArc} />}
+                            <line x1={colCenterX} y1={centerY} x2={indX} y2={indY} className={styles.knobIndicator} />
+                            <text x={colCenterX} y={centerY + knobRadius + 10} className={styles.knobCaption} textAnchor="middle">{k.name.toUpperCase()}</text>
+                          </g>
+                        );
+                      })}
+                    </g>
+                  )}
                 </g>
               );
             })}

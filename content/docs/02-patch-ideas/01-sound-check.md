@@ -14,4 +14,12 @@ noise:WHITE -> svf:AUDIO
 noise:WHITE -> svf:CV
 svf:LF -> imix:1
 imix:MIXOUT -> base:L
+
+---knobs
+
+noise:TONE@0.6 Change this to sampling frequency of the noise, which results in different tones.
+svf:RESONONCE@1.0 Reduce this change the resonance
+svf:FREQ CURVE@0
+svf:FREQ@ 1.0 Reduce this to change the filter cut-off frequency
+imix:1@0.5 You can control the volume with this knob
 [/patch]
