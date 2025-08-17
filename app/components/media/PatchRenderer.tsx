@@ -12,10 +12,12 @@ export interface Connection {
   from: {
     module: string;
     pin: string;
+    index: number; // occurrence index (allows duplicates for one-to-many wiring)
   };
   to: {
     module: string;
     pin: string;
+    index: number; // occurrence index
   };
 }
 
@@ -111,9 +113,18 @@ function parsePatchData(patchData: string): { modules: Map<string, ModuleData>; 
       if (!modules.has(toModule)) modules.set(toModule, { name: toModule, inputs: [], outputs: [] });
       const fromModuleData = modules.get(fromModule)!;
       const toModuleData = modules.get(toModule)!;
-      if (fromPin && !fromModuleData.outputs.includes(fromPin)) fromModuleData.outputs.push(fromPin);
-      if (toPin && !toModuleData.inputs.includes(toPin)) toModuleData.inputs.push(toPin);
-      connections.push({ from: { module: fromModule, pin: fromPin }, to: { module: toModule, pin: toPin } });
+      let fromIndex = -1;
+      let toIndex = -1;
+      if (fromPin) {
+        // always push to allow duplicates (separate physical jacks for each wire)
+        fromModuleData.outputs.push(fromPin);
+        fromIndex = fromModuleData.outputs.length - 1;
+      }
+      if (toPin) {
+        toModuleData.inputs.push(toPin);
+        toIndex = toModuleData.inputs.length - 1;
+      }
+      connections.push({ from: { module: fromModule, pin: fromPin, index: fromIndex }, to: { module: toModule, pin: toPin, index: toIndex } });
     }
   }
   return { modules, connections, knobSettings };
@@ -242,9 +253,9 @@ function renderConnections(
     const fromModule = modules.get(connection.from.module)!;
     const toModule = modules.get(connection.to.module)!;
 
-    // Calculate pin positions
-    const fromOutputIndex = fromModule.outputs.indexOf(connection.from.pin);
-    const toInputIndex = toModule.inputs.indexOf(connection.to.pin);
+    // Use stored occurrence indices; fallback to indexOf if not present
+    const fromOutputIndex = connection.from.index >= 0 ? connection.from.index : fromModule.outputs.indexOf(connection.from.pin);
+    const toInputIndex = connection.to.index >= 0 ? connection.to.index : toModule.inputs.indexOf(connection.to.pin);
 
     const fromX = fromPos.x + moduleWidth;
     const fromY = fromPos.y + 40 + (fromOutputIndex * pinSpacing) + (pinHeight / 2);
