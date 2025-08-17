@@ -13,9 +13,11 @@ Here we will modulate a noise source using a filter, which creates some bubbly s
 
 You can power the bread modular base using the provided USB-C cable. You can any USB-C power source. If you are using a PC or Laptop's USB connection, it might get noisy some times. Better if you can use a dedicated USB power socket. (We recommend a mobile phone charger)
 
-Bread Modular uses very little power usually around 50 mA. It's way below even older USB socket's power limits. 
+> Bread Modular uses very little power usually around 50 mA. It's way below even older USB socket's power limits. 
 
 You can also use a power bank or your mobile phone as the power source.
+
+![Bread Modular Base Audio IO](/images/docs/base-connections.jpg)
 
 ## Listening to Audio
 
@@ -27,7 +29,7 @@ Let's start building it:
 First, let's make some noise(literally).
 
 [patch]
-noise:WHITE -> imix: 1
+noise:WHITE -> imix:1
 imix:MIXOUT -> base:L
 
 ---knobs
@@ -47,7 +49,7 @@ Now you will can listen to the noise and try to change tone position and how it 
 [patch]
 noise:WHITE -> svf:AUDIO
 noise:WHITE -> svf:CV
-noise:LF -> imix:1
+svf:LF -> imix:1
 imix:MIXOUT -> base:L
 
 ---knobs

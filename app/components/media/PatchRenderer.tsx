@@ -91,7 +91,7 @@ function parsePatchData(patchData: string): { modules: Map<string, ModuleData>; 
       const knobName = restAll.slice(0, atIdx).trim();
       const afterAt = restAll.slice(atIdx + 1).trim();
       const spaceIdx = afterAt.indexOf(' ');
-      let valueStr = spaceIdx === -1 ? afterAt : afterAt.slice(0, spaceIdx);
+      const valueStr = spaceIdx === -1 ? afterAt : afterAt.slice(0, spaceIdx);
       const description = spaceIdx === -1 ? '' : afterAt.slice(spaceIdx + 1).trim();
       const value = parseFloat(valueStr);
       if (isNaN(value)) continue;
@@ -620,7 +620,6 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
               const knobDiameter = knobRadius * 2;
               const captionHeight = 12;
               const knobRowHeight = knobDiameter + captionHeight + 12;
-              const knobRows = knobs.length ? Math.ceil(knobs.length / 2) : 0;
               const knobStartY = pos.y + pinAreaHeight; // top of knob area
               const calculatedHeight = moduleHeights.get(name)!;
               return (
@@ -686,7 +685,7 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
                         // Position numeric value slightly outside indicator along same angle
                         const baseValueRadius = knobRadius + 6;
                         const valueRadius = isBottomSector ? knobRadius + 2 : baseValueRadius; // tuck in a bit when bottom
-                        let valueX = colCenterX + Math.cos(angleRad) * valueRadius;
+                        const valueX = colCenterX + Math.cos(angleRad) * valueRadius;
                         let valueY = centerY + Math.sin(angleRad) * valueRadius + 1;
                         if (isBottomSector) valueY -= 10; // lift above to avoid caption collision
                         // Adjust text anchor for better readability depending on quadrant
