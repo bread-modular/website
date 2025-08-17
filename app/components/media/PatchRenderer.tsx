@@ -413,12 +413,7 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
   return (
     <div className={styles.patchContainer}>
       <svg width={maxX} height={maxY} className={styles.patchSvg}>
-        {/* Group for connections - rendered first (background layer) */}
-        <g className={styles.connectionsLayer}>
-          {renderConnections(connections, modules, positions)}
-        </g>
-        
-        {/* Group for modules - rendered second (foreground layer) */}
+        {/* Group for modules - render first so cables appear above */}
         <g className={styles.modulesLayer}>
           {Array.from(modules.entries()).map(([name, module]) => {
           const pos = positions.get(name)!;
@@ -511,7 +506,12 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
         })}
         </g>
         
-        {/* Hover tooltip - rendered on top */}
+        {/* Group for connections - render after modules so they appear above */}
+        <g className={styles.connectionsLayer}>
+          {renderConnections(connections, modules, positions)}
+        </g>
+        
+        {/* Hover tooltip - rendered on very top */}
         {tooltip.visible && (
           <g className={styles.hoverTooltip}>
             <rect
