@@ -262,8 +262,6 @@ function renderConnections(
   positions: Map<string, { x: number; y: number }>,
   moduleWidth: number
 ): React.ReactElement[] {
-  const pinHeight = 16;
-  const pinSpacing = 20;
   
   // Define cable colors
   const cableColors = [
@@ -664,7 +662,7 @@ export default function PatchRenderer({ patchData, moduleMetadataList }: PatchRe
       // Determine row peers (modules with roughly same y)
       const ROW_TOL = 6; // y tolerance
       const sameRow = Array.from(positions.entries())
-        .filter(([m, p]) => Math.abs(p.y - toPos.y) < ROW_TOL)
+        .filter((args) => Math.abs(args[1].y - toPos.y) < ROW_TOL)
         .sort((a, b) => a[1].x - b[1].x);
       // Find previous and next modules in row
       let prev: { x: number } | null = null;
