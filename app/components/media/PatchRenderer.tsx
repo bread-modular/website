@@ -405,6 +405,7 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
   const [tooltip, setTooltip] = useState<TooltipState>({ visible: false, x: 0, y: 0, content: '' });
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
+  const [showText, setShowText] = useState(false); // toggle raw text view
 
   // Observe container width for responsive layout
   useEffect(() => {
@@ -504,114 +505,126 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
 
   return (
     <div className={styles.patchContainer} ref={containerRef}>
-      <svg
-        width={containerWidth || maxX}
-        height={maxY}
-        className={styles.patchSvg}
-        viewBox={`0 0 ${maxX} ${maxY}`}
-        preserveAspectRatio="xMidYMin meet"
+      <button
+        type="button"
+        className={styles.toggleButton}
+        onClick={() => setShowText(s => !s)}
+        aria-label={showText ? 'Show graphical patch' : 'Show text patch'}
       >
-        {/* Group for modules - render first so cables appear above */}
-        <g className={styles.modulesLayer}>
-          {Array.from(modules.entries()).map(([name, module]) => {
-            const pos = positions.get(name)!;
-            const inputCount = module.inputs.length;
-            const outputCount = module.outputs.length;
-            const calculatedHeight = Math.max(baseModuleHeight, Math.max(inputCount, outputCount) * pinSpacing + 60);
-            return (
-              <g key={name}>
-                {/* Module background */}
-                <rect
-                  x={pos.x}
-                  y={pos.y}
-                  width={moduleWidth}
-                  height={calculatedHeight}
-                  rx="8"
-                  className={styles.moduleBackground}
-                />
-                {/* Module name */}
-                <text
-                  x={pos.x + moduleWidth / 2}
-                  y={pos.y + 25}
-                  textAnchor="middle"
-                  className={styles.moduleName}
-                >
-                  {name.toUpperCase()}
-                </text>
-                {/* Input pins */}
-                {module.inputs.map((input, index) => {
-                  const description = getPinDescription(name, input, 'input');
-                  const pinY = pos.y + 40 + (index * pinSpacing);
-                  const pinX = pos.x - 8;
-                  return (
-                    <g key={`input-${input}-${index}`}>
-                      <rect
-                        x={pinX}
-                        y={pinY}
-                        width="16"
-                        height={pinHeight}
-                        rx="2"
-                        className={styles.inputPin}
-                        onMouseEnter={(e) => description && showTooltip(e, description, pinX, pinY)}
-                        onMouseLeave={hideTooltip}
-                      />
-                      <text x={pos.x + 12} y={pinY + 12} className={styles.pinLabel}>{input}</text>
-                    </g>
-                  );
-                })}
-                {/* Output pins */}
-                {module.outputs.map((output, index) => {
-                  const description = getPinDescription(name, output, 'output');
-                  const pinY = pos.y + 40 + (index * pinSpacing);
-                  const pinX = pos.x + moduleWidth - 8;
-                  return (
-                    <g key={`output-${output}-${index}`}>
-                      <rect
-                        x={pinX}
-                        y={pinY}
-                        width="16"
-                        height={pinHeight}
-                        rx="2"
-                        className={styles.outputPin}
-                        onMouseEnter={(e) => description && showTooltip(e, description, pinX + 16, pinY)}
-                        onMouseLeave={hideTooltip}
-                      />
-                      <text x={pos.x + moduleWidth - 12} y={pinY + 12} textAnchor="end" className={styles.pinLabel}>{output}</text>
-                    </g>
-                  );
-                })}
-              </g>
-            );
-          })}
-        </g>
-        {/* Group for connections - render after modules so they appear above */}
-        <g className={styles.connectionsLayer}>
-          {renderConnections(connections, modules, positions, moduleWidth)}
-        </g>
-        {/* Hover tooltip - rendered on very top */}
-        {tooltip.visible && (
-          <g className={styles.hoverTooltip}>
-            <rect
-              x={tooltip.x - (tooltip.width || 120) / 2}
-              y={tooltip.y}
-              width={tooltip.width || 120}
-              height={tooltip.height || 36}
-              rx="8"
-              className={styles.tooltipBackground}
-            />
-            <text
-              x={tooltip.x}
-              y={tooltip.y + (tooltip.height || 36) / 2 + 1}
-              textAnchor="middle"
-              className={styles.tooltipText}
-              fontSize="11"
-              dominantBaseline="middle"
-            >
-              {tooltip.content}
-            </text>
+        {showText ? 'Patch View' : 'Text View'}
+      </button>
+      {showText ? (
+        <pre className={styles.patchText}>{patchData.trim()}</pre>
+      ) : (
+        <svg
+          width={containerWidth || maxX}
+          height={maxY}
+          className={styles.patchSvg}
+          viewBox={`0 0 ${maxX} ${maxY}`}
+          preserveAspectRatio="xMidYMin meet"
+        >
+          {/* Group for modules - render first so cables appear above */}
+          <g className={styles.modulesLayer}>
+            {Array.from(modules.entries()).map(([name, module]) => {
+              const pos = positions.get(name)!;
+              const inputCount = module.inputs.length;
+              const outputCount = module.outputs.length;
+              const calculatedHeight = Math.max(baseModuleHeight, Math.max(inputCount, outputCount) * pinSpacing + 60);
+              return (
+                <g key={name}>
+                  {/* Module background */}
+                  <rect
+                    x={pos.x}
+                    y={pos.y}
+                    width={moduleWidth}
+                    height={calculatedHeight}
+                    rx="8"
+                    className={styles.moduleBackground}
+                  />
+                  {/* Module name */}
+                  <text
+                    x={pos.x + moduleWidth / 2}
+                    y={pos.y + 25}
+                    textAnchor="middle"
+                    className={styles.moduleName}
+                  >
+                    {name.toUpperCase()}
+                  </text>
+                  {/* Input pins */}
+                  {module.inputs.map((input, index) => {
+                    const description = getPinDescription(name, input, 'input');
+                    const pinY = pos.y + 40 + (index * pinSpacing);
+                    const pinX = pos.x - 8;
+                    return (
+                      <g key={`input-${input}-${index}`}>
+                        <rect
+                          x={pinX}
+                          y={pinY}
+                          width="16"
+                          height={pinHeight}
+                          rx="2"
+                          className={styles.inputPin}
+                          onMouseEnter={(e) => description && showTooltip(e, description, pinX, pinY)}
+                          onMouseLeave={hideTooltip}
+                        />
+                        <text x={pos.x + 12} y={pinY + 12} className={styles.pinLabel}>{input}</text>
+                      </g>
+                    );
+                  })}
+                  {/* Output pins */}
+                  {module.outputs.map((output, index) => {
+                    const description = getPinDescription(name, output, 'output');
+                    const pinY = pos.y + 40 + (index * pinSpacing);
+                    const pinX = pos.x + moduleWidth - 8;
+                    return (
+                      <g key={`output-${output}-${index}`}>
+                        <rect
+                          x={pinX}
+                          y={pinY}
+                          width="16"
+                          height={pinHeight}
+                          rx="2"
+                          className={styles.outputPin}
+                          onMouseEnter={(e) => description && showTooltip(e, description, pinX + 16, pinY)}
+                          onMouseLeave={hideTooltip}
+                        />
+                        <text x={pos.x + moduleWidth - 12} y={pinY + 12} textAnchor="end" className={styles.pinLabel}>{output}</text>
+                      </g>
+                    );
+                  })}
+                </g>
+              );
+            })}
           </g>
-        )}
-      </svg>
+          {/* Group for connections - render after modules so they appear above */}
+          <g className={styles.connectionsLayer}>
+            {renderConnections(connections, modules, positions, moduleWidth)}
+          </g>
+          {/* Hover tooltip - rendered on very top */}
+          {tooltip.visible && (
+            <g className={styles.hoverTooltip}>
+              <rect
+                x={tooltip.x - (tooltip.width || 120) / 2}
+                y={tooltip.y}
+                width={tooltip.width || 120}
+                height={tooltip.height || 36}
+                rx="8"
+                className={styles.tooltipBackground}
+              />
+              <text
+                x={tooltip.x}
+                y={tooltip.y + (tooltip.height || 36) / 2 + 1}
+                textAnchor="middle"
+                className={styles.tooltipText}
+                fontSize="11"
+                dominantBaseline="middle"
+              >
+                {tooltip.content}
+              </text>
+            </g>
+          )}
+        </svg>
+      )}
     </div>
   );
 }
