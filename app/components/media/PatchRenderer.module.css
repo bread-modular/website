@@ -34,12 +34,28 @@
   fill: #58a6ff;
   stroke: #1f6feb;
   stroke-width: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.inputPin:hover {
+  fill: #79c0ff;
+  stroke: #58a6ff;
+  filter: drop-shadow(0px 0px 4px rgba(88, 166, 255, 0.6));
 }
 
 .outputPin {
   fill: #f85149;
   stroke: #da3633;
   stroke-width: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.outputPin:hover {
+  fill: #ff7b72;
+  stroke: #f85149;
+  filter: drop-shadow(0px 0px 4px rgba(248, 81, 73, 0.6));
 }
 
 .pinLabel {
@@ -49,17 +65,92 @@
   font-weight: 500;
 }
 
+.cableGroup {
+  transition: all 0.3s ease;
+}
+
+.cableGroup:hover .cable {
+  stroke-width: 3.5;
+  filter: brightness(1.2);
+}
+
+.cableGroup:hover .cableGlow {
+  stroke-width: 7;
+  stroke: rgba(255, 107, 53, 0.5);
+}
+
+.cableGroup:hover .cableOuterGlow {
+  stroke-width: 12;
+  stroke: rgba(255, 107, 53, 0.25);
+}
+
 .cable {
-  stroke: #ff6b35;
-  stroke-width: 2;
+  stroke-width: 2.5;
   fill: none;
-  filter: drop-shadow(0px 0px 2px rgba(255, 107, 53, 0.3));
+  transition: all 0.3s ease;
+  stroke-linecap: round;
+}
+
+.cableGlow {
+  stroke-width: 5;
+  fill: none;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+  stroke-linecap: round;
+}
+
+.cableOuterGlow {
+  stroke-width: 8;
+  fill: none;
+  opacity: 0.4;
+  transition: all 0.3s ease;
+  stroke-linecap: round;
+}
+
+.cableHighlight {
+  stroke-width: 1;
+  fill: none;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  stroke-linecap: round;
+}
+
+.cableShadow {
+  stroke-width: 3;
+  fill: none;
+  opacity: 0.2;
+  stroke-linecap: round;
+}
+
+.plugGroup {
+  transition: all 0.3s ease;
+}
+
+.plugGroup:hover {
+  transform: scale(1.1);
+}
+
+.connectionPlug {
+  transition: all 0.2s ease;
+  filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.4));
+}
+
+.plugShadow {
+  opacity: 0.3;
+}
+
+.plugHighlight {
+  opacity: 0.6;
   transition: all 0.2s ease;
 }
 
-.cable:hover {
-  stroke-width: 3;
-  filter: drop-shadow(0px 0px 4px rgba(255, 107, 53, 0.6));
+.connectionPlug:hover,
+.plugGroup:hover .connectionPlug {
+  filter: drop-shadow(0px 2px 6px rgba(255, 107, 53, 0.8));
+}
+
+.plugGroup:hover .plugHighlight {
+  opacity: 0.9;
 }
 
 /* Responsive adjustments */
@@ -76,5 +167,87 @@
   
   .pinLabel {
     font-size: 9px;
+  }
+}
+
+/* Permanent tooltip styles */
+.tooltip {
+  opacity: 0.9;
+}
+
+.tooltipBackground {
+  fill: #21262d;
+  stroke: #58a6ff;
+  stroke-width: 1;
+  opacity: 0.95;
+  filter: drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.6));
+}
+
+.tooltipText {
+  fill: #e6edf3;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-size: 9px;
+  font-weight: 400;
+}
+
+/* Hover tooltip styles */
+.hoverTooltip {
+  pointer-events: none;
+  animation: fadeInSvg 0.2s ease-in-out;
+  filter: drop-shadow(0px 4px 16px rgba(0, 0, 0, 0.8));
+}
+
+.hoverTooltip .tooltipBackground {
+  fill: #161b22;
+  stroke: #58a6ff;
+  stroke-width: 1.5;
+  opacity: 0.98;
+}
+
+.hoverTooltip .tooltipText {
+  fill: #f0f6fc;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* Legacy SVG Tooltip styles - keep for compatibility */
+.svgTooltip {
+  pointer-events: none;
+  animation: fadeInSvg 0.2s ease-in-out;
+}
+
+.tooltipTitle {
+  fill: #58a6ff;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.tooltipDescription {
+  fill: #e6edf3;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.tooltipArrow {
+  fill: #161b22;
+  stroke: #58a6ff;
+  stroke-width: 1.5;
+  opacity: 0.95;
+}
+
+@keyframes fadeInSvg {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

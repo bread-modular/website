@@ -1,7 +1,7 @@
 'use client';
 
 import YouTubeEmbed from './YouTubeEmbed';
-import PatchRenderer from './PatchRenderer';
+import PatchRenderer, { ModuleMetadata } from './PatchRenderer';
 import styles from './MarkdownContent.module.css';
 import { useEffect } from 'react';
 import useImagePreview from '../../utils/useImagePreview';
@@ -11,6 +11,7 @@ interface Props {
   content: string;
   inputs?: ModuleIO[];
   outputs?: ModuleIO[];
+  moduleMetadata?: Map<string, ModuleMetadata>;
 }
 
 function getYouTubeData(url: string): { videoId: string; startTime?: string } {
@@ -192,7 +193,7 @@ function enhanceCodeBlocks(html: string): string {
   return enhanced;
 }
 
-export default function MarkdownContent({ content, inputs, outputs }: Props) {
+export default function MarkdownContent({ content, inputs, outputs, moduleMetadata }: Props) {
   // Process the content to replace special blocks
   let processedContent = content;
   
@@ -376,7 +377,7 @@ export default function MarkdownContent({ content, inputs, outputs }: Props) {
           if (part.startsWith('__PATCH_BLOCK_')) {
             const blockIndex = parseInt(part.match(/__PATCH_BLOCK_(\d+)__/)?.[1] || '0');
             const patchData = patchBlocks[blockIndex];
-            return <PatchRenderer key={index} patchData={patchData} />;
+            return <PatchRenderer key={index} patchData={patchData} moduleMetadata={moduleMetadata} />;
           } else if (part.startsWith('__YOUTUBE_BLOCK_')) {
             const blockIndex = parseInt(part.match(/__YOUTUBE_BLOCK_(\d+)__/)?.[1] || '0');
             const { videoId, startTime } = youtubeBlocks[blockIndex];

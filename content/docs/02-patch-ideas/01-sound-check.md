@@ -12,5 +12,6 @@ Here we will modulate a noise source using a filter, which creates some bubbly s
 [patch]
 noise:WHITE -> svf:AUDIO
 noise:WHITE -> svf:CV
-svf:LF -> base:L
+svf:LF -> imix:1
+imix:MIXOUT -> base:L
 [/patch]

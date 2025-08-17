@@ -117,4 +117,19 @@ export async function getAllModules(): Promise<ModuleSpec[]> {
   );
   
   return modules.filter((module): module is Module => module !== null);
-} 
+}
+
+// Get module metadata for patch renderer
+export async function getModulesMetadata(): Promise<Map<string, { inputs: ModuleIO[]; outputs: ModuleIO[] }>> {
+  const modules = await getAllModules();
+  const metadataMap = new Map<string, { inputs: ModuleIO[]; outputs: ModuleIO[] }>();
+  
+  modules.forEach(module => {
+    metadataMap.set(module.id, {
+      inputs: module.inputs || [],
+      outputs: module.outputs || []
+    });
+  });
+  
+  return metadataMap;
+}
