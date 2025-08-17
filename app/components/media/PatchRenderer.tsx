@@ -88,7 +88,7 @@ interface LayoutParams {
   modulesPerRow: number;
 }
 
-function getLayoutParams(containerWidth: number | null, moduleCount: number): LayoutParams {
+function getLayoutParams(containerWidth: number | null): LayoutParams {
   // Target / min values
   const TARGET_MODULE_WIDTH = 180;
   const MIN_MODULE_WIDTH = 140;
@@ -101,7 +101,7 @@ function getLayoutParams(containerWidth: number | null, moduleCount: number): La
   let moduleSpacing = TARGET_SPACING;
   let rowSpacing = 140;  // slightly tighter vertical spacing
   let startX = MIN_PADDING;
-  let startY = TOP_PADDING;
+  const startY = TOP_PADDING;
   let modulesPerRow = 3; // strive for 3 whenever feasible (desktop >= 400 now)
 
   if (containerWidth) {
@@ -420,7 +420,7 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
 
   const { modules, connections } = parsePatchData(patchData);
   const moduleNames = Array.from(modules.keys());
-  const layout = getLayoutParams(containerWidth, moduleNames.length);
+  const layout = getLayoutParams(containerWidth);
   const positions = calculateModulePositions(moduleNames, layout);
 
   // Use external metadata if provided
@@ -459,7 +459,6 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
     
     // Ensure tooltip stays within SVG bounds
     const svgWidth = maxX;
-    const svgHeight = maxY;
     const margin = 15;
     
     // Adjust horizontal position
