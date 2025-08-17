@@ -1,6 +1,7 @@
 'use client';
 
 import YouTubeEmbed from './YouTubeEmbed';
+import PatchRenderer from './PatchRenderer';
 import styles from './MarkdownContent.module.css';
 import { useEffect } from 'react';
 import useImagePreview from '../../utils/useImagePreview';
@@ -192,19 +193,38 @@ function enhanceCodeBlocks(html: string): string {
 }
 
 export default function MarkdownContent({ content, inputs, outputs }: Props) {
-  // Process the content to replace YouTube embeds with the component
+  // Process the content to replace special blocks
   let processedContent = content;
   
   // Handle [io/] replacement
   const ioSectionHtml = renderIOSection(inputs, outputs);
   processedContent = processedContent.replace(/\[io\/\]/g, ioSectionHtml);
   
+  // Create unique identifiers for special blocks
+  const patchBlocks: string[] = [];
+  const youtubeBlocks: Array<{videoId: string, startTime: string}> = [];
+  
+  // Handle [patch]...[/patch] blocks
+  processedContent = processedContent.replace(
+    /\[patch\]([\s\S]*?)\[\/patch\]/g,
+    (match, patchData) => {
+      const index = patchBlocks.length;
+      patchBlocks.push(patchData.trim());
+      return `__PATCH_BLOCK_${index}__`;
+    }
+  );
+  
   // Handle [embed]URL[/embed] format
   processedContent = processedContent.replace(
     /\[embed\](https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/).+?)\[\/embed\]/g,
     (match, url) => {
       const { videoId, startTime } = getYouTubeData(url);
-      return videoId ? `<div data-youtube-id="${videoId}" data-youtube-start="${startTime || ''}"></div>` : match;
+      if (videoId) {
+        const index = youtubeBlocks.length;
+        youtubeBlocks.push({ videoId, startTime: startTime || '' });
+        return `__YOUTUBE_BLOCK_${index}__`;
+      }
+      return match;
     }
   );
   
@@ -213,13 +233,18 @@ export default function MarkdownContent({ content, inputs, outputs }: Props) {
     /@(https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/).+?)(?:\s|$)/g,
     (match, url) => {
       const { videoId, startTime } = getYouTubeData(url);
-      return videoId ? `<div data-youtube-id="${videoId}" data-youtube-start="${startTime || ''}"></div>` : match;
+      if (videoId) {
+        const index = youtubeBlocks.length;
+        youtubeBlocks.push({ videoId, startTime: startTime || '' });
+        return `__YOUTUBE_BLOCK_${index}__`;
+      }
+      return match;
     }
   );
 
-  // Split content into parts, separating YouTube embeds
-  const parts = processedContent.split(/<div data-youtube-id="([^"]+)" data-youtube-start="([^"]*)"><\/div>/);
-
+  // Split content by special blocks
+  const parts = processedContent.split(/(__(?:PATCH|YOUTUBE)_BLOCK_\d+__)/);
+  
   // Handle image click events with the hook
   useImagePreview({
     containerSelector: `.${styles.content}`,
@@ -347,20 +372,22 @@ export default function MarkdownContent({ content, inputs, outputs }: Props) {
     <>
       <div className={styles.content}>
         {parts.map((part, index) => {
-          if (index % 3 === 0) {
-            // Process regular markdown content
+          // Check if this part is a special block identifier
+          if (part.startsWith('__PATCH_BLOCK_')) {
+            const blockIndex = parseInt(part.match(/__PATCH_BLOCK_(\d+)__/)?.[1] || '0');
+            const patchData = patchBlocks[blockIndex];
+            return <PatchRenderer key={index} patchData={patchData} />;
+          } else if (part.startsWith('__YOUTUBE_BLOCK_')) {
+            const blockIndex = parseInt(part.match(/__YOUTUBE_BLOCK_(\d+)__/)?.[1] || '0');
+            const { videoId, startTime } = youtubeBlocks[blockIndex];
+            return <YouTubeEmbed key={index} videoId={videoId} startTime={startTime || undefined} />;
+          } else {
+            // Regular HTML content
             let processedPart = addHeadingIds(part);
             processedPart = processImagesWithMaxWidth(processedPart);
             processedPart = enhanceCodeBlocks(processedPart);
             return <div key={index} dangerouslySetInnerHTML={{ __html: processedPart }} />;
-          } else if (index % 3 === 1) {
-            // YouTube embed - part is videoId
-            const videoId = part;
-            const startTime = parts[index + 1]; // Next part is startTime
-            return <YouTubeEmbed key={index} videoId={videoId} startTime={startTime || undefined} />;
           }
-          // Skip startTime parts (index % 3 === 2) as they're handled above
-          return null;
         })}
       </div>
     </>

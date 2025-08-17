@@ -1,0 +1,80 @@
+.patchContainer {
+  margin: 2rem 0;
+  padding: 1rem;
+  background: #1a1a1a;
+  border-radius: 12px;
+  overflow-x: auto;
+  border: 1px solid #333;
+}
+
+.patchSvg {
+  display: block;
+  margin: 0 auto;
+  background: #0d1117;
+  border-radius: 8px;
+  min-width: 100%;
+}
+
+.moduleBackground {
+  fill: #21262d;
+  stroke: #30363d;
+  stroke-width: 1;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.moduleName {
+  fill: #f0f6fc;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.inputPin {
+  fill: #58a6ff;
+  stroke: #1f6feb;
+  stroke-width: 1;
+}
+
+.outputPin {
+  fill: #f85149;
+  stroke: #da3633;
+  stroke-width: 1;
+}
+
+.pinLabel {
+  fill: #f0f6fc;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.cable {
+  stroke: #ff6b35;
+  stroke-width: 2;
+  fill: none;
+  filter: drop-shadow(0px 0px 2px rgba(255, 107, 53, 0.3));
+  transition: all 0.2s ease;
+}
+
+.cable:hover {
+  stroke-width: 3;
+  filter: drop-shadow(0px 0px 4px rgba(255, 107, 53, 0.6));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .patchContainer {
+    padding: 0.5rem;
+    margin: 1rem -0.5rem;
+    border-radius: 8px;
+  }
+  
+  .moduleName {
+    font-size: 12px;
+  }
+  
+  .pinLabel {
+    font-size: 9px;
+  }
+}
