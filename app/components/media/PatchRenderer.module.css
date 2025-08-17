@@ -153,6 +153,18 @@
   opacity: 0.9;
 }
 
+/* SVG Layer management */
+.connectionsLayer {
+  /* Connections rendered first (background) */
+  pointer-events: none; /* Cables don't intercept mouse events */
+}
+
+.modulesLayer {
+  /* Modules rendered second (foreground) */
+  /* In SVG, later elements automatically appear on top */
+  pointer-events: auto;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .patchContainer {

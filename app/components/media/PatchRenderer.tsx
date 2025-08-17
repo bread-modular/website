@@ -111,6 +111,15 @@ function renderConnections(
   const moduleWidth = 180;
   const pinHeight = 16;
   const pinSpacing = 20;
+  
+  // Define cable colors
+  const cableColors = [
+    { main: '#ff6b35', gradient: ['#ff9f43', '#ff6b35', '#e55039'], glow: 'rgba(255, 107, 53, 0.3)' },
+    { main: '#4834d4', gradient: ['#686de0', '#4834d4', '#341f97'], glow: 'rgba(72, 52, 212, 0.3)' },
+    { main: '#00d2d3', gradient: ['#55efc4', '#00d2d3', '#00a085'], glow: 'rgba(0, 210, 211, 0.3)' },
+    { main: '#ff9ff3', gradient: ['#ffeaa7', '#ff9ff3', '#fd79a8'], glow: 'rgba(255, 159, 243, 0.3)' },
+    { main: '#ff7675', gradient: ['#fd79a8', '#ff7675', '#e84393'], glow: 'rgba(255, 118, 117, 0.3)' }
+  ];
 
   return connections.map((connection, index) => {
     const fromPos = positions.get(connection.from.module);
@@ -131,42 +140,75 @@ function renderConnections(
     const toX = toPos.x;
     const toY = toPos.y + 40 + (toInputIndex * pinSpacing) + (pinHeight / 2);
 
-    // Create more fluid cables with natural physics-based curves
+    // Pick a color for this cable (consistent based on index)
+    const colorIndex = index % cableColors.length;
+    const cableColor = cableColors[colorIndex];
+
+    // Create cables that follow natural gravity and physics
     const deltaX = toX - fromX;
     const deltaY = toY - fromY;
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     
     // Calculate natural cable sag based on distance and gravity
-    const sagFactor = Math.min(0.4, distance / 400);
+    const sagFactor = Math.min(0.3, distance / 600); // Reduced sag factor
     const baseSag = distance * sagFactor;
-    const gravitySag = Math.max(0, deltaY * 0.3);
+    
+    // Always add downward sag due to gravity
+    const gravitySag = Math.max(20, distance * 0.15); // Minimum sag for gravity effect
     const totalSag = baseSag + gravitySag;
     
-    // More natural control point calculation for smoother curves
-    const horizontalInfluence = Math.min(Math.abs(deltaX) * 0.6, 120);
-    const verticalInfluence = Math.abs(deltaY) * 0.2;
+    // Calculate control points for natural cable curve
+    const horizontalInfluence = Math.min(Math.abs(deltaX) * 0.5, 100);
     
-    // First control point - smooth exit from output with natural curve
-    const control1X = fromX + Math.max(30, horizontalInfluence * 0.4);
-    let control1Y = fromY + totalSag * 0.3 + verticalInfluence;
+    // First control point - smooth exit from output with natural downward curve
+    const control1X = fromX + Math.max(40, horizontalInfluence * 0.6);
+    const control1Y = fromY + totalSag * 0.6; // Always sag down from start point
     
     // Second control point - smooth approach to input with natural curve
-    const control2X = toX - Math.max(30, horizontalInfluence * 0.4);
-    let control2Y = toY + totalSag * 0.3 + verticalInfluence;
+    const control2X = toX - Math.max(40, horizontalInfluence * 0.6);
+    const control2Y = toY + totalSag * 0.6; // Always sag down toward end point
     
-    // Add realistic cable physics for different scenarios
-    if (Math.abs(deltaX) < 50) {
-      // Short horizontal connections - less sag, more direct
-      control1Y = fromY + Math.min(20, totalSag * 0.5);
-      control2Y = toY + Math.min(20, totalSag * 0.5);
-    } else if (deltaY < -50) {
-      // Cables going significantly upward - reduce sag
-      const upwardReduction = Math.abs(deltaY) * 0.2;
-      control1Y -= upwardReduction;
-      control2Y -= upwardReduction;
+    // For very short distances, use a gentler curve
+    if (distance < 150) {
+      const midX = (fromX + toX) / 2;
+      const gentleSag = Math.max(15, distance * 0.1);
+      const control1Y_simple = Math.max(fromY, toY) + gentleSag;
+      
+      const pathData = `M ${fromX} ${fromY} Q ${midX} ${control1Y_simple} ${toX} ${toY}`;
+      
+      return (
+        <g key={index} className={styles.cableGroup}>
+          {/* Cable outer glow for depth */}
+          <path
+            d={pathData}
+            stroke={cableColor.glow}
+            strokeWidth="8"
+            fill="none"
+            className={styles.cableOuterGlow}
+          />
+          {/* Main cable with gradient */}
+          <defs>
+            <linearGradient id={`cableGradient${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor={cableColor.gradient[0]} />
+              <stop offset="50%" stopColor={cableColor.gradient[1]} />
+              <stop offset="100%" stopColor={cableColor.gradient[2]} />
+            </linearGradient>
+          </defs>
+          <path
+            d={pathData}
+            stroke={`url(#cableGradient${index})`}
+            strokeWidth="3"
+            fill="none"
+            className={styles.cable}
+          />
+          {/* Connection plugs */}
+          <circle cx={fromX} cy={fromY} r="5" fill={cableColor.main} className={styles.connectionPlug} />
+          <circle cx={toX} cy={toY} r="5" fill={cableColor.main} className={styles.connectionPlug} />
+        </g>
+      );
     }
     
-    // Create smooth bezier curve with natural cable physics
+    // Create smooth bezier curve with natural gravity sag
     const pathData = `M ${fromX} ${fromY} C ${control1X} ${control1Y} ${control2X} ${control2Y} ${toX} ${toY}`;
 
     return (
@@ -174,7 +216,7 @@ function renderConnections(
         {/* Cable outer glow for depth */}
         <path
           d={pathData}
-          stroke="rgba(255, 107, 53, 0.15)"
+          stroke={cableColor.glow}
           strokeWidth="8"
           fill="none"
           className={styles.cableOuterGlow}
@@ -182,7 +224,7 @@ function renderConnections(
         {/* Cable glow effect */}
         <path
           d={pathData}
-          stroke="rgba(255, 107, 53, 0.3)"
+          stroke={cableColor.glow}
           strokeWidth="5"
           fill="none"
           className={styles.cableGlow}
@@ -199,10 +241,10 @@ function renderConnections(
         {/* Main cable with animated gradient */}
         <defs>
           <linearGradient id={`cableGradient${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#ff9f43" />
-            <stop offset="30%" stopColor="#ff6b35" />
-            <stop offset="70%" stopColor="#ff6b35" />
-            <stop offset="100%" stopColor="#e55039" />
+            <stop offset="0%" stopColor={cableColor.gradient[0]} />
+            <stop offset="30%" stopColor={cableColor.gradient[1]} />
+            <stop offset="70%" stopColor={cableColor.gradient[1]} />
+            <stop offset="100%" stopColor={cableColor.gradient[2]} />
           </linearGradient>
           <linearGradient id={`cableHighlight${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="rgba(255, 255, 255, 0.3)" />
@@ -241,8 +283,8 @@ function renderConnections(
             cx={fromX} 
             cy={fromY} 
             r="5" 
-            fill="#ff6b35" 
-            stroke="#e55039" 
+            fill={cableColor.main} 
+            stroke={cableColor.gradient[2]} 
             strokeWidth="1"
             className={styles.connectionPlug} 
           />
@@ -268,8 +310,8 @@ function renderConnections(
             cx={toX} 
             cy={toY} 
             r="5" 
-            fill="#ff6b35" 
-            stroke="#e55039" 
+            fill={cableColor.main} 
+            stroke={cableColor.gradient[2]} 
             strokeWidth="1"
             className={styles.connectionPlug} 
           />
@@ -363,30 +405,22 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
     setTooltip(prev => ({ ...prev, visible: false }));
   };
 
-  // Calculate SVG dimensions
+  // Calculate SVG dimensions with extra space for cable sag
   const baseModuleHeight = 120;
   const maxX = Math.max(...Array.from(positions.values()).map(p => p.x)) + moduleWidth + 50;
-  const maxY = Math.max(...Array.from(positions.values()).map(p => p.y)) + baseModuleHeight + 50;
+  const maxY = Math.max(...Array.from(positions.values()).map(p => p.y)) + baseModuleHeight + 150; // Extra space for cable sag
 
   return (
     <div className={styles.patchContainer}>
       <svg width={maxX} height={maxY} className={styles.patchSvg}>
-        {/* Definitions for gradients and patterns */}
-        <defs>
-          {connections.map((_, index) => (
-            <linearGradient key={index} id={`cableGradient${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#ff8c42" />
-              <stop offset="50%" stopColor="#ff6b35" />
-              <stop offset="100%" stopColor="#d63031" />
-            </linearGradient>
-          ))}
-        </defs>
+        {/* Group for connections - rendered first (background layer) */}
+        <g className={styles.connectionsLayer}>
+          {renderConnections(connections, modules, positions)}
+        </g>
         
-        {/* Render connections first (behind modules) */}
-        {renderConnections(connections, modules, positions)}
-        
-        {/* Render modules */}
-        {Array.from(modules.entries()).map(([name, module]) => {
+        {/* Group for modules - rendered second (foreground layer) */}
+        <g className={styles.modulesLayer}>
+          {Array.from(modules.entries()).map(([name, module]) => {
           const pos = positions.get(name)!;
           const inputCount = module.inputs.length;
           const outputCount = module.outputs.length;
@@ -475,8 +509,9 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
             </g>
           );
         })}
+        </g>
         
-        {/* Hover tooltip */}
+        {/* Hover tooltip - rendered on top */}
         {tooltip.visible && (
           <g className={styles.hoverTooltip}>
             <rect
