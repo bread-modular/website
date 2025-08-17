@@ -23,6 +23,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ModulesPage() {
+  
   const modules = await getAllModules();
   const featuredModule = modules.find(m => m.featured);
   const regularModules = modules.filter(m => !m.featured);

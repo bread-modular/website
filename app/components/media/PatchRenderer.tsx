@@ -34,7 +34,7 @@ export interface ModuleMetadata {
 
 interface PatchRendererProps {
   patchData: string;
-  moduleMetadata?: Map<string, ModuleMetadata>;
+  moduleMetadataList?: Map<string, ModuleMetadata>;
 }
 
 interface TooltipState {
@@ -451,8 +451,8 @@ function renderConnections(
   });
 }
 
-export default function PatchRenderer({ patchData, moduleMetadata: externalMetadata }: PatchRendererProps) {
-  const [moduleMetadata, setModuleMetadata] = useState<Map<string, ModuleMetadata>>(externalMetadata || new Map());
+export default function PatchRenderer({ patchData, moduleMetadataList }: PatchRendererProps) {
+  const [moduleMetadata, setModuleMetadata] = useState<Map<string, ModuleMetadata>>(moduleMetadataList || new Map());
   const [tooltip, setTooltip] = useState<TooltipState>({ visible: false, x: 0, y: 0, content: '' });
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
@@ -502,10 +502,10 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
 
   // Use external metadata if provided
   useEffect(() => {
-    if (externalMetadata) {
-      setModuleMetadata(externalMetadata);
+    if (moduleMetadataList) {
+      setModuleMetadata(moduleMetadataList);
     }
-  }, [externalMetadata]);
+  }, [moduleMetadataList]);
 
   // Helper function to get pin description
   const getPinDescription = (moduleName: string, pinName: string, type: 'input' | 'output'): string | undefined => {

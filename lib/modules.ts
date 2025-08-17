@@ -120,7 +120,7 @@ export async function getAllModules(): Promise<ModuleSpec[]> {
 }
 
 // Get module metadata for patch renderer
-export async function getModulesMetadata(): Promise<Map<string, { inputs: ModuleIO[]; outputs: ModuleIO[] }>> {
+export async function getAllModulesMetadata(): Promise<Map<string, { inputs: ModuleIO[]; outputs: ModuleIO[] }>> {
   const modules = await getAllModules();
   const metadataMap = new Map<string, { inputs: ModuleIO[]; outputs: ModuleIO[] }>();
   

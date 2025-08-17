@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import Layout from '@/app/components/Layout';
 import MarkdownContent from '@/app/components/media/MarkdownContent';
 import { getDoc, getDocCategories, extractFirstImageFromHtml } from '@/lib/docs';
-import { getModulesMetadata } from '@/lib/modules';
+import { getAllModulesMetadata } from '@/lib/modules';
 import styles from './page.module.css';
 import DocsSidebarNav from '@/app/components/DocsSidebarNav';
 import DocsMobileNav from '@/app/components/DocsMobileNav';
@@ -52,10 +52,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function DocPage({ params }: Props) {
   const {slug, category} = (await params);
-  const [doc, categories, moduleMetadata] = await Promise.all([
+  const [doc, categories, moduleMetadataList] = await Promise.all([
     getDoc(category, slug),
     getDocCategories(),
-    getModulesMetadata()
+    getAllModulesMetadata()
   ]);
 
   if (!doc) {
@@ -69,7 +69,7 @@ export default async function DocPage({ params }: Props) {
         <main className={styles.content}>
           <h1>{doc.title}</h1>
           <div className={styles.markdownWrapper}>
-            <MarkdownContent content={doc.contentHtml} moduleMetadata={moduleMetadata} />
+            <MarkdownContent content={doc.contentHtml} moduleMetadataList={moduleMetadataList} />
           </div>
           <DocsMobileNav categories={categories} currentDoc={doc} />
         </main>

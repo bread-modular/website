@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import Layout from '@/app/components/Layout';
 import MarkdownContent from '@/app/components/media/MarkdownContent';
 import { getBlogPost, getAllBlogPosts, extractFirstImageFromHtml } from '@/lib/blog';
-import { getModulesMetadata } from '@/lib/modules';
+import { getAllModulesMetadata } from '@/lib/modules';
 import BlogPostNavigation from '@/app/components/BlogPostNavigation';
 import styles from './page.module.css';
 
@@ -63,10 +63,10 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }> 
 }) {
   const { slug } = await params;
-  const [post, allPosts, moduleMetadata] = await Promise.all([
+  const [post, allPosts, moduleMetadataList] = await Promise.all([
     getBlogPost(slug),
     getAllBlogPosts(),
-    getModulesMetadata()
+    getAllModulesMetadata()
   ]);
 
   if (!post) {
@@ -91,7 +91,7 @@ export default async function BlogPostPage({
         </header>
         
         <div className={styles.content}>
-          <MarkdownContent content={post.contentHtml} moduleMetadata={moduleMetadata} />
+          <MarkdownContent content={post.contentHtml} moduleMetadataList={moduleMetadataList} />
         </div>
 
         <BlogPostNavigation posts={allPosts} currentPost={post} />
