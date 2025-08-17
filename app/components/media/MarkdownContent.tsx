@@ -6,6 +6,7 @@ import styles from './MarkdownContent.module.css';
 import { useEffect } from 'react';
 import useImagePreview from '../../utils/useImagePreview';
 import { ModuleIO } from '@/lib/modules';
+import SoundCloudEmbed from './SoundCloudEmbed';
 
 interface Props {
   content: string;
@@ -204,6 +205,7 @@ export default function MarkdownContent({ content, inputs, outputs, moduleMetada
   // Create unique identifiers for special blocks
   const patchBlocks: string[] = [];
   const youtubeBlocks: Array<{videoId: string, startTime: string}> = [];
+  const soundcloudBlocks: Array<{trackId: string}> = [];
   
   // Handle [patch]...[/patch] blocks
   processedContent = processedContent.replace(
@@ -228,6 +230,13 @@ export default function MarkdownContent({ content, inputs, outputs, moduleMetada
       return match;
     }
   );
+
+  // Handle SoundCloud shortcode: [soundcloud TRACKID /]
+  processedContent = processedContent.replace(/\[soundcloud\s+([0-9]+)\s*\/?\]/g, (match, trackId) => {
+    const index = soundcloudBlocks.length;
+    soundcloudBlocks.push({ trackId });
+    return `__SOUNDCLOUD_BLOCK_${index}__`;
+  });
   
   // Handle @URL format (for YouTube links)
   processedContent = processedContent.replace(
@@ -244,7 +253,7 @@ export default function MarkdownContent({ content, inputs, outputs, moduleMetada
   );
 
   // Split content by special blocks
-  const parts = processedContent.split(/(__(?:PATCH|YOUTUBE)_BLOCK_\d+__)/);
+  const parts = processedContent.split(/(__(?:PATCH|YOUTUBE|SOUNDCLOUD)_BLOCK_\d+__)/);
   
   // Handle image click events with the hook
   useImagePreview({
@@ -382,6 +391,10 @@ export default function MarkdownContent({ content, inputs, outputs, moduleMetada
             const blockIndex = parseInt(part.match(/__YOUTUBE_BLOCK_(\d+)__/)?.[1] || '0');
             const { videoId, startTime } = youtubeBlocks[blockIndex];
             return <YouTubeEmbed key={index} videoId={videoId} startTime={startTime || undefined} />;
+          } else if (part.startsWith('__SOUNDCLOUD_BLOCK_')) {
+            const blockIndex = parseInt(part.match(/__SOUNDCLOUD_BLOCK_(\d+)__/)?.[1] || '0');
+            const { trackId } = soundcloudBlocks[blockIndex];
+            return <SoundCloudEmbed key={index} trackId={trackId} />;
           } else {
             // Regular HTML content
             let processedPart = addHeadingIds(part);

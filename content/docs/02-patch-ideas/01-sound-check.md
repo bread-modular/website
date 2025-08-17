@@ -7,6 +7,7 @@ This might be the first thing you can patch with Bread Modular. It's easy and so
 
 Here we will modulate a noise source using a filter, which creates some bubbly sounds. Playing with this patch can be fun. You can listen to the patch below:
 
+[soundcloud 2154553752 /]
 
 ## Powering Up
 
@@ -58,4 +59,6 @@ svf:FREQ@0.25 This is the cut-off frequency. Turning right includes more higher 
 imix:1@0.6 You can control the volume with this knob
 [/patch]
 
-Connect all the cables and set the knobs into the correct position as suggested. Now you can change knob positions and try to make different sounds.
+Connect all the cables and set the knobs into the correct position as suggested. You will start to hear bubbly sounds.
+
+Then, you can change knob positions and try to make different sounds. Enjoy!
