@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Layout from '@/app/components/Layout';
-import { getModuleData } from '@/lib/modules';
+import { getModuleData, getModulesMetadata } from '@/lib/modules';
 import PricingSection from './PricingSection';
 import MarkdownContent from '@/app/components/media/MarkdownContent';
 import ModuleNav from '@/app/components/ModuleNav';
@@ -45,7 +45,10 @@ export async function generateMetadata({ params }: {params: Promise<{ id: string
 
 export default async function ModulePage({ params }: {params: Promise<{ id: string }>}) {
   const id = (await params).id;
-  const moduleData = await getModuleData(id);
+  const [moduleData, moduleMetadata] = await Promise.all([
+    getModuleData(id),
+    getModulesMetadata()
+  ]);
   
   if (!moduleData) {
     notFound();
@@ -77,6 +80,7 @@ export default async function ModulePage({ params }: {params: Promise<{ id: stri
           content={moduleData.contentHtml} 
           inputs={moduleData.inputs}
           outputs={moduleData.outputs}
+          moduleMetadata={moduleMetadata}
         />
       </div>
     </Layout>

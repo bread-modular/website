@@ -1,0 +1,340 @@
+.patchContainer {
+  margin: 2rem 0;
+  padding: 1rem;
+  background: #1a1a1a;
+  border-radius: 12px;
+  overflow-x: auto;
+  border: 1px solid #333;
+  position: relative; /* for toggle positioning */
+}
+
+.patchSvg {
+  display: block;
+  margin: 0 auto;
+  background: #0d1117;
+  border-radius: 8px;
+  min-width: 100%;
+  max-width: 100%;
+}
+
+.moduleBackground {
+  fill: #21262d;
+  stroke: #30363d;
+  stroke-width: 1;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.moduleName {
+  fill: #f0f6fc;
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.inputPin {
+  fill: #58a6ff;
+  stroke: #1f6feb;
+  stroke-width: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.inputPin:hover {
+  fill: #79c0ff;
+  stroke: #58a6ff;
+  filter: drop-shadow(0px 0px 4px rgba(88, 166, 255, 0.6));
+}
+
+.outputPin {
+  fill: #f85149;
+  stroke: #da3633;
+  stroke-width: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.outputPin:hover {
+  fill: #ff7b72;
+  stroke: #f85149;
+  filter: drop-shadow(0px 0px 4px rgba(248, 81, 73, 0.6));
+}
+
+.pinLabel {
+  fill: #f0f6fc;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.cableGroup {
+  transition: all 0.3s ease;
+}
+
+.cableGroup:hover .cable {
+  stroke-width: 3.5;
+  filter: brightness(1.2);
+}
+
+.cableGroup:hover .cableGlow {
+  stroke-width: 7;
+  stroke: rgba(255, 107, 53, 0.5);
+}
+
+.cableGroup:hover .cableOuterGlow {
+  stroke-width: 12;
+  stroke: rgba(255, 107, 53, 0.25);
+}
+
+.cable {
+  stroke-width: 2.5;
+  fill: none;
+  transition: all 0.3s ease;
+  stroke-linecap: round;
+}
+
+.cableGlow {
+  stroke-width: 5;
+  fill: none;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+  stroke-linecap: round;
+}
+
+.cableOuterGlow {
+  stroke-width: 8;
+  fill: none;
+  opacity: 0.4;
+  transition: all 0.3s ease;
+  stroke-linecap: round;
+}
+
+.cableHighlight {
+  stroke-width: 1;
+  fill: none;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  stroke-linecap: round;
+}
+
+.cableShadow {
+  stroke-width: 3;
+  fill: none;
+  opacity: 0.2;
+  stroke-linecap: round;
+}
+
+.plugGroup {
+  transition: all 0.3s ease;
+}
+
+.plugGroup:hover {
+  transform: scale(1.1);
+}
+
+.connectionPlug {
+  transition: all 0.2s ease;
+  filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.4));
+}
+
+.plugShadow {
+  opacity: 0.3;
+}
+
+.plugHighlight {
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.connectionPlug:hover,
+.plugGroup:hover .connectionPlug {
+  filter: drop-shadow(0px 2px 6px rgba(255, 107, 53, 0.8));
+}
+
+.plugGroup:hover .plugHighlight {
+  opacity: 0.9;
+}
+
+/* SVG Layer management */
+.connectionsLayer {
+  /* Connections rendered first (background) */
+  pointer-events: none; /* Cables don't intercept mouse events */
+}
+
+.modulesLayer {
+  /* Modules rendered second (foreground) */
+  /* In SVG, later elements automatically appear on top */
+  pointer-events: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .patchContainer {
+    padding: 0.5rem 0.25rem;
+    margin: 1rem -0.75rem; /* edge to edge */
+    border-radius: 8px;
+  }
+  .moduleName { font-size: 12px; }
+  .pinLabel { font-size: 9px; }
+  .toggleButton { font-size: 9px; padding: 5px 7px; bottom: 8px; right: 8px; }
+  .patchText { font-size: 11px; }
+  .knobCaption { font-size: 8.5px; }
+}
+
+@media (max-width: 480px) {
+  .moduleName { font-size: 11px; }
+  .pinLabel { font-size: 8px; }
+  .tooltipText { font-size: 9px; }
+  .knobCaption { font-size: 8px; }
+}
+
+/* Permanent tooltip styles */
+.tooltip {
+  opacity: 0.9;
+}
+
+.tooltipBackground {
+  fill: #21262d;
+  stroke: #58a6ff;
+  stroke-width: 1;
+  opacity: 0.95;
+  filter: drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.6));
+}
+
+.tooltipText {
+  fill: #e6edf3;
+  font-family: monospace;
+  font-size: 9px;
+  font-weight: 400;
+}
+
+/* Hover tooltip styles */
+.hoverTooltip {
+  pointer-events: none;
+  animation: fadeInSvg 0.2s ease-in-out;
+  filter: drop-shadow(0px 4px 16px rgba(0, 0, 0, 0.8));
+}
+
+.hoverTooltip .tooltipBackground {
+  fill: #161b22;
+  stroke: #58a6ff;
+  stroke-width: 1.5;
+  opacity: 0.98;
+}
+
+.hoverTooltip .tooltipText {
+  fill: #f0f6fc;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* Legacy SVG Tooltip styles - keep for compatibility */
+.svgTooltip {
+  pointer-events: none;
+  animation: fadeInSvg 0.2s ease-in-out;
+}
+
+.tooltipTitle {
+  fill: #58a6ff;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.tooltipDescription {
+  fill: #e6edf3;
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.tooltipArrow {
+  fill: #161b22;
+  stroke: #58a6ff;
+  stroke-width: 1.5;
+  opacity: 0.95;
+}
+
+.toggleButton {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: #f5f7fa; /* light background */
+  color: #111; /* dark text */
+  border: 1px solid #c4ccd5;
+  font-size: 9px; /* smaller font */
+  font-family: monospace;
+  padding: 3px 3px;
+  border-radius: 4px; /* boxy */
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0.95;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  text-transform: uppercase; /* caps lock style */
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: background .2s ease, box-shadow .2s ease, transform .1s ease;
+}
+
+.toggleButton:hover {
+  background: #e9edf2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+  transform: translateY(-1px);
+  opacity: 1;
+}
+
+.toggleButton:active {
+  background: #dbe1e8;
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.toggleButton:focus-visible {
+  outline: 2px solid #6b7fff;
+  outline-offset: 2px;
+}
+
+.patchText {
+  background: #0d1117;
+  color: #e6edf3;
+  padding: 1rem 1rem 2.5rem; /* leave space for button */
+  font-size: 12px;
+  line-height: 1.4;
+  font-family: monospace;
+  white-space: pre-wrap;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+}
+
+/* Knob grid styles */
+.knobGroup { font-family: 'SF Mono', Monaco, monospace; }
+.knobCell { cursor: default; }
+.knobCaption { fill: #9da7b3; font-size: 9px; letter-spacing: 0.5px; font-weight: 500; }
+.knobOuter { fill: #1e2328; stroke: #30363d; stroke-width: 1; }
+.knobInner { fill: #2a3138; stroke: #3a444d; stroke-width: 1; }
+.knobIndicator { stroke: #58a6ff; stroke-width: 2.5; stroke-linecap: round; }
+.knobArc { stroke: #58a6ff; stroke-width: 2; fill: none; stroke-linecap: round; filter: drop-shadow(0 0 2px rgba(88,166,255,0.6)); }
+.knobCell:hover .knobInner { fill: #32404a; }
+.knobCell:hover .knobIndicator { stroke: #79c0ff; }
+.knobCell:hover .knobArc { stroke: #79c0ff; }
+.knobValue { fill: #0d1117; font-size: 8px; font-weight: 600; pointer-events: none; }
+.knobValueBg { fill: #ffffff; stroke: #c9d1d9; stroke-width: 0.5; opacity: 0.95; filter: drop-shadow(0 0 4px rgba(0,0,0,0.4)); }
+.knobValueGroup { pointer-events: none; }
+
+@keyframes fadeInSvg {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
