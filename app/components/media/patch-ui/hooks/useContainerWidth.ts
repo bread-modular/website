@@ -1,6 +1,7 @@
-import { useEffect, useState, RefObject } from 'react';
+import { useEffect, useState } from 'react';
 
-export function useContainerWidth(ref: RefObject<HTMLElement>) {
+// Accept any ref-like object with a current HTMLElement (or null)
+export function useContainerWidth(ref: { current: HTMLElement | null }) {
   const [width, setWidth] = useState<number | null>(null);
   useEffect(() => {
     if (!ref.current) return;
