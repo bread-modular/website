@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './PatchRenderer.module.css';
 
+// Tooltip layout constants (moved to actual file instead of placeholder)
+const TOOLTIP_MAX_WIDTH = 220; // max width before wrapping
+const TOOLTIP_CHAR_WIDTH = 7;  // approximate monospace width used for layout calc
+const TOOLTIP_LINE_HEIGHT = 14; // line height for tspans
+const TOOLTIP_HPAD = 20; // horizontal padding (total extra width)
+const TOOLTIP_VPAD = 10;  // vertical padding (top + bottom)
+
 export interface Connection {
   from: {
     module: string;
@@ -35,6 +42,7 @@ interface TooltipState {
   content: string;
   width?: number;
   height?: number;
+  lines?: string[]; // wrapped lines
 }
 
 interface KnobSetting { name: string; value: number; description?: string }
@@ -501,43 +509,58 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
   // Tooltip event handlers
   const showTooltip = (event: React.MouseEvent, content: string, x: number, y: number) => {
     if (!content) return;
-    
-    // Calculate tooltip dimensions to fit the full content
-    const padding = 20; // More generous padding
-    const charWidth = 7; // Approximate character width
-    
-    // Calculate actual width needed for the content
-    const contentWidth = content.length * charWidth;
-    const tooltipWidth = Math.max(contentWidth + padding, 120); // Ensure minimum width but don't restrict max
-    const tooltipHeight = 36; // Slightly taller for better padding
-    
+
+    // Build wrapped lines respecting max width (word wrapping) using approximate char metrics
+    const maxContentCharsPerLine = Math.floor((TOOLTIP_MAX_WIDTH - TOOLTIP_HPAD) / TOOLTIP_CHAR_WIDTH);
+    const words = content.split(/\s+/);
+    const lines: string[] = [];
+    let current = '';
+    const pushCurrent = () => { if (current) { lines.push(current); current = ''; } };
+    for (let w of words) {
+      // If a single word is longer than max, hard-break it
+      while (w.length > maxContentCharsPerLine) {
+        const slice = w.slice(0, maxContentCharsPerLine);
+        w = w.slice(maxContentCharsPerLine);
+        if (current) { pushCurrent(); }
+        lines.push(slice);
+      }
+      if (!current) {
+        current = w;
+      } else if ((current.length + 1 + w.length) <= maxContentCharsPerLine) {
+        current += ' ' + w;
+      } else {
+        pushCurrent();
+        current = w;
+      }
+    }
+    pushCurrent();
+
+    const longest = lines.reduce((m, l) => Math.max(m, l.length), 0);
+    const neededWidth = longest * TOOLTIP_CHAR_WIDTH + TOOLTIP_HPAD; // include padding
+    const tooltipWidth = Math.min(TOOLTIP_MAX_WIDTH, neededWidth);
+    const tooltipHeight = lines.length * TOOLTIP_LINE_HEIGHT + TOOLTIP_VPAD * 2;
+
     // Ensure tooltip stays within SVG bounds
     const svgWidth = maxX;
     const margin = 15;
-    
-    // Adjust horizontal position
+
     let adjustedX = x;
     const halfWidth = tooltipWidth / 2;
-    
-    if (x - halfWidth < margin) {
-      adjustedX = halfWidth + margin;
-    } else if (x + halfWidth > svgWidth - margin) {
-      adjustedX = svgWidth - halfWidth - margin;
-    }
-    
-    // Adjust vertical position (prefer above, fall back to below)
+    if (adjustedX - halfWidth < margin) adjustedX = halfWidth + margin;
+    else if (adjustedX + halfWidth > svgWidth - margin) adjustedX = svgWidth - halfWidth - margin;
+
+    // Prefer above, fallback below
     let adjustedY = y - tooltipHeight - 15;
-    if (adjustedY < margin) {
-      adjustedY = y + 25; // Show below pin
-    }
-    
+    if (adjustedY < margin) adjustedY = y + 25;
+
     setTooltip({
       visible: true,
       x: adjustedX,
       y: adjustedY,
       content,
       width: tooltipWidth,
-      height: tooltipHeight
+      height: tooltipHeight,
+      lines
     });
   };
 
@@ -721,15 +744,28 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
                 rx="8"
                 className={styles.tooltipBackground}
               />
+              {/* Left-aligned tooltip text with consistent padding and vertical spacing */}
               <text
-                x={tooltip.x}
-                y={tooltip.y + (tooltip.height || 36) / 2 + 1}
-                textAnchor="middle"
                 className={styles.tooltipText}
                 fontSize="11"
-                dominantBaseline="middle"
+                textAnchor="start"
               >
-                {tooltip.content}
+                {tooltip.lines && tooltip.lines.length > 0 ? (
+                  tooltip.lines.map((ln, i) => (
+                    <tspan
+                      key={i}
+                      x={tooltip.x - (tooltip.width || 120) / 2 + TOOLTIP_HPAD / 2}
+                      {...(i === 0
+                        ? { y: tooltip.y + TOOLTIP_VPAD - 4 + TOOLTIP_LINE_HEIGHT }
+                        : { dy: TOOLTIP_LINE_HEIGHT })}
+                    >{ln}</tspan>
+                  ))
+                ) : (
+                  <tspan
+                    x={tooltip.x - (tooltip.width || 120) / 2 + TOOLTIP_HPAD / 2}
+                    y={tooltip.y + TOOLTIP_VPAD + TOOLTIP_LINE_HEIGHT}
+                  >{tooltip.content}</tspan>
+                )}
               </text>
             </g>
           )}
