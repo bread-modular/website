@@ -82,13 +82,13 @@ function parsePatchData(patchData: string): { modules: Map<string, ModuleData>; 
 function calculateModulePositions(moduleNames: string[]): Map<string, { x: number; y: number }> {
   const positions = new Map<string, { x: number; y: number }>();
   
-  // Layout: arrange modules in rows of 3
+  // Layout: arrange modules in rows of 3 (more compact vertical spacing)
   const modulesPerRow = 3;
   const moduleWidth = 200;
-  const moduleSpacing = 50;
-  const rowSpacing = 200;
+  const moduleSpacing = 50; // horizontal spacing unchanged
+  const rowSpacing = 160; // was 200
   const startX = 50;
-  const startY = 50;
+  const startY = 60; // uniform top padding (match bottom padding later)
 
   moduleNames.forEach((name, index) => {
     const row = Math.floor(index / modulesPerRow);
@@ -405,10 +405,11 @@ export default function PatchRenderer({ patchData, moduleMetadata: externalMetad
     setTooltip(prev => ({ ...prev, visible: false }));
   };
 
-  // Calculate SVG dimensions with extra space for cable sag
+  // Calculate SVG dimensions with extra space for cable sag (uniform padding top/bottom)
   const baseModuleHeight = 120;
-  const maxX = Math.max(...Array.from(positions.values()).map(p => p.x)) + moduleWidth + 50;
-  const maxY = Math.max(...Array.from(positions.values()).map(p => p.y)) + baseModuleHeight + 150; // Extra space for cable sag
+  const layoutPadding = 60; // matches startY in calculateModulePositions
+  const maxX = Math.max(...Array.from(positions.values()).map(p => p.x)) + moduleWidth + layoutPadding;
+  const maxY = Math.max(...Array.from(positions.values()).map(p => p.y)) + baseModuleHeight + layoutPadding; // uniform bottom padding
 
   return (
     <div className={styles.patchContainer}>
