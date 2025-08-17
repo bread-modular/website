@@ -48,6 +48,7 @@ interface TooltipState {
 }
 
 interface KnobSetting { name: string; value: number; description?: string }
+interface StateSetting { name: string; value: string; comment?: string }
 
 function sanitizePatchRaw(raw: string): string {
   // Replace paragraph and break tags with newlines first to preserve line structure
@@ -69,17 +70,20 @@ function sanitizePatchRaw(raw: string): string {
   return s.trim();
 }
 
-function parsePatchData(patchData: string): { modules: Map<string, ModuleData>; connections: Connection[]; knobSettings: Map<string, KnobSetting[]> } {
+function parsePatchData(patchData: string): { modules: Map<string, ModuleData>; connections: Connection[]; knobSettings: Map<string, KnobSetting[]>; stateSettings: Map<string, StateSetting[]> } {
   const lines = patchData.split('\n').map(l => l.trim()).filter(l => l.length);
   const modules = new Map<string, ModuleData>();
   const connections: Connection[] = [];
   const knobSettings = new Map<string, KnobSetting[]>();
+  const stateSettings = new Map<string, StateSetting[]>();
   let inKnobSection = false;
+  let inStateSection = false;
 
   for (const rawLine of lines) {
     let line = rawLine.trim();
     if (!line) continue;
-    if (line.toLowerCase().startsWith('---knobs')) { inKnobSection = true; continue; }
+    if (line.toLowerCase().startsWith('---knobs')) { inKnobSection = true; inStateSection = false; continue; }
+    if (line.toLowerCase().startsWith('---states')) { inStateSection = true; inKnobSection = false; continue; }
 
     if (inKnobSection) {
       if (!line.includes(':') || !line.includes('@')) continue;
@@ -97,6 +101,31 @@ function parsePatchData(patchData: string): { modules: Map<string, ModuleData>; 
       if (isNaN(value)) continue;
       if (!knobSettings.has(moduleName)) knobSettings.set(moduleName, []);
       knobSettings.get(moduleName)!.push({ name: knobName, value: Math.min(Math.max(value, 0), 1), description: description || undefined });
+      if (!modules.has(moduleName)) modules.set(moduleName, { name: moduleName, inputs: [], outputs: [] });
+      continue;
+    }
+
+    if (inStateSection) {
+      // Expected pattern: module:STATE = VALUE; optional comment
+      if (!line.includes(':') || !line.includes('=')) continue;
+      const [left, rightAll] = line.split(/=(.+)/); // split first '='
+      if (!rightAll) continue;
+      const leftTrim = left.trim();
+      const colonIdx = leftTrim.indexOf(':');
+      if (colonIdx === -1) continue;
+      const moduleName = leftTrim.slice(0, colonIdx).trim();
+      const stateName = leftTrim.slice(colonIdx + 1).trim();
+      let valuePart = rightAll.trim();
+      let comment: string | undefined;
+      const semicolonIdx = valuePart.indexOf(';');
+      if (semicolonIdx !== -1) {
+        comment = valuePart.slice(semicolonIdx + 1).trim();
+        valuePart = valuePart.slice(0, semicolonIdx).trim();
+      }
+      // Allow empty value? require non-empty
+      if (!moduleName || !stateName || !valuePart) continue;
+      if (!stateSettings.has(moduleName)) stateSettings.set(moduleName, []);
+      stateSettings.get(moduleName)!.push({ name: stateName, value: valuePart, comment });
       if (!modules.has(moduleName)) modules.set(moduleName, { name: moduleName, inputs: [], outputs: [] });
       continue;
     }
@@ -127,7 +156,7 @@ function parsePatchData(patchData: string): { modules: Map<string, ModuleData>; 
       connections.push({ from: { module: fromModule, pin: fromPin, index: fromIndex }, to: { module: toModule, pin: toPin, index: toIndex } });
     }
   }
-  return { modules, connections, knobSettings };
+  return { modules, connections, knobSettings, stateSettings };
 }
 
 interface LayoutParams {
@@ -471,13 +500,16 @@ export default function PatchRenderer({ patchData, moduleMetadataList }: PatchRe
   }, []);
 
   const sanitizedPatch = sanitizePatchRaw(patchData);
-  const { modules, connections, knobSettings } = parsePatchData(sanitizedPatch);
+  const { modules, connections, knobSettings, stateSettings } = parsePatchData(sanitizedPatch);
   const moduleNames = Array.from(modules.keys());
   const layout = getLayoutParams(containerWidth);
   const moduleWidth = layout.moduleWidth;
   const pinHeight = 16;
   const pinSpacing = 20;
   const baseModuleHeight = 120;
+  // Spacing constants for state section to avoid separator overlap with text
+  const STATE_TOP_GAP = 20; // vertical gap above first state line (was 8)
+  const STATE_SEPARATOR_OFFSET = 20; // distance between first state text baseline and separator line
 
   // Pre-compute per-module heights including knob grid (2 per row)
   const moduleHeights = new Map<string, number>();
@@ -486,7 +518,8 @@ export default function PatchRenderer({ patchData, moduleMetadataList }: PatchRe
     const outputCount = module.outputs.length;
     const maxPinCount = Math.max(inputCount, outputCount);
     const knobs = knobSettings.get(name) || [];
-    const pinAreaHeight = 40 + maxPinCount * pinSpacing + 14; // title + pins + spacing to knobs
+    const states = stateSettings.get(name) || [];
+    const pinAreaHeight = 40 + maxPinCount * pinSpacing + 14;
     // Dynamic knob sizing based on module width
     const knobRadius = moduleWidth >= 170 ? 18 : moduleWidth >= 150 ? 16 : 14;
     const knobDiameter = knobRadius * 2;
@@ -494,7 +527,9 @@ export default function PatchRenderer({ patchData, moduleMetadataList }: PatchRe
     const knobRowHeight = knobDiameter + captionHeight + 12; // knob + caption + gap
     const knobRows = knobs.length ? Math.ceil(knobs.length / 2) : 0;
     const knobAreaHeight = knobRows ? knobRows * knobRowHeight + 4 : 0; // slight top padding already accounted in pinAreaHeight
-    const h = Math.max(baseModuleHeight, pinAreaHeight + knobAreaHeight + 20); // bottom padding
+    const stateLineHeight = states.length ? 16 : 0;
+    const statesAreaHeight = states.length * stateLineHeight + (states.length ? STATE_TOP_GAP : 0); // updated gap
+    const h = Math.max(baseModuleHeight, pinAreaHeight + knobAreaHeight + statesAreaHeight + 10); // bottom padding reduced
     moduleHeights.set(name, h);
   });
 
@@ -614,14 +649,19 @@ export default function PatchRenderer({ patchData, moduleMetadataList }: PatchRe
               const outputCount = module.outputs.length;
               const maxPinCount = Math.max(inputCount, outputCount);
               const knobs = knobSettings.get(name) || [];
+              const states = stateSettings.get(name) || [];
               const pinAreaHeight = 40 + maxPinCount * pinSpacing + 14;
-              // knob metrics (must match height calc above)
               const knobRadius = moduleWidth >= 170 ? 18 : moduleWidth >= 150 ? 16 : 14;
               const knobDiameter = knobRadius * 2;
               const captionHeight = 12;
               const knobRowHeight = knobDiameter + captionHeight + 12;
               const knobStartY = pos.y + pinAreaHeight; // top of knob area
               const calculatedHeight = moduleHeights.get(name)!;
+              // compute states start Y after knobs
+              const knobRows = knobs.length ? Math.ceil(knobs.length / 2) : 0;
+              const knobAreaHeight = knobRows ? knobRows * knobRowHeight + 4 : 0;
+              const statesStartY = knobStartY + knobAreaHeight + (states.length ? STATE_TOP_GAP : 0);
+              const separatorY = states.length ? (statesStartY - STATE_SEPARATOR_OFFSET) : null;
               return (
                 <g key={name}>
                   <rect x={pos.x} y={pos.y} width={moduleWidth} height={calculatedHeight} rx={8} className={styles.moduleBackground} />
@@ -730,6 +770,30 @@ export default function PatchRenderer({ patchData, moduleMetadataList }: PatchRe
                               </g>
                             )}
                             <text x={colCenterX} y={centerY + knobRadius + 10} className={styles.knobCaption} textAnchor="middle">{k.name.toUpperCase()}</text>
+                          </g>
+                        );
+                      })}
+                    </g>
+                  )}
+                  {states.length > 0 && (
+                    <g className={styles.stateGroup}>
+                      {separatorY !== null && (
+                        <line x1={pos.x + 6} x2={pos.x + moduleWidth - 6} y1={separatorY} y2={separatorY} className={styles.stateSeparator} />
+                      )}
+                      {states.map((s, sIdx) => {
+                        const lineHeight = 16;
+                        const lineY = statesStartY + sIdx * lineHeight;
+                        const keyX = pos.x + 10;
+                        const stateKey = `${name}-state-${s.name}-${sIdx}`;
+                        const label = `${s.name.toUpperCase()}: ${s.value}`;
+                        return (
+                          <g
+                            key={stateKey}
+                            className={styles.stateLine}
+                            onMouseEnter={(e) => s.comment && showTooltip(e, s.comment, keyX + 40, lineY - 6)}
+                            onMouseLeave={hideTooltip}
+                          >
+                            <text x={keyX} y={lineY} className={styles.stateKey} textAnchor="start">{label}</text>
                           </g>
                         );
                       })}
