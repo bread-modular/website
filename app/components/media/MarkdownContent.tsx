@@ -1,7 +1,8 @@
 'use client';
 
 import YouTubeEmbed from './YouTubeEmbed';
-import PatchRenderer, { ModuleMetadata } from './PatchRenderer';
+import { ModuleMetadata } from '@/lib/patch-ui/types';
+import PatchUI from './patch-ui/PatchUI';
 import styles from './MarkdownContent.module.css';
 import { useEffect } from 'react';
 import useImagePreview from '../../utils/useImagePreview';
@@ -386,7 +387,7 @@ export default function MarkdownContent({ content, inputs, outputs, moduleMetada
           if (part.startsWith('__PATCH_BLOCK_')) {
             const blockIndex = parseInt(part.match(/__PATCH_BLOCK_(\d+)__/)?.[1] || '0');
             const patchData = patchBlocks[blockIndex];
-            return <PatchRenderer key={index} patchData={patchData} moduleMetadataList={moduleMetadataList} />;
+            return <PatchUI key={index} patchData={patchData} moduleMetadataList={moduleMetadataList} />;
           } else if (part.startsWith('__YOUTUBE_BLOCK_')) {
             const blockIndex = parseInt(part.match(/__YOUTUBE_BLOCK_(\d+)__/)?.[1] || '0');
             const { videoId, startTime } = youtubeBlocks[blockIndex];
