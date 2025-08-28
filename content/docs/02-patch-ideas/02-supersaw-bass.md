@@ -54,8 +54,10 @@ low:CUTOFF@0.85 This is the cutoff frequency of the low-pass gate. Increasing it
 8bit:MODE = LED_OFF; Hold the MODE button for a second to change the mode.
 [/patch]
 
-> Here's the fun part: there's a patch cable connected to the LOW module's GATE/CV input, but it's not connected to anything. That's intentional.
+**Here's the fun part:** there's a patch cable connected to the LOW module's GATE/CV input, but it's not connected to anything. That's intentional.
 
 Touch it and you can now hear the bass sound. It needs some voltage to open the gate. You can tap into the 3.3V source located at the bottom left of the base. It's a 5-pin socket labeled +3V3.
+
+> If it doesn't make a sound while you touch the cable, seems like your power outlet is grounding properly. In such case, connect another cable to 3.3V socket and touch that cable while holding the first cable.
 
 Now experiment with the knobs and see how you can change the sound. Hover over each knob to learn what it does.

@@ -28,9 +28,9 @@ outputs:
     description: "An output of the Drive which is always overdriven"
   - shortname: "DIRTY"
     description: "An output of the Drive which is always overdriven"
-  - shortname: "CLEAN"
+  - shortname: "CLEN"
     description: "An output of the Drive which is clean by default and overdriven only if controls are engaged"
-  - shortname: "CLEAN"
+  - shortname: "CLEN"
     description: "An output of the Drive which is clean by default and overdriven only if controls are engaged"
 ---
 
