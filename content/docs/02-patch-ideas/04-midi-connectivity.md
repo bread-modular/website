@@ -79,3 +79,9 @@ drive:GAIN@0.9 This is the amount of distortion. Increase it to add more drive.
 [/patch]
 
 This patch borrows heavily from the [Overdrive / Distortion](/docs/patch-ideas/overdrive-distortion) patch. Give that a try first if you haven’t already.
+
+## Hoemwork
+
+As an exercise, try to use the [8bit](/modules/8bit) module instead of the MCO module. In order to accept MIDI in 8bit, you have to set the MODE to LED_ON (hold the MODE button for a second).
+
+You can also check the [Supersaw Bass](/docs/patch-ideas/supersaw-bass) patch to learn how to use the 8bit module.
