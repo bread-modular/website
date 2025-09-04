@@ -33,6 +33,26 @@
   border-bottom: 1px solid var(--neutral-200);
 }
 
+/* Markdown-style heading link: click whole text, show # on hover */
+.categoryTitleLink {
+  color: inherit;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+}
+
+.categoryTitleLink::after {
+  content: '#';
+  opacity: 0;
+  margin-left: 8px;
+  color: var(--neutral-400);
+  transition: opacity 0.15s ease-in-out;
+}
+
+.categoryTitleLink:hover::after {
+  opacity: 1;
+}
+
 .docsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

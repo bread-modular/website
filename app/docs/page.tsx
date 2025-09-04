@@ -43,7 +43,11 @@ export default async function DocsPage() {
           {categories.length > 0 ? (
             categories.map((category) => (
               <section key={category.slug} className={styles.categorySection}>
-                <h2 className={styles.categoryTitle}>{category.name}</h2>
+                <h2 className={styles.categoryTitle}>
+                  <Link href={`/docs/${category.slug}`} className={styles.categoryTitleLink}>
+                    {category.name}
+                  </Link>
+                </h2>
                 
                 <div className={styles.docsGrid}>
                   {category.docs.map((doc) => (
