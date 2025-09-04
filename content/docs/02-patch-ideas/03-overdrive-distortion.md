@@ -29,8 +29,6 @@ drive:OD1@1.0 This is the tone shaper (upper half of the waveform); turning righ
 drive:OD2@0.9 This is the tone shaper (lower half of the waveform); turning right adds more harmonics.
 drive:GAIN@0.9 This is the amount of distortion. Increase it to add more drive.
 
----states
-8bit:MODE = LED_OFF; Hold the MODE button for a second to change the mode.
 [/patch]
 
 If you followed the Supersaw Bass patch, the only new thing here is the [DRIVE](/modules/drive) module. It has three knobs:
