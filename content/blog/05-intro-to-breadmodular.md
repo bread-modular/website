@@ -54,3 +54,29 @@ noise:TONE@0.0 This controls the core tone of the noise. Turning it clockwise in
 ---states
 8bit:MODE = LED_OFF; Hold the MODE button for a second to change modes. LED_OFF means you can control the frequency manually; otherwise, it listens only to MIDI notes.
 [/patch]
+
+## 3. Using a Filter
+
+Here we use a filter to shape the Supersaw sound.
+
+[patch]
+
+8bit:AUDIO -> svf:AUDIO
+svf:LF -> 4mix:1
+4mix:MIXOUT -> base:L
+
+---knobs
+8bit:CV1@0.25 This controls the oscillator frequency, which you can adjust manually.
+8bit:CV2@1.0 This is the mix level of the detuned second oscillator. For a supersaw sound, set it to 1.0.
+8bit:LOWPASS@0 This is the built-in low-pass filter. Increase it to reduce upper harmonics.
+
+4mix:CH1@0.5 This controls the channel 1 (8bit) volume.
+4mix:MIX_GAIN@0.8 This controls the master volume of the mixer.
+
+svf:RESONANCE@0.5 Resonance amount. Increase it for a more pronounced effect.
+svf:FREQ_CURVE@0.5 Cutoff frequency range. Turning it clockwise narrows the range.
+svf:CUTOFF@0.5 Cutoff frequency. Adjust it to hear how the tone changes.
+
+---states
+8bit:MODE = LED_OFF; Hold the MODE button for a second to change modes. LED_OFF means you can control the frequency manually; otherwise, it listens only to MIDI notes.
+[/patch]
