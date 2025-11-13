@@ -6,9 +6,18 @@ summary: An introduction to Bread Modular with some example patches.
 image: /images/blog/bread-modular-with-friends.jpg
 ---
 
-Bread Modular is a modular synth platform built from scratch. Unlike VCVRack, which is based on the Eurorack standard, Bread Modular takes a completely different approach. However, the core concepts you've learned still apply.
+Bread Modular is a modular synth platform built from scratch. Unlike VCV Rack, which is based on the Eurorack standard, Bread Modular takes a completely different approach. However, the core concepts you've learned still apply.
 
 This guide will help you map your modular knowledge to Bread Modular.
+
+## 0. About Bread Modular
+
+1. You can power a Bread Modular case over USB-C, making it truly portable.
+2. Both headphone and line-level outputs are built into the base.
+3. You can host up to 12 modules in a single base.
+4. Most modules accept MIDI, giving you more control with fewer cables.
+5. The platform runs on 3.3 V, so analog circuits such as Moog-style filters and noise generators are harder to implement; we often rely on digital solutions instead.
+6. It is more affordable than Eurorack, though it is still expensive.
 
 ## 1. Supersaw Oscillator
 
@@ -150,3 +159,89 @@ lfo:CV2@0.0 LFO waveform shaper. At 0.0 it’s a sine wave; turning it clockwise
 [/patch]
 
 > Here, the LFO is an 8bit module running the LFO firmware.
+
+## 6. Using a VCA
+
+Here we control a VCA with an LFO.
+
+[patch]
+
+8bit:AUDIO -> svf:AUDIO
+svf:LF -> drive:AUDIO
+lfo:AUDIO -> v2ca:CV1
+drive:CLEN -> v2ca:IN1
+v2ca:OUT1 -> 4mix:1
+4mix:MIXOUT -> base:L
+
+---knobs
+8bit:CV1@0.25 This controls the oscillator frequency, which you can adjust manually.
+8bit:CV2@1.0 This is the mix level of the detuned second oscillator. For a supersaw sound, set it to 1.0.
+8bit:LOWPASS@0 This is the built-in low-pass filter. Increase it to reduce upper harmonics.
+
+4mix:CH1@0.8 This controls the channel 1 (8bit) volume.
+4mix:MIX_GAIN@0.8 This controls the master volume of the mixer.
+
+svf:RESONANCE@0.5 Resonance amount. Increase it for a more pronounced effect.
+svf:FREQ_CURVE@0.5 Cutoff frequency range. Turning it clockwise narrows the range.
+svf:CUTOFF@0.5 Cutoff frequency. Adjust it to hear how the tone changes.
+
+drive:OD1@0.0 Tone shaper for the upper half of the waveform; turning it clockwise adds more harmonics.
+drive:OD2@0.0 Tone shaper for the lower half of the waveform; turning it clockwise adds more harmonics.
+drive:GAIN@0.5 Distortion amount. Increase it to add more drive.
+
+lfo:CV1@0.3 LFO frequency, ranging from 0.1 Hz to 20 Hz.
+lfo:CV2@0.0 LFO waveform shaper. At 0.0 it’s a sine wave; turning it clockwise morphs it into triangle, sawtooth, complex, and random waveforms.
+
+v2ca:CURVE1@0.0 This controls the VCA response curve. At 0.0 the VCA stays snappy; turning it clockwise softens the shape.
+
+---states
+8bit:MODE = LED_OFF; Hold the MODE button for a second to change modes. LED_OFF means you can control the frequency manually; otherwise, it listens only to MIDI notes.
+[/patch]
+
+
+## 7. Using an Envelope
+
+Here we use an envelope to control the VCA, with MIDI triggering the articulation.
+
+[patch]
+
+8bit:AUDIO -> svf:AUDIO
+svf:LF -> drive:AUDIO
+drive:CLEN -> v2ca:IN1
+v2ca:OUT1 -> 4mix:1
+midi:MIDI[1] -> env:MIDI
+env:ENV -> v2ca:CV1
+4mix:MIXOUT -> base:L
+
+---knobs
+8bit:CV1@0.25 This controls the oscillator frequency, which you can adjust manually.
+8bit:CV2@1.0 This is the mix level of the detuned second oscillator. For a supersaw sound, set it to 1.0.
+8bit:LOWPASS@0 This is the built-in low-pass filter. Increase it to reduce upper harmonics.
+
+4mix:CH1@0.8 This controls the channel 1 (8bit) volume.
+4mix:MIX_GAIN@0.8 This controls the master volume of the mixer.
+
+svf:RESONANCE@0.5 Resonance amount. Increase it for a more pronounced effect.
+svf:FREQ_CURVE@0.5 Cutoff frequency range. Turning it clockwise narrows the range.
+svf:CUTOFF@0.5 Cutoff frequency. Adjust it to hear how the tone changes.
+
+drive:OD1@0.0 Tone shaper for the upper half of the waveform; turning it clockwise adds more harmonics.
+drive:OD2@0.0 Tone shaper for the lower half of the waveform; turning it clockwise adds more harmonics.
+drive:GAIN@0.5 Distortion amount. Increase it to add more drive.
+
+env:CV1@0.0 In this algorithm, this knob sets the hold time. Try increasing it.
+env:CV2@0.0 In this algorithm, this knob sets the release time. Try increasing it.
+
+v2ca:CURVE1@0.0 This controls the VCA response curve. At 0.0 the VCA stays snappy; turning it clockwise softens the shape.
+
+
+---states
+8bit:MODE = LED_OFF; Hold the MODE button for a second to change modes. LED_OFF means you can control the frequency manually; otherwise, it listens only to MIDI notes.
+
+env:MIDI_GATE = LED_ON; hold the MIDI_GATE button for 500 ms so the ENV module accepts MIDI.
+env:ALGO_SELECT = BLINK_ONCE(ON RESET); press the ALGO_SELECT button for 500 ms to change the algorithm. Set it to the first algorithm (HOLD-RELEASE).
+[/patch]
+
+> The LFO isn’t part of this patch, so try routing it to the SVF cutoff for additional movement.
+
+With these building blocks, you can translate your modular experience to Bread Modular and start exploring more advanced combinations. Happy patching!
