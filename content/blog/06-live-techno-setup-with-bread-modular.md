@@ -2,34 +2,34 @@
 title: A Live Techno Setup with Bread Modular
 date: 2025-11-14
 author: Bread Modular Team
-summary: Here we will go through a live Techno setup we can build with Bread Modular
+summary: Here we will go through a live techno setup we can build with Bread Modular
 image: /images/blog/bread-modular-with-friends.jpg
 ---
 
-This is how we can use Bread Modular to make a Live Techno setup. It features following voices:
+This is how we can use Bread Modular to make a live techno setup. It features the following voices:
 
-* 12 voice drum sampler (for kicks & other samples)
-* An analog hithat setup
+* 12-voice drum sampler (for kicks & other samples)
+* An analog hi-hat setup
 * A supersaw bass voice
-* An ACID like bass voice
-* 9 voice polysynth with a Moog like filter
+* An ACID-like bass voice
+* 9-voice polysynth with a Moog-like filter
 
-In addition to above:
+In addition to the above:
 
 * All these voices go through a dedicated overdrive
-* There are 2 digital send effects, which can customized as needed (Reverb, Delay, Flanger, etc)
+* There are 2 digital send effects, which can be customized as needed (Reverb, Delay, Flanger, etc)
 
 ## 1. Mixer Setup
 
-First let's look at the how connect the mixer. For right now, we don't setup any sends & returns. We will do it later.
+First, let's look at how to connect the mixer. For now, we don't set up any sends & returns. We will do it later.
 
 [patch]
 4mix:OD_C -> base:L
 
 ---knobs
 4mix:MIX_GAIN@0.8 This controls the overall volume of all the channels
-4mix:DRIVE_SHAPE@0.0 There is no overdrive shaping. So, currently this is act as a soft limiter.
-4mix:DRIVE_GAIN@0.5 We add some overdrive (currently this is act as a pre-amp)
+4mix:DRIVE_SHAPE@0.0 There is no overdrive shaping. So, currently this acts as a soft limiter.
+4mix:DRIVE_GAIN@0.5 We add some overdrive (currently this acts as a pre-amp)
 
 [/patch]
 
@@ -56,5 +56,48 @@ imix:1@0.8 This controls the overall gain of the channel
 
 [/patch]
 
-In this patch, we are not connecting the drum sampler into the `4mix`. But instead, we send it through a simple mixer called `imix`.
-Then we feed the output of the `imix` to the `M` input of the `4mix`. This input directly send to the output without any volume control. This feature allow to daisy chain multiple mixers.
+In this patch, we are not connecting the drum sampler to the `4mix`. Instead, we send it through a simple mixer called `imix`.
+Then we feed the output of the `imix` to the `M` input of the `4mix`. This input directly sends to the output without any volume control. This feature allows you to daisy chain multiple mixers.
+
+## 3. Analog Hi-Hat
+
+This is a noise-based analog hi-hat module.
+
+[patch]
+midi:MIDI[2] -> noise:MIDI
+noise:MIDI -> hihat:MIDI
+noise:BLUE -> hihat:NOISE
+hihat:AUDIO -> 4mix:1
+[/patch]
+
+## 4. Supersaw Bass Voice
+
+[patch]
+midi:MIDI[5] -> 8bit:MIDI
+8bit:AUDIO -> low:AUDIO
+8bit:GATE -> low:GATE/CV
+low:AUDIO -> drive:AUDIO
+drive:CLEN -> 4mix:2
+[/patch]
+
+## 5. ACID Bass Voice
+
+[patch]
+midi:MIDI[6] -> mco:MIDI
+mco:MIDI -> env:MIDI
+mco:OUT -> svf:AUDIO
+env:ENV -> svf:CV
+svf:LF -> v2ca:IN1
+env:ENV -> v2ca:CV1
+v2ca:OUT1 -> drive:AUDIO
+drive:CLEN -> 4mix:3
+[/patch]
+
+## 6. Polysynth
+
+[patch]
+midi:MIDI[6] -> mcc:MIDI
+mcc:MIDI -> 16bit:MIDI
+16bit:A1 -> drive:AUDIO
+drive:CLEN -> 4mix:4
+[/patch]

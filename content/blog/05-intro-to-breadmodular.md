@@ -3,7 +3,7 @@ title: Introduction to Modular with Bread Modular
 date: 2025-11-13
 author: Bread Modular Team
 summary: An introduction to Bread Modular with some example patches.
-image: /images/blog/bread-modular-with-friends.jpg
+image: /images/home-slide/03.jpg
 ---
 
 Bread Modular is a modular synth platform built from scratch. Unlike VCV Rack, which is based on the Eurorack standard, Bread Modular takes a completely different approach. However, the core concepts you've learned still apply.
