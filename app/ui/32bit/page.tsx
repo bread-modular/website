@@ -3,6 +3,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { ChangeEvent } from "react";
 import Header32 from "./components/Header";
 import Terminal from "../16bit/components/Terminal";
 import styles from "./page.module.css";
@@ -19,6 +20,9 @@ type FirmwareOption = {
 
 type FlashState = import("esp-web-tools/dist/const").FlashState;
 
+
+const LOG_LISTENING_START_MESSAGE = "Listening to 32bit logs…";
+const LOG_LISTENING_STOP_MESSAGE = "Stopped listening to logs.";
 
 export default function Placeholder32UI() {
   const [firmwares, setFirmwares] = useState<FirmwareOption[] | null>(null);
@@ -141,41 +145,61 @@ export default function Placeholder32UI() {
     }
   }, [appendMessage, port]);
 
-  const handleToggleLogs = useCallback(async (event?: React.ChangeEvent<HTMLInputElement>) => {
+  const startLogListening = useCallback(async () => {
     if (!serialManagerRef.current) {
-      return;
+      return false;
     }
 
-    const shouldListen = event ? event.target.checked : !logsListening;
-
-    // If already listening and we want to stop
-    if (logsListening && !shouldListen) {
-      try {
-        await serialManagerRef.current.disconnect();
-        appendMessage("Stopped listening to logs.", "status");
-      } finally {
-        setLogsListening(false);
-      }
-      return;
+    if (!port) {
+      appendMessage("Please connect to a device before listening to logs.", "error");
+      return false;
     }
 
-    // If not listening and we want to start
-    if (!logsListening && shouldListen) {
-      if (!port) {
-        appendMessage("Please connect to a device before listening to logs.", "error");
+    try {
+      await serialManagerRef.current.connectWithExistingPort(port);
+      setLogsListening(true);
+      appendMessage(LOG_LISTENING_START_MESSAGE, "status");
+      return true;
+    } catch {
+      setLogsListening(false);
+      return false;
+    }
+  }, [appendMessage, port]);
+
+  const stopLogListening = useCallback(async () => {
+    if (!serialManagerRef.current) {
+      setLogsListening(false);
+      return false;
+    }
+
+    try {
+      await serialManagerRef.current.disconnect();
+      appendMessage(LOG_LISTENING_STOP_MESSAGE, "status");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      appendMessage(`Failed to stop log listener: ${message}`, "error");
+    } finally {
+      setLogsListening(false);
+    }
+
+    return true;
+  }, [appendMessage]);
+
+  const handleToggleLogs = useCallback(
+    async (event?: ChangeEvent<HTMLInputElement>) => {
+      const shouldListen = event ? event.target.checked : !logsListening;
+
+      if (logsListening && !shouldListen) {
+        await stopLogListening();
         return;
       }
 
-      try {
-        await serialManagerRef.current.connectWithExistingPort(port);
-        setLogsListening(true);
-        appendMessage("Listening to 32bit logs…", "status");
-      } catch {
-        // Errors are already reported via the WebSerialManager's callback
-        setLogsListening(false);
+      if (!logsListening && shouldListen) {
+        await startLogListening();
       }
-    }
-  }, [appendMessage, logsListening, port]);
+    },
+    [logsListening, startLogListening, stopLogListening],
+  );
 
   const sendConsoleMessage = async () => {
     if (!logsListening || !serialManagerRef.current) {
@@ -209,6 +233,12 @@ export default function Placeholder32UI() {
     }
 
     const current = firmwares[selectedIndex];
+    const wasListening = logsListening;
+
+    if (wasListening) {
+      await stopLogListening();
+    }
+
     setIsInstalling(true);
     setMessages([]);
     appendMessage(`Starting installation for: ${current.label}`, "status");
@@ -223,23 +253,15 @@ export default function Placeholder32UI() {
       const flashModule = await import("esp-web-tools/dist/flash.js");
       manifest = await manifestModule.downloadManifest(current.manifestUrl);
       flashFn = flashModule.flash;
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      appendMessage(`Installation failed: ${message}`, "error");
-      setIsInstalling(false);
-      return;
-    }
 
-    if (!manifest || !flashFn) {
-      appendMessage("Installation failed: unable to prepare flashing tools.", "error");
-      setIsInstalling(false);
-      return;
-    }
+      if (!manifest || !flashFn) {
+        appendMessage("Installation failed: unable to prepare flashing tools.", "error");
+        return;
+      }
 
-    let attempt = 0;
-    let shouldRetry = false;
+      let attempt = 0;
+      let shouldRetry = false;
 
-    try {
       while (attempt < MAX_INSTALL_ATTEMPTS) {
         attempt += 1;
         installationAttemptsRef.current = attempt;
@@ -250,6 +272,9 @@ export default function Placeholder32UI() {
             (state: FlashState) => {
               if (state.state == "finished") {
                 appendMessage("Installation finished.", "status");
+                if (wasListening) {
+                  void startLogListening();
+                }
                 shouldRetry = false;
               }
 
@@ -284,11 +309,14 @@ export default function Placeholder32UI() {
 
         break;
       }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      appendMessage(`Installation failed: ${message}`, "error");
     } finally {
       setIsInstalling(false);
       installationAttemptsRef.current = 0;
     }
-  }, [appendMessage, firmwares, port, selectedIndex]);
+  }, [appendMessage, firmwares, logsListening, port, selectedIndex, startLogListening, stopLogListening]);
 
   if (firmwares === null) {
     return null;
@@ -357,7 +385,7 @@ export default function Placeholder32UI() {
                       type="button"
                       className={styles.secondaryButton}
                       onClick={handleInstall}
-                      disabled={!port || isInstalling || logsListening}
+                      disabled={!port || isInstalling}
                     >
                       {isInstalling ? "Installing…" : "Install"}
                     </button>
