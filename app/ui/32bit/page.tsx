@@ -8,6 +8,8 @@ import Terminal from "../16bit/components/Terminal";
 import styles from "./page.module.css";
 import { WebSerialManager } from "@/app/lib/webserial";
 import type { MessageObj, MessageType, SerialPort } from "@/app/lib/webserial";
+import { stat } from "fs";
+import { FlashStateType } from "esp-web-tools/dist/const";
 
 type FirmwareOption = {
   id: string;
@@ -29,6 +31,7 @@ export default function Placeholder32UI() {
   const [logsListening, setLogsListening] = useState(false);
 
   const serialManagerRef = useRef<WebSerialManager | null>(null);
+  const installationAttemptsRef = useRef(0);
 
   const appendMessage = useCallback((message: string, type: MessageType = "status") => {
     setMessages((prev) => [...prev, { message, type }]);
@@ -193,6 +196,8 @@ export default function Placeholder32UI() {
     }
   };
 
+  const MAX_INSTALL_ATTEMPTS = 2;
+
   const handleInstall = useCallback(async () => {
     if (!port) {
       appendMessage("Please connect to a device first.", "error");
@@ -209,30 +214,79 @@ export default function Placeholder32UI() {
     appendMessage(`Starting installation for: ${current.label}`, "status");
     appendMessage(`Using manifest: ${current.manifestUrl}`, "status");
 
+    installationAttemptsRef.current = 0;
+    let manifest: Awaited<ReturnType<typeof import("esp-web-tools/dist/util/manifest.js")["downloadManifest"]>> | null = null;
+    let flashFn: typeof import("esp-web-tools/dist/flash.js")["flash"] | null = null;
+
     try {
-      const { downloadManifest } = await import("esp-web-tools/dist/util/manifest.js");
-      const { flash } = await import("esp-web-tools/dist/flash.js");
-
-      const manifest = await downloadManifest(current.manifestUrl);
-
-      await flash(
-        (state: FlashState) => {
-          if (state.message) {
-            appendMessage(state.message, "status");
-          }
-        },
-        port as never,
-        current.manifestUrl,
-        manifest,
-        true,
-      );
-
-      appendMessage("Installation finished.", "status");
+      const manifestModule = await import("esp-web-tools/dist/util/manifest.js");
+      const flashModule = await import("esp-web-tools/dist/flash.js");
+      manifest = await manifestModule.downloadManifest(current.manifestUrl);
+      flashFn = flashModule.flash;
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       appendMessage(`Installation failed: ${message}`, "error");
+      setIsInstalling(false);
+      return;
+    }
+
+    if (!manifest || !flashFn) {
+      appendMessage("Installation failed: unable to prepare flashing tools.", "error");
+      setIsInstalling(false);
+      return;
+    }
+
+    let attempt = 0;
+    let shouldRetry = false;
+
+    try {
+      while (attempt < MAX_INSTALL_ATTEMPTS) {
+        attempt += 1;
+        installationAttemptsRef.current = attempt;
+        shouldRetry = false;
+
+        try {
+          await flashFn(
+            (state: FlashState) => {
+              if (state.state == "finished") {
+                appendMessage("Installation finished.", "status");
+                shouldRetry = false;
+              }
+
+              if (state.state == "error" && attempt < MAX_INSTALL_ATTEMPTS) {
+                shouldRetry = true;
+              }
+
+              if (state.message) {
+                appendMessage(state.message, "status");
+              }
+            },
+            port as never,
+            current.manifestUrl,
+            manifest,
+            true,
+          );
+        } catch (err) {
+          const message = err instanceof Error ? err.message : String(err);
+          appendMessage(`Installation failed (attempt ${attempt}): ${message}`, "error");
+          if (attempt >= MAX_INSTALL_ATTEMPTS) {
+            appendMessage("Maximum retry attempts reached.", "error");
+            break;
+          }
+          appendMessage(`Retrying installation (attempt ${attempt + 1})…`, "status");
+          continue;
+        }
+
+        if (shouldRetry && attempt < MAX_INSTALL_ATTEMPTS) {
+          appendMessage(`Retrying installation (attempt ${attempt + 1})…`, "status");
+          continue;
+        }
+
+        break;
+      }
     } finally {
       setIsInstalling(false);
+      installationAttemptsRef.current = 0;
     }
   }, [appendMessage, firmwares, port, selectedIndex]);
 
