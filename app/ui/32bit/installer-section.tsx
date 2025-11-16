@@ -1,5 +1,6 @@
 'use client';
 
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 
@@ -28,7 +29,7 @@ type FirmwareInstallerSectionProps = {
   firmwares: FirmwareOption[];
 };
 
-export default function FirmwareInstallerSection({ firmwares }: FirmwareInstallerSectionProps) {
+export default function FirmwareInstallerApp({ firmwares }: FirmwareInstallerSectionProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [port, setPort] = useState<SerialPortLike | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -102,6 +103,20 @@ export default function FirmwareInstallerSection({ firmwares }: FirmwareInstalle
     }
   }, [appendLog]);
 
+  const handleDisconnect = useCallback(async () => {
+    try {
+      await port?.close();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      appendLog(`Failed to cleanly close the port: ${message}`);
+    } finally {
+      setPort(null);
+      if (typeof window !== "undefined") {
+        window.location.reload();
+      }
+    }
+  }, [appendLog, port]);
+
   const handleInstall = useCallback(async () => {
     if (!port) {
       appendLog("Please connect to a device first.");
@@ -148,7 +163,30 @@ export default function FirmwareInstallerSection({ firmwares }: FirmwareInstalle
   }, [appendLog, firmwares, port, selectedIndex]);
 
   if (!firmwares.length) {
-    return <p className={styles.sectionDescription}>No firmware bundles were found in /public/32bit.</p>;
+    return (
+      <div className={styles.container}>
+        <div className={styles.pageHeader}>
+          <Image
+            src="/images/bread-modular-logo.png"
+            alt="BreadModular Logo"
+            className={styles.logo}
+            width={256}
+            height={64}
+            priority
+          />
+          <h1 className={styles.pageTitle}>32bit UI</h1>
+        </div>
+        <div className={styles.mainContent}>
+          <div className={styles.section}>
+            <h2 className={styles.sectionHeader}>ESP32 Web Installer</h2>
+            <p className={styles.sectionDescription}>
+              No firmware bundles were found in /public/32bit. Add firmware manifests to the public/32bit folder to get
+              started.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const current = firmwares[selectedIndex];
@@ -159,87 +197,108 @@ export default function FirmwareInstallerSection({ firmwares }: FirmwareInstalle
       : undefined);
 
   return (
-    <div className={styles.installerSection}>
-      {unsupportedReason && (
-        <div className={styles.unsupportedBox}>
-          <p>{unsupportedReason}</p>
-        </div>
-      )}
+    <div className={styles.container}>
+      <div className={styles.pageHeader}>
+        <Image
+          src="/images/bread-modular-logo.png"
+          alt="BreadModular Logo"
+          className={styles.logo}
+          width={256}
+          height={64}
+          priority
+        />
+        <h1 className={styles.pageTitle}>32bit UI</h1>
 
-      <div className={styles.controlsRow}>
-        <button
-          type="button"
-          className={styles.primaryButton}
-          onClick={handleConnect}
-          disabled={isConnecting || !!port}
-        >
-          {port ? "Connected" : isConnecting ? "Connecting…" : "Connect"}
-        </button>
-      </div>
-      {port && (
-        <div className={styles.installSection}>
-          <h3 className={styles.installHeader}>Firmware installation</h3>
-          <div className={styles.fieldGroup}>
-            <label htmlFor="firmware-select" className={styles.fieldLabel}>
-              Firmware build
-            </label>
-            <select
-              id="firmware-select"
-              className={styles.firmwareSelect}
-              value={String(selectedIndex)}
-              onChange={(event) => setSelectedIndex(Number(event.target.value))}
-              disabled={isInstalling}
-            >
-              {firmwares.map((firmware, index) => (
-                <option key={firmware.id} value={index}>
-                  {firmware.label}
-                </option>
-              ))}
-            </select>
-
-            <p className={styles.manifestHint}>
-              Manifest: <span>{current.manifestUrl}</span>
-            </p>
-          </div>
-
-          <div className={styles.installButtonRow}>
+        <div className={styles.headerControls}>
+          {!port ? (
             <button
               type="button"
-              className={styles.secondaryButton}
-              onClick={handleInstall}
-              disabled={!port || isInstalling}
+              className={styles.primaryButton}
+              onClick={handleConnect}
+              disabled={isConnecting}
             >
-              {isInstalling ? "Installing…" : "Install"}
+              {isConnecting ? "Connecting…" : "Connect"}
             </button>
-          </div>
-        </div>
-      )}
-
-      <div className={styles.statusRow}>
-        <span className={styles.statusDot} data-connected={!!port} />
-        <span className={styles.statusText}>
-          {port ? "Device connected" : "Device not connected"}
-          {progress !== undefined && progress >= 0 && progress <= 100 && (
-            <span className={styles.statusProgress}> · {progress}%</span>
+          ) : (
+            <button type="button" className={styles.primaryButton} onClick={handleDisconnect}>
+              Disconnect
+            </button>
           )}
-        </span>
+        </div>
       </div>
 
-      <div className={styles.logContainer}>
-        <div className={styles.logHeader}>
-          <span>Install log</span>
-          <button
-            type="button"
-            className={styles.logClearButton}
-            onClick={() => setLogs([])}
-            disabled={!logs.length}
-          >
-            Clear
-          </button>
+      <div className={styles.mainContent}>
+        <div className={styles.section}>
+          <h2 className={styles.sectionHeader}>Firmware Installer</h2>
+          <div className={styles.installerSection}>
+            {unsupportedReason && (
+              <div className={styles.unsupportedBox}>
+                <p>{unsupportedReason}</p>
+              </div>
+            )}
+
+            {port && (
+              <div className={styles.installSection}>
+                <div className={styles.fieldGroup}>
+                  <label htmlFor="firmware-select" className={styles.fieldLabel}>
+                    Firmware build
+                  </label>
+                  <select
+                    id="firmware-select"
+                    className={styles.firmwareSelect}
+                    value={String(selectedIndex)}
+                    onChange={(event) => setSelectedIndex(Number(event.target.value))}
+                    disabled={isInstalling}
+                  >
+                    {firmwares.map((firmware, index) => (
+                      <option key={firmware.id} value={index}>
+                        {firmware.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.installButtonRow}>
+                  <button
+                    type="button"
+                    className={styles.secondaryButton}
+                    onClick={handleInstall}
+                    disabled={!port || isInstalling}
+                  >
+                    {isInstalling ? "Installing…" : "Install"}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className={styles.statusRow}>
+              <span className={styles.statusDot} data-connected={!!port} />
+              <span className={styles.statusText}>
+                {port ? "Device connected" : "Device not connected"}
+                {progress !== undefined && progress >= 0 && progress <= 100 && (
+                  <span className={styles.statusProgress}> · {progress}%</span>
+                )}
+              </span>
+            </div>
+
+            <div className={styles.logContainer}>
+              <div className={styles.logHeader}>
+                <span>Install log</span>
+                <button
+                  type="button"
+                  className={styles.logClearButton}
+                  onClick={() => setLogs([])}
+                  disabled={!logs.length}
+                >
+                  Clear
+                </button>
+              </div>
+              <pre ref={logRef} className={styles.logOutput}>
+                {logs.length ? logs.join("\n") : "Logs will appear here."}
+              </pre>
+            </div>
+          </div>
         </div>
-        <pre ref={logRef} className={styles.logOutput}>
-          {logs.length ? logs.join("\n") : "Logs will appear here."}
-        </pre>
       </div>
     </div>
   );

@@ -61,6 +61,10 @@
   margin: 0 auto;
 }
 
+.headerControls {
+  margin-top: 20px;
+}
+
 .mainContent {
   display: flex;
   flex-direction: column;
@@ -96,9 +100,6 @@
 }
 
 .installSection {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--neutral-200, #e5e7eb);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -108,6 +109,11 @@
   font-size: 1rem;
   font-weight: 600;
   color: var(--neutral-800, #262626);
+}
+
+.installButtonRow {
+  display: flex;
+  justify-content: flex-start;
 }
 
 .fieldGroup {
