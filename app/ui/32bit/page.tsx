@@ -1,0 +1,70 @@
+import Image from "next/image";
+import { promises as fs } from "fs";
+import path from "path";
+import FirmwareInstallerSection, { FirmwareOption } from "./installer-section";
+import styles from "./page.module.css";
+
+async function listFirmwareOptions(): Promise<FirmwareOption[]> {
+  const firmwareRoot = path.join(process.cwd(), "public", "32bit");
+  let entries: Awaited<ReturnType<typeof fs.readdir>> = [];
+  try {
+    entries = await fs.readdir(firmwareRoot, { withFileTypes: true });
+  } catch {
+    return [];
+  }
+
+  const options: FirmwareOption[] = [];
+
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const manifestPath = path.join(firmwareRoot, entry.name, "manifest.json");
+    try {
+      await fs.access(manifestPath);
+    } catch {
+      continue;
+    }
+
+    const label = entry.name.replace(/_/g, " ");
+    options.push({
+      id: entry.name,
+      label,
+      manifestUrl: `/32bit/${entry.name}/manifest.json`,
+    });
+  }
+
+  return options.sort((a, b) => b.label.localeCompare(a.label));
+}
+
+export default async function Placeholder32UI() {
+  const firmwareOptions = await listFirmwareOptions();
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.pageHeader}>
+        <Image
+          src="/images/bread-modular-logo.png"
+          alt="BreadModular Logo"
+          className={styles.logo}
+          width={256}
+          height={64}
+          priority
+        />
+        <h1 className={styles.pageTitle}>32bit UI</h1>
+        <p className={styles.pageSubtitle}>
+          Flash the latest Bread Modular 32bit firmware directly from your browser.
+        </p>
+      </div>
+
+      <div className={styles.mainContent}>
+        <div className={styles.section}>
+          <h2 className={styles.sectionHeader}>ESP32 Web Installer</h2>
+          <p className={styles.sectionDescription}>
+            Choose a published firmware bundle from the dropdown and click Install. Use a Chromium-based browser and
+            connect your module via USB before starting the process.
+          </p>
+          <FirmwareInstallerSection firmwares={firmwareOptions} />
+        </div>
+      </div>
+    </div>
+  );
+}
