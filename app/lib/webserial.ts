@@ -44,6 +44,47 @@ export class WebSerialManager {
     this.onMessageCallback = onMessage;
   }
 
+  /**
+   * Expose the underlying SerialPort (if any) for advanced integrations.
+   */
+  getPort(): SerialPort | null {
+    return this.port;
+  }
+
+  /**
+   * Connect using an already-selected SerialPort (e.g. provided by esp-web-tools UI).
+   * This mirrors the behaviour of connect(), but skips navigator.serial.requestPort().
+   */
+  async connectWithExistingPort(port: SerialPort): Promise<void> {
+    try {
+      if (!port) {
+        throw new Error("No serial port provided");
+      }
+      await port.open({
+        baudRate: 115200,
+        dataBits: 8,
+        stopBits: 1,
+        parity: "none",
+        flowControl: "none",
+      });
+      this.port = port;
+      this.onMessageCallback("Connected", "status");
+      this.setupCommunication();
+      this.readLoop();
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.onMessageCallback("Connection error: " + errorMessage, "error");
+      throw error;
+    }
+  }
+
+  /**
+   * Expose the underlying SerialPort (if any) for advanced integrations.
+   */
+  getPort(): SerialPort | null {
+    return this.port;
+  }
+
   isWebSerialSupported(): boolean {
     return typeof navigator !== 'undefined' && "serial" in navigator;
   }

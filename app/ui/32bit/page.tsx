@@ -2,10 +2,11 @@
  "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Header32 from "./components/Header";
 import Terminal from "../16bit/components/Terminal";
 import styles from "./page.module.css";
+import { WebSerialManager } from "@/app/lib/webserial";
 import type { MessageObj, MessageType, SerialPort } from "@/app/lib/webserial";
 
 type FirmwareOption = {
@@ -25,6 +26,29 @@ export default function Placeholder32UI() {
   const [messages, setMessages] = useState<MessageObj[]>([]);
   const [input, setInput] = useState("");
   const [unsupportedReason, setUnsupportedReason] = useState<string | null>(null);
+  const [logsListening, setLogsListening] = useState(false);
+
+  const serialManagerRef = useRef<WebSerialManager | null>(null);
+
+  const appendMessage = useCallback((message: string, type: MessageType = "status") => {
+    setMessages((prev) => [...prev, { message, type }]);
+  }, []);
+
+  useEffect(() => {
+    // Initialise a WebSerialManager instance for log listening
+    serialManagerRef.current = new WebSerialManager((message, type) => {
+      appendMessage(message, type);
+    });
+
+    return () => {
+      // Clean up any active serial connection on unmount
+      if (serialManagerRef.current) {
+        serialManagerRef.current.disconnect().catch(() => {
+          // ignore cleanup errors
+        });
+      }
+    };
+  }, [appendMessage]);
 
   useEffect(() => {
     let cancelled = false;
@@ -76,10 +100,6 @@ export default function Placeholder32UI() {
     };
   }, [port]);
 
-  const appendMessage = useCallback((message: string, type: MessageType = "status") => {
-    setMessages((prev) => [...prev, { message, type }]);
-  }, []);
-
   const handleConnect = useCallback(async () => {
     if (typeof navigator === "undefined") return;
 
@@ -117,6 +137,61 @@ export default function Placeholder32UI() {
       }
     }
   }, [appendMessage, port]);
+
+  const handleToggleLogs = useCallback(async (event?: React.ChangeEvent<HTMLInputElement>) => {
+    if (!serialManagerRef.current) {
+      return;
+    }
+
+    const shouldListen = event ? event.target.checked : !logsListening;
+
+    // If already listening and we want to stop
+    if (logsListening && !shouldListen) {
+      try {
+        await serialManagerRef.current.disconnect();
+        appendMessage("Stopped listening to logs.", "status");
+      } finally {
+        setLogsListening(false);
+      }
+      return;
+    }
+
+    // If not listening and we want to start
+    if (!logsListening && shouldListen) {
+      if (!port) {
+        appendMessage("Please connect to a device before listening to logs.", "error");
+        return;
+      }
+
+      try {
+        await serialManagerRef.current.connectWithExistingPort(port);
+        setLogsListening(true);
+        appendMessage("Listening to 32bit logs…", "status");
+      } catch {
+        // Errors are already reported via the WebSerialManager's callback
+        setLogsListening(false);
+      }
+    }
+  }, [appendMessage, logsListening, port]);
+
+  const sendConsoleMessage = async () => {
+    if (!logsListening || !serialManagerRef.current) {
+      appendMessage("Start 'Listen to Logs' before sending commands.", "error");
+      return;
+    }
+
+    const trimmed = input.trim();
+    if (!trimmed) return;
+
+    try {
+      await serialManagerRef.current.sendMessage(trimmed);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      appendMessage(`Send error: ${message}`, "error");
+    } finally {
+      setInput("");
+    }
+  };
 
   const handleInstall = useCallback(async () => {
     if (!port) {
@@ -187,6 +262,9 @@ export default function Placeholder32UI() {
               status={port ? "Connected" : "Disconnected"}
               connectTo32bit={handleConnect}
               disconnectFrom32bit={handleDisconnect}
+              logsListening={logsListening}
+              onToggleLogs={handleToggleLogs}
+              isInstalling={isInstalling}
             />
           </div>
 
@@ -225,7 +303,7 @@ export default function Placeholder32UI() {
                       type="button"
                       className={styles.secondaryButton}
                       onClick={handleInstall}
-                      disabled={!port || isInstalling}
+                      disabled={!port || isInstalling || logsListening}
                     >
                       {isInstalling ? "Installing…" : "Install"}
                     </button>
@@ -243,10 +321,8 @@ export default function Placeholder32UI() {
         messages={messages}
         input={input}
         setInput={setInput}
-        sendMessage={async () => {
-          appendMessage("Sending manual commands is not supported in the 32bit flasher UI.", "error");
-        }}
-        connected={false}
+        sendMessage={sendConsoleMessage}
+        connected={logsListening}
       />
     </>
   );
