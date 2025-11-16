@@ -22,6 +22,7 @@ export default function Header() {
             <li><Link href="/docs">DOCS</Link></li>
             <li><Link href="/blog">BLOG</Link></li>
             <li className={styles.hiddenOnMobile}><Link href="/ui/16bit">16BIT UI</Link></li>
+            <li className={styles.hiddenOnMobile}><Link href="/ui/32bit">32BIT UI</Link></li>
             <li><CartIcon /></li>
           </ul>
         </nav>

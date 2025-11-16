@@ -9,6 +9,7 @@ interface TerminalProps {
   setInput: (value: string) => void;
   sendMessage: () => Promise<void>;
   connected: boolean;
+  title?: string;
 }
 
 const Terminal: React.FC<TerminalProps> = ({
@@ -17,6 +18,7 @@ const Terminal: React.FC<TerminalProps> = ({
   setInput,
   sendMessage,
   connected,
+  title = "16bit Console",
 }) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   
@@ -155,7 +157,7 @@ const Terminal: React.FC<TerminalProps> = ({
       
       {/* Header with minimize/maximize and position buttons */}
       <div className={styles.terminalHeader}>
-        <span className={styles.terminalTitle}>16bit Console</span>
+        <span className={styles.terminalTitle}>{title}</span>
         <div className={styles.headerButtons}>
           <button 
             className={styles.positionButton}
