@@ -45,13 +45,6 @@ export class WebSerialManager {
   }
 
   /**
-   * Expose the underlying SerialPort (if any) for advanced integrations.
-   */
-  getPort(): SerialPort | null {
-    return this.port;
-  }
-
-  /**
    * Connect using an already-selected SerialPort (e.g. provided by esp-web-tools UI).
    * This mirrors the behaviour of connect(), but skips navigator.serial.requestPort().
    */
