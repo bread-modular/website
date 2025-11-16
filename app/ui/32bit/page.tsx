@@ -138,13 +138,15 @@ export default function Placeholder32UI() {
     }
   }, [appendMessage, port]);
 
-  const handleToggleLogs = useCallback(async () => {
-    if (!serialManagerRef.current || !port) {
+  const handleToggleLogs = useCallback(async (event?: React.ChangeEvent<HTMLInputElement>) => {
+    if (!serialManagerRef.current) {
       return;
     }
 
-    // If already listening, stop and clean up
-    if (logsListening) {
+    const shouldListen = event ? event.target.checked : !logsListening;
+
+    // If already listening and we want to stop
+    if (logsListening && !shouldListen) {
       try {
         await serialManagerRef.current.disconnect();
         appendMessage("Stopped listening to logs.", "status");
@@ -154,16 +156,42 @@ export default function Placeholder32UI() {
       return;
     }
 
-    // Start listening to logs
-    try {
-      await serialManagerRef.current.connectWithExistingPort(port);
-      setLogsListening(true);
-      appendMessage("Listening to ESP32 logs…", "status");
-    } catch {
-      // Errors are already reported via the WebSerialManager's callback
-      setLogsListening(false);
+    // If not listening and we want to start
+    if (!logsListening && shouldListen) {
+      if (!port) {
+        appendMessage("Please connect to a device before listening to logs.", "error");
+        return;
+      }
+
+      try {
+        await serialManagerRef.current.connectWithExistingPort(port);
+        setLogsListening(true);
+        appendMessage("Listening to 32bit logs…", "status");
+      } catch {
+        // Errors are already reported via the WebSerialManager's callback
+        setLogsListening(false);
+      }
     }
   }, [appendMessage, logsListening, port]);
+
+  const sendConsoleMessage = async () => {
+    if (!logsListening || !serialManagerRef.current) {
+      appendMessage("Start 'Listen to Logs' before sending commands.", "error");
+      return;
+    }
+
+    const trimmed = input.trim();
+    if (!trimmed) return;
+
+    try {
+      await serialManagerRef.current.sendMessage(trimmed);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      appendMessage(`Send error: ${message}`, "error");
+    } finally {
+      setInput("");
+    }
+  };
 
   const handleInstall = useCallback(async () => {
     if (!port) {
@@ -275,7 +303,7 @@ export default function Placeholder32UI() {
                       type="button"
                       className={styles.secondaryButton}
                       onClick={handleInstall}
-                      disabled={!port || isInstalling}
+                      disabled={!port || isInstalling || logsListening}
                     >
                       {isInstalling ? "Installing…" : "Install"}
                     </button>
@@ -293,10 +321,8 @@ export default function Placeholder32UI() {
         messages={messages}
         input={input}
         setInput={setInput}
-        sendMessage={async () => {
-          appendMessage("Sending manual commands is not supported in the 32bit flasher UI.", "error");
-        }}
-        connected={false}
+        sendMessage={sendConsoleMessage}
+        connected={logsListening}
       />
     </>
   );

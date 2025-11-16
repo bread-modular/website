@@ -53,9 +53,20 @@ const Header32: React.FC<Header32Props> = ({
           }`}
         >
           {connected && (
-            <div className={styles.statusBadge}>
-              <span className={styles.statusDot} />
-              Connected
+            <div className={styles.statusContainer}>
+              <div className={styles.statusBadge}>
+                <span className={styles.statusDot} />
+                Connected
+              </div>
+              <label className={styles.logsCheckbox}>
+                <input
+                  type="checkbox"
+                  checked={logsListening}
+                  onChange={onToggleLogs}
+                  disabled={isInstalling}
+                />
+                Listen to logs
+              </label>
             </div>
           )}
           <div className={styles.buttonRow}>
@@ -68,13 +79,6 @@ const Header32: React.FC<Header32Props> = ({
                 Connect
               </button>
             )}
-            <button
-              className={styles.button}
-              onClick={onToggleLogs}
-              disabled={!connected || isInstalling}
-            >
-              {logsListening ? "Stop Listening" : "Listen to Logs"}
-            </button>
           </div>
         </div>
       )}
