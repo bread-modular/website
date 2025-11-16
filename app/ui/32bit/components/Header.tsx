@@ -13,7 +13,6 @@ interface Header32Props {
 
 const Header32: React.FC<Header32Props> = ({
   connected,
-  status,
   connectTo32bit,
   disconnectFrom32bit,
   unsupported = false,

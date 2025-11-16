@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import Header32 from "./components/Header";
 import Terminal from "../16bit/components/Terminal";
 import styles from "./page.module.css";
-import type { MessageObj, MessageType } from "@/app/lib/webserial";
+import type { MessageObj, MessageType, SerialPort } from "@/app/lib/webserial";
 
 type FirmwareOption = {
   id: string;
@@ -16,18 +16,12 @@ type FirmwareOption = {
 
 type FlashState = import("esp-web-tools/dist/const").FlashState;
 
-type SerialPortLike = {
-  open: (options: { baudRate: number; bufferSize?: number }) => Promise<void>;
-  close: () => Promise<void>;
-};
 
 export default function Placeholder32UI() {
   const [firmwares, setFirmwares] = useState<FirmwareOption[] | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [port, setPort] = useState<SerialPortLike | null>(null);
-  const [isConnecting, setIsConnecting] = useState(false);
+  const [port, setPort] = useState<SerialPort | null>(null);
   const [isInstalling, setIsInstalling] = useState(false);
-  const [flashState, setFlashState] = useState<FlashState | null>(null);
   const [messages, setMessages] = useState<MessageObj[]>([]);
   const [input, setInput] = useState("");
   const [unsupportedReason, setUnsupportedReason] = useState<string | null>(null);
@@ -89,9 +83,7 @@ export default function Placeholder32UI() {
   const handleConnect = useCallback(async () => {
     if (typeof navigator === "undefined") return;
 
-    const nav = navigator as any;
-
-    if (!("serial" in nav)) {
+    if (!("serial" in navigator)) {
       appendMessage("Web Serial is not supported in this browser.", "error");
       return;
     }
@@ -101,17 +93,14 @@ export default function Placeholder32UI() {
       return;
     }
 
-    setIsConnecting(true);
     appendMessage("Requesting serial port access…", "status");
     try {
-      const serialPort: SerialPortLike = await nav.serial.requestPort();
+      const serialPort = await navigator.serial!.requestPort();
       setPort(serialPort);
       appendMessage("Serial port selected. Ready to install firmware.", "status");
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       appendMessage(`Failed to open serial port: ${message}`, "error");
-    } finally {
-      setIsConnecting(false);
     }
   }, [appendMessage]);
 
@@ -141,7 +130,6 @@ export default function Placeholder32UI() {
 
     const current = firmwares[selectedIndex];
     setIsInstalling(true);
-    setFlashState(null);
     setMessages([]);
     appendMessage(`Starting installation for: ${current.label}`, "status");
     appendMessage(`Using manifest: ${current.manifestUrl}`, "status");
@@ -154,7 +142,6 @@ export default function Placeholder32UI() {
 
       await flash(
         (state: FlashState) => {
-          setFlashState(state);
           if (state.message) {
             appendMessage(state.message, "status");
           }
