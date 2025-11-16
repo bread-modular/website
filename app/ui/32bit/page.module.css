@@ -95,6 +95,81 @@
   gap: 16px;
 }
 
+.installSection {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--neutral-200, #e5e7eb);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.installHeader {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--neutral-800, #262626);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.controlsRow {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.primaryButton,
+.secondaryButton {
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease,
+    transform 0.05s ease;
+}
+
+.primaryButton {
+  background: #111827;
+  color: #f9fafb;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
+}
+
+.primaryButton:hover:not(:disabled) {
+  background: #020617;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.25);
+  transform: translateY(-1px);
+}
+
+.secondaryButton {
+  background: #ffffff;
+  color: #111827;
+  border-color: var(--neutral-300, #d4d4d4);
+}
+
+.secondaryButton:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: var(--neutral-400, #a3a3a3);
+}
+
+.primaryButton:disabled,
+.secondaryButton:disabled {
+  opacity: 0.6;
+  cursor: default;
+  box-shadow: none;
+  transform: none;
+}
+
 .fieldLabel {
   font-weight: 600;
   font-size: 0.95rem;
@@ -127,10 +202,91 @@
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
-.installButtonWrapper {
+.statusRow {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  gap: 8px;
   margin-top: 8px;
+  font-size: 0.9rem;
+  color: var(--neutral-600, #525252);
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background-color: var(--neutral-300, #d4d4d4);
+}
+
+.statusDot[data-connected="true"] {
+  background-color: #16a34a;
+}
+
+.statusText {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.statusProgress {
+  color: var(--neutral-500, #6b7280);
+}
+
+.unsupportedBox {
+  border-radius: 10px;
+  border: 1px solid #f97316;
+  background: #fffbeb;
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  color: #92400e;
+}
+
+.logContainer {
+  margin-top: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--neutral-200, #e5e7eb);
+  background: #0b1120;
+  color: #e5e7eb;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  overflow: hidden;
+}
+
+.logHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  background: #020617;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.logClearButton {
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.logClearButton:hover:not(:disabled) {
+  color: #e5e7eb;
+}
+
+.logClearButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.logOutput {
+  margin: 0;
+  padding: 8px 12px 10px;
+  max-height: 220px;
+  overflow-y: auto;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 @media (min-width: 640px) {
