@@ -389,7 +389,8 @@ const PicoWebSerial = () => {
         <div style={{ height: '100px' }}></div>
       </div>
 
-      <Terminal 
+      <Terminal
+        title="16bit Console"
         messages={messages}
         input={input}
         setInput={setInput}

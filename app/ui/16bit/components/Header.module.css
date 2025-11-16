@@ -10,6 +10,37 @@
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
+  min-height: 60px;
+  justify-content: center;
+}
+
+.connectionSectionRight {
+  justify-content: flex-end;
+}
+
+.connectionSectionCenter {
+  justify-content: center;
+}
+
+.connectionSectionConnected {
+  justify-content: space-between;
+}
+
+.statusBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: #0f766e;
+  font-weight: 600;
+}
+
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
 }
 
 .buttonRow {

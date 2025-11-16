@@ -208,36 +208,6 @@
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
-.statusRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-  font-size: 0.9rem;
-  color: var(--neutral-600, #525252);
-}
-
-.statusDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background-color: var(--neutral-300, #d4d4d4);
-}
-
-.statusDot[data-connected="true"] {
-  background-color: #16a34a;
-}
-
-.statusText {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 4px;
-}
-
-.statusProgress {
-  color: var(--neutral-500, #6b7280);
-}
-
 .unsupportedBox {
   border-radius: 10px;
   border: 1px solid #f97316;
