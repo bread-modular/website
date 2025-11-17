@@ -33,13 +33,28 @@ export default function Placeholder32UI() {
 
     async function loadFirmwares() {
       try {
-        const res = await fetch("/api/32bit/firmwares");
-        if (!res.ok) {
-          throw new Error(`Failed to load firmware list: ${res.status}`);
+        const baseUrl = "https://gmeozbt7rg290j7h.public.blob.vercel-storage.com";
+        const indexRes = await fetch(`${baseUrl}/index.txt`);
+        if (!indexRes.ok) {
+          throw new Error(`Failed to load firmware index: ${indexRes.status}`);
         }
-        const data = (await res.json()) as FirmwareOption[];
+        const indexText = await indexRes.text();
+        const directories = indexText
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line.length > 0);
+
+        const options: FirmwareOption[] = directories.map((dir) => ({
+          id: dir,
+          label: dir.replace(/_/g, " "),
+          manifestUrl: `${baseUrl}/${dir}/manifest.json`,
+        }));
+
+        // Sort by label descending (newest first)
+        const sorted = options.sort((a, b) => b.label.localeCompare(a.label));
+
         if (!cancelled) {
-          setFirmwares(data);
+          setFirmwares(sorted);
         }
       } catch {
         if (!cancelled) {
