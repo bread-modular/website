@@ -8,19 +8,6 @@ interface Header32Props {
   status: string;
   connectTo32bit: () => Promise<void>;
   disconnectFrom32bit: () => Promise<void>;
-   /**
-    * Whether the ESP32 log listener is currently active.
-    */
-  logsListening: boolean;
-  /**
-   * Toggle the ESP32 log listener on/off.
-   */
-  onToggleLogs: () => Promise<void> | void;
-  /**
-   * Whether a firmware installation is currently in progress.
-   * Used to disable log listening while esp-web-tools is flashing.
-   */
-  isInstalling: boolean;
   unsupported?: boolean;
 }
 
@@ -28,9 +15,6 @@ const Header32: React.FC<Header32Props> = ({
   connected,
   connectTo32bit,
   disconnectFrom32bit,
-  logsListening,
-  onToggleLogs,
-  isInstalling,
   unsupported = false,
 }) => {
   return (
@@ -58,22 +42,25 @@ const Header32: React.FC<Header32Props> = ({
                 <span className={styles.statusDot} />
                 Connected
               </div>
-              <label className={styles.logsCheckbox}>
-                <input
-                  type="checkbox"
-                  checked={logsListening}
-                  onChange={onToggleLogs}
-                  disabled={isInstalling}
-                />
-                Listen to logs
-              </label>
             </div>
           )}
           <div className={styles.buttonRow}>
             {connected ? (
-              <button className={styles.button} onClick={disconnectFrom32bit}>
-                Disconnect
-              </button>
+              <>
+                <button
+                  className={styles.button}
+                  onClick={() => {
+                    if (typeof window !== "undefined") {
+                      window.location.href = "/ui/32bit/install";
+                    }
+                  }}
+                >
+                  Install Firmware
+                </button>
+                <button className={styles.button} onClick={disconnectFrom32bit}>
+                  Disconnect
+                </button>
+              </>
             ) : (
               <button className={styles.button} onClick={connectTo32bit}>
                 Connect
