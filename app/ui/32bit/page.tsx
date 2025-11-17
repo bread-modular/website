@@ -1,9 +1,7 @@
-/* eslint-disable react-hooks/rules-of-hooks */
- "use client";
+"use client";
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { ChangeEvent } from "react";
 import Header32 from "./components/Header";
 import Terminal from "../16bit/components/Terminal";
 import styles from "./page.module.css";
@@ -11,13 +9,11 @@ import { WebSerialManager } from "@/app/lib/webserial";
 import type { MessageObj, MessageType, SerialPort } from "@/app/lib/webserial";
 
 const LOG_LISTENING_START_MESSAGE = "Listening to 32bit logs…";
-const LOG_LISTENING_STOP_MESSAGE = "Stopped listening to logs.";
 
 export default function Placeholder32UI() {
   const [port, setPort] = useState<SerialPort | null>(null);
   const [messages, setMessages] = useState<MessageObj[]>([]);
   const [input, setInput] = useState("");
-  const [unsupportedReason, setUnsupportedReason] = useState<string | null>(null);
   const [logsListening, setLogsListening] = useState(false);
 
   const serialManagerRef = useRef<WebSerialManager | null>(null);
@@ -41,29 +37,6 @@ export default function Placeholder32UI() {
       }
     };
   }, [appendMessage]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (!("serial" in navigator)) {
-      setUnsupportedReason(
-        "Your browser does not support Web Serial. Please use a Chromium-based browser like Chrome or Edge.",
-      );
-    } else if (!window.isSecureContext) {
-      setUnsupportedReason("ESP flashing only works on HTTPS or localhost due to browser security restrictions.");
-    } else {
-      setUnsupportedReason(null);
-    }
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (port) {
-        port.close().catch(() => {
-          // ignore cleanup errors
-        });
-      }
-    };
-  }, [port]);
 
   const handleConnect = useCallback(async () => {
     if (typeof navigator === "undefined") return;
@@ -129,41 +102,6 @@ export default function Placeholder32UI() {
       void startLogListening();
     }
   }, [port, logsListening, startLogListening]);
-
-  const stopLogListening = useCallback(async () => {
-    if (!serialManagerRef.current) {
-      setLogsListening(false);
-      return false;
-    }
-
-    try {
-      await serialManagerRef.current.disconnect();
-      appendMessage(LOG_LISTENING_STOP_MESSAGE, "status");
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      appendMessage(`Failed to stop log listener: ${message}`, "error");
-    } finally {
-      setLogsListening(false);
-    }
-
-    return true;
-  }, [appendMessage]);
-
-  const handleToggleLogs = useCallback(
-    async (event?: ChangeEvent<HTMLInputElement>) => {
-      const shouldListen = event ? event.target.checked : !logsListening;
-
-      if (logsListening && !shouldListen) {
-        await stopLogListening();
-        return;
-      }
-
-      if (!logsListening && shouldListen) {
-        await startLogListening();
-      }
-    },
-    [logsListening, startLogListening, stopLogListening],
-  );
 
   const sendConsoleMessage = async () => {
     if (!logsListening || !serialManagerRef.current) {
