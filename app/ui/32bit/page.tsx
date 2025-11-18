@@ -15,6 +15,8 @@ export default function Placeholder32UI() {
   const [messages, setMessages] = useState<MessageObj[]>([]);
   const [input, setInput] = useState("");
   const [logsListening, setLogsListening] = useState(false);
+  const [firmwareName, setFirmwareName] = useState<string | null>(null);
+  const [firmwareVersion, setFirmwareVersion] = useState<string | null>(null);
 
   const serialManagerRef = useRef<WebSerialManager | null>(null);
 
@@ -70,6 +72,8 @@ export default function Placeholder32UI() {
       appendMessage(`Failed to cleanly close the port: ${message}`, "error");
     } finally {
       setPort(null);
+      setFirmwareName(null);
+      setFirmwareVersion(null);
       if (typeof window !== "undefined") {
         window.location.reload();
       }
@@ -99,7 +103,22 @@ export default function Placeholder32UI() {
   // Automatically start log listening when port is connected
   useEffect(() => {
     if (port && !logsListening) {
-      void startLogListening();
+      const connectAndFetchInfo = async () => {
+        const success = await startLogListening();
+        if (success && serialManagerRef.current) {
+          // Fetch firmware info after connection is properly established
+          const name = await serialManagerRef.current.sendAndReceive("get-firmware-name").catch(() => null);
+          if (name) {
+            setFirmwareName(name);
+          }
+
+          const version = await serialManagerRef.current.sendAndReceive("get-firmware-version").catch(() => null);
+          if (version) {
+            setFirmwareVersion(version);
+          }
+        }
+      };
+      void connectAndFetchInfo();
     }
   }, [port, logsListening, startLogListening]);
 
@@ -145,6 +164,8 @@ export default function Placeholder32UI() {
               status={port ? "Connected" : "Disconnected"}
               connectTo32bit={handleConnect}
               disconnectFrom32bit={handleDisconnect}
+              firmwareName={firmwareName}
+              firmwareVersion={firmwareVersion}
             />
           </div>
         </div>

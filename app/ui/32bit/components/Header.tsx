@@ -9,6 +9,8 @@ interface Header32Props {
   connectTo32bit: () => Promise<void>;
   disconnectFrom32bit: () => Promise<void>;
   unsupported?: boolean;
+  firmwareName?: string | null;
+  firmwareVersion?: string | null;
 }
 
 const Header32: React.FC<Header32Props> = ({
@@ -16,6 +18,8 @@ const Header32: React.FC<Header32Props> = ({
   connectTo32bit,
   disconnectFrom32bit,
   unsupported = false,
+  firmwareName,
+  firmwareVersion,
 }) => {
   return (
     <>
@@ -42,6 +46,13 @@ const Header32: React.FC<Header32Props> = ({
                 <span className={styles.statusDot} />
                 Connected
               </div>
+              {(firmwareName || firmwareVersion) && (
+                <div className={styles.appInfoText}>
+                  {firmwareName && <span>{firmwareName}</span>}
+                  {firmwareName && firmwareVersion && <span> • </span>}
+                  {firmwareVersion && <span>v{firmwareVersion}</span>}
+                </div>
+              )}
             </div>
           )}
           <div className={styles.buttonRow}>
