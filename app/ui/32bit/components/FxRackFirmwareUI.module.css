@@ -1,13 +1,14 @@
 .container {
   display: flex;
   flex-direction: column;
+  gap: 24px;
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
 }
 
 .title {
@@ -23,21 +24,452 @@
   font-weight: 500;
 }
 
-.content {
+.modeSelector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.modeLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--neutral-700, #404040);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.modeSelect {
+  flex: 1;
+  max-width: 300px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 2px solid var(--neutral-300, #d4d4d4);
+  background: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--foreground, #171717);
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.modeSelect:focus {
+  outline: none;
+  border-color: #1d4ed8;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+.modulesContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.module32bit,
+.moduleMCC {
+  padding: 24px;
+  background: #f8f9fa;
+  border: 2px solid #dee2e6;
+  border-radius: 12px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  gap: 20px;
+}
+
+.moduleHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.moduleTitle {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #495057;
+  text-align: center;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+/* 32bit Module Styles */
+.ioSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.ioColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ioLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #495057;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.pinContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  position: relative;
+}
+
+.pinLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #495057;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pinDescription {
+  font-size: 0.65rem;
+  color: #6c757d;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.cvKnobsSection {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  padding: 16px 0;
+}
+
+.cvKnob {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 100px;
+  position: relative;
+}
+
+.cvKnobCircle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #6c757d;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.cvKnobCircle::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 18px;
+  background: #495057;
+  border-radius: 2px;
+}
+
+.cvKnobLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.cvKnobLabelType {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #495057;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border: 1px solid #c9c9c9;
+  background-color: #e9e9e9;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.cvKnobLabel > div:last-child {
+  font-size: 0.65rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  max-width: 100px;
+  word-wrap: break-word;
+  line-height: 1.2;
+}
+
+.modeControl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #dee2e6;
+}
+
+.modeControlLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #495057;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  text-align: center;
+}
+
+.modeControlGroup {
+  display: flex;
+  align-items: flex-start;
   gap: 16px;
 }
 
-.placeholder {
-  font-size: 1rem;
-  color: var(--neutral-600, #525252);
-  line-height: 1.5;
-  margin: 0;
-  text-align: center;
-  padding: 24px;
-  background: #ffffff;
-  border-radius: 8px;
-  border: 1px dashed var(--neutral-300, #d4d4d4);
+.modeButtonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
 }
 
+.modeButton {
+  padding: 6px 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #495057;
+  background: #ffffff;
+  border: 2px solid #6c757d;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.modeButtonDescription {
+  font-size: 0.6rem;
+  color: #6c757d;
+  text-align: center;
+  max-width: 120px;
+  line-height: 1.2;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.ledContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+.led {
+  width: 8px;
+  height: 20px;
+  background: #dc3545;
+  border: 1px solid #c82333;
+  border-radius: 2px;
+}
+
+.ledDescription {
+  font-size: 0.6rem;
+  color: #6c757d;
+  text-align: center;
+  max-width: 120px;
+  line-height: 1.2;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+/* MCC Module Styles */
+.mccKnobsContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  justify-items: center;
+}
+
+.mccKnob {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.mccKnobCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #6c757d;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.mccKnobCircle::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 16px;
+  background: #495057;
+  border-radius: 1px;
+}
+
+.mccKnobLabelContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-height: 48px;
+  justify-content: flex-start;
+}
+
+.mccKnobLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #495057;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.mccKnobDescription {
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: #6c757d;
+  text-align: center;
+  line-height: 1.2;
+  max-width: 80px;
+  word-wrap: break-word;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.mccBankSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #dee2e6;
+}
+
+.bankLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #495057;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.bankBoxes {
+  display: flex;
+  gap: 4px;
+}
+
+.bankBox {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 2px solid #6c757d;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #6c757d;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.bankBoxActive {
+  background: #495057;
+  border-color: #495057;
+  color: white;
+}
+
+/* Tooltip Styles */
+.tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2c3e50;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  white-space: normal;
+  width: 200px;
+  min-width: 200px;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #2c3e50;
+}
+
+@media (max-width: 768px) {
+  .modulesContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .ioSection {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .cvKnobsSection {
+    gap: 24px;
+  }
+
+  .mccKnobsContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
