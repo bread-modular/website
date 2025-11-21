@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Header32 from "./components/Header";
+import FxRackFirmwareUI from "./components/FxRackFirmwareUI";
 import Terminal from "../16bit/components/Terminal";
 import styles from "./page.module.css";
 import { WebSerialManager } from "@/app/lib/webserial";
@@ -168,6 +169,12 @@ export default function Placeholder32UI() {
               firmwareVersion={firmwareVersion}
             />
           </div>
+
+          {firmwareName === "fxrack" && (
+            <div className={styles.section}>
+              <FxRackFirmwareUI firmwareVersion={firmwareVersion} />
+            </div>
+          )}
         </div>
       </div>
 

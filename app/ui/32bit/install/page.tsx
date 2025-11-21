@@ -34,7 +34,11 @@ export default function Placeholder32UI() {
     async function loadFirmwares() {
       try {
         const baseUrl = "https://gmeozbt7rg290j7h.public.blob.vercel-storage.com";
-        const indexRes = await fetch(`${baseUrl}/index.txt`);
+        // Add cache-busting query parameter to ensure we get the latest version
+        // This bypasses both browser and Vercel Blobs CDN caching
+        const indexRes = await fetch(`${baseUrl}/index.txt?t=${Date.now()}`, {
+          cache: "no-store",
+        });
         if (!indexRes.ok) {
           throw new Error(`Failed to load firmware index: ${indexRes.status}`);
         }
