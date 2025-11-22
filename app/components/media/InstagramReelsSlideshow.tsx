@@ -20,10 +20,10 @@ declare global {
 
 // Get Instagram reels from config or use fallback if not available
 const reels = publicRuntimeConfig.instagramReels || [
-  "DHnqtG8isU9",
-  "DHaq6cZiEcB",
-  "DG5NOzLCgHW",
-  "DGSlo9VtFTv"
+  "DRUNChhDTvY",
+  "DRPA20GDSgN",
+  "DQwJZ-ZDVWZ",
+  "DQimhLvgpvh"
 ];
 
 export default function InstagramReelsSlideshow() {

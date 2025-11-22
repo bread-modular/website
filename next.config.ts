@@ -50,12 +50,15 @@ const nextConfig: NextConfig = {
   
   // Public runtime configuration
   publicRuntimeConfig: {
-    // Instagram reels from Bread Modular
+    // Instagram reels from Bread Modular (latest reels fetched from @breadmodular)
     instagramReels: [
-      "DHnqtG8isU9",
-      "DHaq6cZiEcB",
-      "DG5NOzLCgHW",
-      "DGSlo9VtFTv"
+      "DRUNChhDTvY",
+      "DRPA20GDSgN",
+      "DQwJZ-ZDVWZ",
+      "DQimhLvgpvh",
+      "DPsmPQXAh_J",
+      "DPlc5SXDQ5n",
+      "DPixNBqDapA"
     ],
   },
 };
