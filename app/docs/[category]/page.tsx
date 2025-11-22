@@ -48,6 +48,24 @@ export default async function DocsCategoryPage({ params }: Props) {
         <main className={styles.content}>
           <h1>{category.name}</h1>
 
+          <div className={styles.chatBanner}>
+            <a 
+              href="https://notebooklm.google.com/notebook/09159f54-4055-407e-a2f8-818cbaf1744f/preview"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.chatBannerLink}
+            >
+              <span className={styles.chatBannerIcon}>💬</span>
+              <div className={styles.chatBannerContent}>
+                <strong>Chat with AI Assistant</strong>
+                <span>Ask questions about Bread Modular documentation</span>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={styles.chatBannerArrow}>
+                <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+              </svg>
+            </a>
+          </div>
+
           {category.docs.length > 0 ? (
             <section className={styles.categorySection}>
               <div className={styles.docsGrid}>

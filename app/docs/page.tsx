@@ -39,6 +39,24 @@ export default async function DocsPage() {
             <br/>
             Here you can learn all about Bread Modular, from the getting started guide to patch ideas and specifications.
           </p>
+
+          <div className={styles.chatBanner}>
+            <a 
+              href="https://notebooklm.google.com/notebook/09159f54-4055-407e-a2f8-818cbaf1744f/preview"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.chatBannerLink}
+            >
+              <span className={styles.chatBannerIcon}>💬</span>
+              <div className={styles.chatBannerContent}>
+                <strong>Chat with AI Assistant</strong>
+                <span>Ask questions about Bread Modular documentation</span>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={styles.chatBannerArrow}>
+                <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+              </svg>
+            </a>
+          </div>
           
           {categories.length > 0 ? (
             categories.map((category) => (

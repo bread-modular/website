@@ -107,39 +107,56 @@ export default function DocsSidebarNav({ categories, currentDoc }: Props) {
   );
 
   return (
-    <aside className={styles.sidebar} ref={sidebarRef}>
-      {/* Mobile dropdown toggle */}
-      <div className={styles.mobileToggle} ref={dropdownRef}>
-        <button 
-          className={styles.expandButton}
-          onClick={() => setIsExpanded(!isExpanded)}
-          aria-expanded={isExpanded}
-          aria-controls="sidebar-content"
+    <aside className={styles.sidebarWrapper}>
+      {/* Chat link - fixed at top, always visible */}
+      <div className={styles.chatLinkContainer}>
+        <a
+          href="https://notebooklm.google.com/notebook/09159f54-4055-407e-a2f8-818cbaf1744f/preview"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.chatLink}
+          onClick={() => setIsExpanded(false)}
         >
-          {currentDoc ? (
-            <>
-              <span>{currentDoc.categoryName}</span>
-              <span className={`${styles.arrow} ${isExpanded ? styles.up : ''}`}>▼</span>
-            </>
-          ) : (
-            <>
-              <span>Documentation</span>
-              <span className={`${styles.arrow} ${isExpanded ? styles.up : ''}`}>▼</span>
-            </>
-          )}
-        </button>
-        
-        <div 
-          id="sidebar-content"
-          className={`${styles.sidebarContent} ${isExpanded ? styles.expanded : ''}`}
-        >
-          {renderCategories()}
-        </div>
+          <span className={styles.chatIcon}>💬</span>
+          <span>Chat with AI</span>
+        </a>
       </div>
 
-      {/* Desktop navigation content */}
-      <div className={styles.desktopContent}>
-        {renderCategories()}
+      {/* Scrollable sidebar content */}
+      <div className={styles.sidebar} ref={sidebarRef}>
+        {/* Mobile dropdown toggle */}
+        <div className={styles.mobileToggle} ref={dropdownRef}>
+          <button 
+            className={styles.expandButton}
+            onClick={() => setIsExpanded(!isExpanded)}
+            aria-expanded={isExpanded}
+            aria-controls="sidebar-content"
+          >
+            {currentDoc ? (
+              <>
+                <span>{currentDoc.categoryName}</span>
+                <span className={`${styles.arrow} ${isExpanded ? styles.up : ''}`}>▼</span>
+              </>
+            ) : (
+              <>
+                <span>Documentation</span>
+                <span className={`${styles.arrow} ${isExpanded ? styles.up : ''}`}>▼</span>
+              </>
+            )}
+          </button>
+          
+          <div 
+            id="sidebar-content"
+            className={`${styles.sidebarContent} ${isExpanded ? styles.expanded : ''}`}
+          >
+            {renderCategories()}
+          </div>
+        </div>
+
+        {/* Desktop navigation content */}
+        <div className={styles.desktopContent}>
+          {renderCategories()}
+        </div>
       </div>
     </aside>
   );

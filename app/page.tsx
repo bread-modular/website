@@ -94,16 +94,28 @@ export default function Home() {
         </article>
       </section>
 
-      {/* CTA Button */}
+      {/* CTA Buttons */}
       <section aria-label="Call to action" className={styles.ctaSection}>
-        <Link 
-          href="/docs/getting-started/getting-started" 
-          className={styles.ctaButton}
-          role="button"
-          aria-label="Get started with Bread Modular"
-        >
-          GET STARTED NOW
-        </Link>
+        <div className={styles.ctaButtons}>
+          <Link 
+            href="/docs/getting-started/getting-started" 
+            className={styles.ctaButton}
+            role="button"
+            aria-label="Get started with Bread Modular"
+          >
+            GET STARTED NOW
+          </Link>
+          <a 
+            href="https://notebooklm.google.com/notebook/09159f54-4055-407e-a2f8-818cbaf1744f/preview"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.ctaButtonSecondary}
+            role="button"
+            aria-label="Ask questions about Bread Modular"
+          >
+            ASK QUESTIONS
+          </a>
+        </div>
       </section>
 
       {/* Newsletter Signup */}

@@ -84,22 +84,145 @@
   color: var(--neutral-600);
 }
 
+.chatBannerSection {
+  width: 100%;
+  max-width: 800px;
+  margin: 64px auto;
+  padding: 0 16px;
+}
+
+.chatBanner {
+  width: 100%;
+}
+
+.chatBannerLink {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.chatBannerLink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #d1d5db;
+  background: #f3f4f6;
+}
+
+.chatBannerIcon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.chatBannerContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.chatBannerContent strong {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.chatBannerContent span {
+  font-size: 0.9375rem;
+  color: var(--neutral-600);
+}
+
+.chatBannerArrow {
+  width: 20px;
+  height: 20px;
+  color: var(--foreground);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.chatBannerLink:hover .chatBannerArrow {
+  transform: translateX(4px);
+}
+
 .ctaSection {
   margin: 32px 0 64px;
   text-align: center;
 }
 
-.ctaButton {
+.ctaButtons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.ctaButton,
+.ctaButtonSecondary {
   display: inline-block;
+  padding: 20px 40px;
+  font-size: 1.125rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+  min-width: 200px;
+  text-align: center;
+}
+
+.ctaButton {
   background: black;
   color: white;
-  padding: 24px 48px;
-  font-size: 1.25rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .ctaButton:hover {
-  opacity: 0.9;
-  transition: opacity 0.2s;
+  background: #1a1a1a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.ctaButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ctaButtonSecondary {
+  background: #525252;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ctaButtonSecondary:hover {
+  background: #616161;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.ctaButtonSecondary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 640px) {
+  .ctaButtons {
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .ctaButton,
+  .ctaButtonSecondary {
+    min-width: 220px;
+    padding: 22px 44px;
+    font-size: 1.25rem;
+  }
 }
 
 /* Instagram Reels Section */
