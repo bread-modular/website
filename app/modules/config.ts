@@ -65,6 +65,11 @@ export const modulesDisplayConfig: ModuleDisplayConfig[] = [
   
   // Control
   { moduleId: 'env', category: 'Control' },
+  { 
+    moduleId: '8bit', category: 'Control',
+    title: 'LFO',
+    description: 'An LFO as firmware for 8bit module.'
+  },
   { moduleId: 'v2ca', category: 'Control' },
   { moduleId: 'mcc', category: 'Control' },
   { moduleId: 'imix', category: 'Control' },
