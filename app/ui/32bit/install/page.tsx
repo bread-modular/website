@@ -239,7 +239,7 @@ export default function Placeholder32UI() {
               <div className={styles.bootloaderInstructions}>
                 <h3 className={styles.bootloaderTitle}>Enter Bootloader Mode</h3>
                 <p className={styles.bootloaderText}>
-                  Before installing firmware, put your device into bootloader mode:
+                  Before installing firmware, put your 32bit module into bootloader mode:
                 </p>
                 <ol className={styles.bootloaderSteps}>
                   <li>Press and hold the <strong>BOOT</strong> button</li>
