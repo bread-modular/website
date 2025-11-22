@@ -22,7 +22,7 @@ const UnsupportedBrowser: React.FC = () => {
       </div>
       <h3 className={styles.unsupportedTitle}>Web Serial API Not Supported</h3>
       <p className={styles.unsupportedText}>
-        This browser doesn't support the Web Serial API required to connect to your module.
+        This browser doesn&apos;t support the Web Serial API required to connect to your module.
       </p>
       <p className={styles.unsupportedAction}>
         Please use <span className={styles.browserHighlight}>Google Chrome</span>
