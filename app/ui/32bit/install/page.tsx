@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import Terminal from "../../16bit/components/Terminal";
 import UnsupportedBrowser from "../../16bit/components/UnsupportedBrowser";
 import styles from "../page.module.css";
+import headerStyles from "../../16bit/components/Header.module.css";
 import type { MessageObj, MessageType, SerialPort } from "@/app/lib/webserial";
 
 type FirmwareOption = {
@@ -235,32 +236,45 @@ export default function Placeholder32UI() {
           <div className={styles.section}>
             <h2 className={styles.sectionHeader}>Firmware Installer</h2>
             <div className={styles.installerSection}>
+              <div className={styles.bootloaderInstructions}>
+                <h3 className={styles.bootloaderTitle}>Enter Bootloader Mode</h3>
+                <p className={styles.bootloaderText}>
+                  Before installing firmware, put your device into bootloader mode:
+                </p>
+                <ol className={styles.bootloaderSteps}>
+                  <li>Press and hold the <strong>BOOT</strong> button</li>
+                  <li>While holding BOOT, press and hold the <strong>RESET</strong> button</li>
+                  <li>Release both buttons</li>
+                </ol>
+                <p className={styles.bootloaderNote}>
+                  Your device is now in bootloader mode and ready for firmware installation.
+                </p>
+              </div>
               <div className={styles.installSection}>
                 {!installationCompleted && (
                   <>
-                    <div className={styles.fieldGroup}>
-                      <label htmlFor="firmware-select" className={styles.fieldLabel}>
-                        Firmware build
-                      </label>
-                      <select
-                        id="firmware-select"
-                        className={styles.firmwareSelect}
-                        value={String(selectedIndex)}
-                        onChange={(event) => setSelectedIndex(Number(event.target.value))}
-                        disabled={isInstalling}
-                      >
-                        {firmwares.map((firmware, index) => (
-                          <option key={firmware.id} value={index}>
-                            {firmware.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className={styles.installButtonRow}>
+                    <div className={styles.installControlsRow}>
+                      <div className={styles.fieldGroup}>
+                        <label htmlFor="firmware-select" className={styles.fieldLabel}>
+                          Firmware build
+                        </label>
+                        <select
+                          id="firmware-select"
+                          className={styles.firmwareSelect}
+                          value={String(selectedIndex)}
+                          onChange={(event) => setSelectedIndex(Number(event.target.value))}
+                          disabled={isInstalling}
+                        >
+                          {firmwares.map((firmware, index) => (
+                            <option key={firmware.id} value={index}>
+                              {firmware.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                       <button
                         type="button"
-                        className={styles.secondaryButton}
+                        className={headerStyles.buttonPrimary}
                         onClick={handleInstall}
                         disabled={isInstalling}
                       >

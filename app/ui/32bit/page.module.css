@@ -96,7 +96,59 @@
 .installerSection {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
+}
+
+.bootloaderInstructions {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 2px solid #3b82f6;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 8px;
+}
+
+.bootloaderTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1e40af;
+  margin: 0 0 12px 0;
+}
+
+.bootloaderText {
+  font-size: 0.95rem;
+  color: #1e3a8a;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.bootloaderSteps {
+  margin: 0 0 16px 0;
+  padding-left: 24px;
+  color: #1e3a8a;
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+.bootloaderSteps li {
+  margin-bottom: 8px;
+}
+
+.bootloaderSteps li strong {
+  color: #1e40af;
+  font-weight: 700;
+  background: rgba(59, 130, 246, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.bootloaderNote {
+  font-size: 0.875rem;
+  color: #1e3a8a;
+  margin: 0;
+  font-style: italic;
+  padding-top: 12px;
+  border-top: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .installSection {
@@ -111,16 +163,25 @@
   color: var(--neutral-800, #262626);
 }
 
-.installButtonRow {
+.installControlsRow {
   display: flex;
-  justify-content: flex-start;
+  align-items: flex-end;
+  gap: 16px;
+  margin-top: 16px;
+  flex-wrap: wrap;
 }
 
 .fieldGroup {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 16px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.installButtonRow {
+  display: flex;
+  justify-content: flex-start;
 }
 
 .controlsRow {
