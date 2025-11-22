@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Layout from '@/app/components/Layout';
 import { getModuleData } from '@/lib/modules';
-import { modulesDisplayConfig, categoryOrder, type ModuleDisplayConfig } from './config';
+import { modulesDisplayConfig, categoryOrder } from './config';
 import type { Metadata } from 'next';
 import type { ModuleSpec } from '@/lib/modules';
 import styles from './page.module.css';
@@ -48,19 +48,18 @@ export default async function ModulesPage() {
         : config.moduleId;
 
       // Create ModuleSpec (without contentHtml) with config overrides
-      const { contentHtml, ...moduleSpec } = moduleData;
       const result: ModuleDisplay = {
         id: displayId,
         originalModuleId: config.moduleId, // Always use original moduleId for routing
-        title: config.title ?? moduleSpec.title,
-        description: config.description ?? moduleSpec.description,
-        image: config.image ?? moduleSpec.image,
-        versions: moduleSpec.versions,
-        checkout: moduleSpec.checkout,
-        inputs: moduleSpec.inputs,
-        outputs: moduleSpec.outputs,
-        featured: config.featured !== undefined ? config.featured : moduleSpec.featured,
-        size: config.size ?? moduleSpec.size,
+        title: config.title ?? moduleData.title,
+        description: config.description ?? moduleData.description,
+        image: config.image ?? moduleData.image,
+        versions: moduleData.versions,
+        checkout: moduleData.checkout,
+        inputs: moduleData.inputs,
+        outputs: moduleData.outputs,
+        featured: config.featured !== undefined ? config.featured : moduleData.featured,
+        size: config.size ?? moduleData.size,
         category: config.category,
       };
       return result;

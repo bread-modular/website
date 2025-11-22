@@ -1,5 +1,3 @@
-import { ModuleSpec } from '@/lib/modules';
-
 /**
  * Configuration for displaying modules on the modules page.
  * This allows customizing titles, descriptions, and ordering
