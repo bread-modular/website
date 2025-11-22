@@ -1,6 +1,6 @@
 ---
 title: Wave
-description: Analog Waveform Generator with Configurable Frequency Ranges.
+description: Analog waveform generator with configurable frequency ranges.
 image: /images/modules/wave.jpg
 versions:
   - name: Fully Assembled

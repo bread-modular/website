@@ -1,6 +1,6 @@
 ---
 title: MCO
-description: MIDI Controllable Oscillator with Detune Support.
+description: MIDI controllable oscillator with detune support.
 image: /images/modules/mco.jpg
 versions:
   - name: Fully Assembled

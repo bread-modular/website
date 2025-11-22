@@ -115,4 +115,16 @@
 .smallModuleDescription {
   font-size: 0.875rem;
   color: #e5e5e5;
+}
+
+.categoryHeading {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-top: 48px;
+  margin-bottom: 24px;
+  color: #272727;
+}
+
+.categoryHeading:first-child {
+  margin-top: 0;
 } 

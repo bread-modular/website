@@ -1,6 +1,6 @@
 ---
 title: Drive
-description: Analog Distortion & Saturation Module.
+description: Analog distortion & saturation module.
 image: /images/modules/drive.jpg
 versions:
   - name: Fully Assembled

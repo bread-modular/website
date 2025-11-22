@@ -1,6 +1,6 @@
 ---
 title: HiHat
-description: MIDI Controllable Analog HiHat Module.
+description: MIDI controllable analog hihat module.
 image: /images/modules/hihat.jpg
 versions:
   - name: Fully Assembled

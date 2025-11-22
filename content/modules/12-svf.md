@@ -1,6 +1,6 @@
 ---
 title: SVF
-description: Analog State Variable Filter with 3 Frequency Bands.
+description: Analog state variable filter with 3 frequency bands.
 image: /images/modules/svf.jpg
 versions:
   - name: Fully Assembled

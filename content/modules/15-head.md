@@ -1,6 +1,6 @@
 ---
 title: Head
-description: Stereo Headphone Output with Per Channel Volume Control.
+description: Stereo headphone output with per channel volume control.
 image: /images/modules/head.jpg
 versions:
   - name: Fully Assembled

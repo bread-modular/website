@@ -1,6 +1,6 @@
 ---
 title: Noise
-description: Noise Module with Multiple Tone Control Options.
+description: Noise module with multiple tone control options.
 image: /images/modules/noise.jpg
 versions:
   - name: Fully Assembled

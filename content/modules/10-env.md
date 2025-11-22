@@ -1,6 +1,6 @@
 ---
 title: ENV
-description: Envelope Generator with Multiple Algorithm Options (MIDI Controllable).
+description: Envelope generator with multiple algorithm options (MIDI controllable).
 image: /images/modules/env.jpg
 versions:
   - name: Fully Assembled
