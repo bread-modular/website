@@ -146,19 +146,21 @@
 }
 
 .unsupportedMessage {
-  color: #495057;
-  font-weight: 500;
-  font-size: 1rem;
-  line-height: 1.6;
+  color: #374151;
   margin: 0;
-  padding: 32px;
-  background: #f8f9fa;
-  border: 2px solid #dee2e6;
-  border-radius: 12px;
+  padding: 48px 40px;
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  border: 2px solid #e5e7eb;
+  border-radius: 16px;
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
   position: relative;
   overflow: hidden;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .unsupportedMessage::before {
@@ -167,14 +169,96 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #6c757d 0%, #495057 50%, #6c757d 100%);
-  border-radius: 12px 12px 0 0;
+  height: 5px;
+  background: linear-gradient(90deg, #dc2626 0%, #ef4444 50%, #dc2626 100%);
+  border-radius: 16px 16px 0 0;
+}
+
+.unsupportedIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 24px;
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  border-radius: 50%;
+  color: #dc2626;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+}
+
+.unsupportedTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.025em;
+}
+
+.unsupportedText {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #4b5563;
+  margin: 0 0 20px 0;
+  font-weight: 400;
+}
+
+.unsupportedAction {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #374151;
+  margin: 0;
+  font-weight: 500;
 }
 
 .browserHighlight {
   color: #2563eb;
-  font-weight: 600;
+  font-weight: 700;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.browserHighlight:hover {
+  background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
+  color: #1d4ed8;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  transform: translateY(-1px);
+}
+
+.browserHighlight:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1);
+}
+
+@media (max-width: 640px) {
+  .unsupportedMessage {
+    padding: 36px 24px;
+  }
+
+  .unsupportedIcon {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 20px;
+  }
+
+  .unsupportedIcon svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .unsupportedTitle {
+    font-size: 1.25rem;
+  }
+
+  .unsupportedText,
+  .unsupportedAction {
+    font-size: 0.9rem;
+  }
 }
 
 .appSwitcher {

@@ -2,6 +2,7 @@
 
 import React from "react";
 import styles from "../../16bit/components/Header.module.css";
+import UnsupportedBrowser from "../../16bit/components/UnsupportedBrowser";
 
 interface Header32Props {
   connected: boolean;
@@ -24,16 +25,7 @@ const Header32: React.FC<Header32Props> = ({
   return (
     <>
       {unsupported ? (
-        <div className={styles.unsupportedMessage}>
-          <strong>Web Serial API Not Supported</strong>
-          <br />
-          <br />
-          {"This browser doesn't support Web Serial, which is required for the 32bit flasher."}
-          <br />
-          <br />
-          Please use <span className={styles.browserHighlight}>Google Chrome</span> on a PC/Mac to access the full
-          32bit flashing experience.
-        </div>
+        <UnsupportedBrowser />
       ) : (
         <div
           className={`${styles.connectionSection} ${

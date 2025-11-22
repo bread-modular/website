@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import styles from "./Header.module.css";
+import UnsupportedBrowser from "./UnsupportedBrowser";
 
 interface HeaderProps {
   connected: boolean;
@@ -47,13 +48,7 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <>
       {unsupported ? (
-        <div className={styles.unsupportedMessage}>
-          <strong>Web Serial API Not Supported</strong><br />
-          <br />
-          {"This browser doesn't support the Web Serial API required to connect to your 16bit module."}<br />
-          <br />
-          Please use <span className={styles.browserHighlight}>Google Chrome</span> on a PC/Mac to access the full 16bit UI experience.
-        </div>
+        <UnsupportedBrowser />
       ) : (
         <div className={styles.buttonRow}>
           {connected && (

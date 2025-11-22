@@ -18,6 +18,7 @@ export default function Placeholder32UI() {
   const [logsListening, setLogsListening] = useState(false);
   const [firmwareName, setFirmwareName] = useState<string | null>(null);
   const [firmwareVersion, setFirmwareVersion] = useState<string | null>(null);
+  const [unsupported, setUnsupported] = useState(false);
 
   const serialManagerRef = useRef<WebSerialManager | null>(null);
 
@@ -26,6 +27,17 @@ export default function Placeholder32UI() {
   }, []);
 
   useEffect(() => {
+    // Check for Web Serial API support
+    if (typeof navigator !== "undefined" && !("serial" in navigator)) {
+      setUnsupported(true);
+      return;
+    }
+
+    if (typeof window !== "undefined" && !window.isSecureContext) {
+      setUnsupported(true);
+      return;
+    }
+
     // Initialise a WebSerialManager instance for log listening
     serialManagerRef.current = new WebSerialManager((message, type) => {
       appendMessage(message, type);
@@ -45,12 +57,10 @@ export default function Placeholder32UI() {
     if (typeof navigator === "undefined") return;
 
     if (!("serial" in navigator)) {
-      appendMessage("Web Serial is not supported in this browser.", "error");
       return;
     }
 
     if (typeof window !== "undefined" && !window.isSecureContext) {
-      appendMessage("Web Serial requires HTTPS or localhost. Please reload this page over a secure context.", "error");
       return;
     }
 
@@ -165,6 +175,7 @@ export default function Placeholder32UI() {
               status={port ? "Connected" : "Disconnected"}
               connectTo32bit={handleConnect}
               disconnectFrom32bit={handleDisconnect}
+              unsupported={unsupported}
               firmwareName={firmwareName}
               firmwareVersion={firmwareVersion}
             />

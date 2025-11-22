@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import Terminal from "../../16bit/components/Terminal";
+import UnsupportedBrowser from "../../16bit/components/UnsupportedBrowser";
 import styles from "../page.module.css";
 import type { MessageObj, MessageType, SerialPort } from "@/app/lib/webserial";
 
@@ -22,7 +23,7 @@ export default function Placeholder32UI() {
   const [installationCompleted, setInstallationCompleted] = useState(false);
   const [messages, setMessages] = useState<MessageObj[]>([]);
   const [input, setInput] = useState("");
-  const [unsupportedReason, setUnsupportedReason] = useState<string | null>(null);
+  const [unsupported, setUnsupported] = useState(false);
 
   const appendMessage = useCallback((message: string, type: MessageType = "status") => {
     setMessages((prev) => [...prev, { message, type }]);
@@ -77,13 +78,11 @@ export default function Placeholder32UI() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!("serial" in navigator)) {
-      setUnsupportedReason(
-        "Your browser does not support Web Serial. Please use a Chromium-based browser like Chrome or Edge.",
-      );
+      setUnsupported(true);
     } else if (!window.isSecureContext) {
-      setUnsupportedReason("ESP flashing only works on HTTPS or localhost due to browser security restrictions.");
+      setUnsupported(true);
     } else {
-      setUnsupportedReason(null);
+      setUnsupported(false);
     }
   }, []);
 
@@ -101,12 +100,10 @@ export default function Placeholder32UI() {
     if (typeof navigator === "undefined") return null;
 
     if (!("serial" in navigator)) {
-      appendMessage("Web Serial is not supported in this browser.", "error");
       return null;
     }
 
     if (typeof window !== "undefined" && !window.isSecureContext) {
-      appendMessage("Web Serial requires HTTPS or localhost. Please reload this page over a secure context.", "error");
       return null;
     }
 
@@ -192,6 +189,33 @@ export default function Placeholder32UI() {
     return null;
   }
 
+  if (unsupported) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.pageHeader}>
+          <Image
+            src="/images/bread-modular-logo.png"
+            alt="BreadModular Logo"
+            className={styles.logo}
+            width={256}
+            height={64}
+            priority
+          />
+          <h1 className={styles.pageTitle}>32bit UI</h1>
+        </div>
+
+        <div className={styles.mainContent}>
+          <div className={styles.section}>
+            <h2 className={styles.sectionHeader}>Firmware Installer</h2>
+            <div className={styles.installerSection}>
+              <UnsupportedBrowser />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className={styles.container}>
@@ -211,12 +235,6 @@ export default function Placeholder32UI() {
           <div className={styles.section}>
             <h2 className={styles.sectionHeader}>Firmware Installer</h2>
             <div className={styles.installerSection}>
-              {unsupportedReason && (
-                <div className={styles.unsupportedBox}>
-                  <p>{unsupportedReason}</p>
-                </div>
-              )}
-
               <div className={styles.installSection}>
                 {!installationCompleted && (
                   <>
