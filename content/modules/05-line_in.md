@@ -1,6 +1,6 @@
 ---
 title: Line In
-description: Stereo Line In with Separate Gain Control
+description: Stereo line in with separate gain control.
 image: /images/modules/line_in.jpg
 versions:
   - name: Fully Assembled

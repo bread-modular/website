@@ -1,6 +1,6 @@
 ---
 title: LOW
-description: Analog Low Pass Gate with Filtering Support.
+description: Analog low pass gate with filtering support.
 image: /images/modules/low.jpg
 versions:
   - name: Fully Assembled

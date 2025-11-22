@@ -1,6 +1,6 @@
 ---
 title: Travel Case
-description: A Protective Travel Case for Bread Modular
+description: A protective tavel case for Bread Modular.
 image: /images/modules/travel-case.jpg
 size: double
 ---
