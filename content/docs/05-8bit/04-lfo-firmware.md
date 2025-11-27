@@ -16,7 +16,7 @@ The LFO continuously generates modulation signals that can be used for controlli
   - CV2 for waveform morphing
 - **LED Indicator**: Visual feedback showing the current LFO output level
 - **Curved Frequency Response**: Exponential frequency mapping for musical control
-- **Gate Output**: Can be triggered by MIDI note-on events (LFO runs independently)
+- **Dual Outputs**: AUDIO output for analog waveform modulation and GATE output for digital gate signals
 
 ## Installation
 
@@ -48,4 +48,16 @@ The firmware is located at [modules/8bit/code/lfo](https://github.com/bread-modu
 ### LED Indicator
 
 The LED provides visual feedback of the current LFO output level, pulsing and changing brightness as the waveform cycles. This gives you immediate visual confirmation of the LFO's activity and waveform shape.
+
+## Outputs
+
+### AUDIO
+
+- **Function**: Outputs the LFO waveform as an analog voltage signal
+- **Behavior**: Continuously outputs the current waveform shape (sine, triangle, saw, etc.) based on CV2 settings. Use this output to modulate other modules like filters, VCAs, or oscillators
+
+### GATE
+
+- **Function**: Outputs a digital gate signal based on the LFO waveform level
+- **Behavior**: Goes HIGH when the waveform is above its midpoint, and LOW when below. This creates a gate signal that pulses at the LFO frequency, useful for triggering envelopes, sequencers, or other gate-driven modules
 
