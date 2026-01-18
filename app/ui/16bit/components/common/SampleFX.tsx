@@ -19,7 +19,7 @@ const SampleFX: React.FC<SampleFXProps> = ({
   onFxChange,
   loading
 }) => {
-  const fxOptions = ['noop', 'delay', 'metalverb'];
+  const fxOptions = ['noop', 'delay', 'metalverb', 'rumble'];
 
   const handleFXChange = async (fxIndex: string, fxValue: string) => {
     await onFxChange(fxIndex, fxValue);
@@ -66,7 +66,7 @@ const SampleFX: React.FC<SampleFXProps> = ({
           <div className={styles.loadingText}>Loading...</div>
         </div>
       )}
-      
+
       <div className={styles.fxSlotsContainer}>
         <div className={styles.fxGroupContainer}>
           <div className={styles.fxGroupA}>

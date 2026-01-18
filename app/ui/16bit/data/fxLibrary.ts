@@ -44,5 +44,15 @@ export const FX_LIBRARY: Record<string, FX> = {
       "Resonance. 0 is no resonance and increasing will make it more resonant.",
       "Cutoff. 0 is no lowpass filtering and 100% is full filtering."
     ]
+  },
+  "rumble": {
+    title: "Techno Rumble",
+    knobs: ["Decay", "Color", "Volume", "Drive"],
+    knobDescriptions: [
+      "Decay. Controls the feedback of the delay tail.",
+      "Color. Rumble lowpass cutoff. Left is brighter (500Hz), Right is darker (30Hz).",
+      "Rumble volume relative to the dry signal.",
+      "Drive. Adds distortion and bitcrushing (downsampling) for industrial texture."
+    ]
   }
 }; 
