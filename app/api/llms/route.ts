@@ -81,7 +81,7 @@ async function getDocsGroupedCleanUrls(root: string): Promise<Record<string, Arr
 }
 
 export async function GET() {
-  const root = process.cwd();
+  const root = /*turbopackIgnore: true*/ process.cwd();
   const docsGroups = await getDocsGroupedCleanUrls(path.join(root, 'content/docs'));
   const modules = await getMarkdownFilesDetailedCleanUrls(path.join(root, 'content/modules'), '/modules');
   const blog = await getMarkdownFilesDetailedCleanUrls(path.join(root, 'content/blog'), '/blog');

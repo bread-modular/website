@@ -52,6 +52,10 @@ const PicoWebSerial = () => {
   const stopBinaryListenerRef = useRef<(() => void) | null>(null);
   const appElabRef = useRef<AppElabRef | null>(null);
 
+  const displayMessage = (message: string, type: MessageType) => {
+    setMessages((msgs) => [...msgs, { message, type }]);
+  };
+
   useEffect(() => {
     // Initialize the WebSerialManager
     serialManagerRef.current = new WebSerialManager(displayMessage);
@@ -72,10 +76,6 @@ const PicoWebSerial = () => {
       }
     };
   }, []);
-
-  const displayMessage = (message: string, type: MessageType) => {
-    setMessages((msgs) => [...msgs, { message, type }]);
-  };
 
   const getAppInfo = async () => {
     if (!serialManagerRef.current || !serialManagerRef.current.isConnected()) {

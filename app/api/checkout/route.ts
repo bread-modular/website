@@ -2,10 +2,17 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { CartItem } from '@/lib/cart';
 
-// Initialize Stripe with your secret key
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-02-24.acacia',
-});
+function getStripe() {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+
+  if (!secretKey) {
+    throw new Error('STRIPE_SECRET_KEY is not configured');
+  }
+
+  return new Stripe(secretKey, {
+    apiVersion: '2025-02-24.acacia',
+  });
+}
 
 // Function to get the base URL, using Vercel URL if NEXT_PUBLIC_BASE_URL is not available
 function getBaseUrl() {
@@ -66,6 +73,7 @@ export async function POST(request: Request) {
     });
 
     // Create Stripe checkout session with customer information collection
+    const stripe = getStripe();
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       mode: 'payment',

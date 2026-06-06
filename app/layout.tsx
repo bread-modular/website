@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.SITE_URL || 'https://breadmodular.com'),
   title: "Bread Modular",
   description: "Affordable Modular Synth Platform",
   icons: {

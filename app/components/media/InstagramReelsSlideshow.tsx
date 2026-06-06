@@ -2,10 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import styles from './InstagramReelsSlideshow.module.css';
-import getConfig from 'next/config';
-
-// Get the public runtime config
-const { publicRuntimeConfig } = getConfig() || { publicRuntimeConfig: {} };
 
 // Define type for Instagram embed script
 declare global {
@@ -18,12 +14,14 @@ declare global {
   }
 }
 
-// Get Instagram reels from config or use fallback if not available
-const reels = publicRuntimeConfig.instagramReels || [
+const reels = [
   "DRUNChhDTvY",
   "DRPA20GDSgN",
   "DQwJZ-ZDVWZ",
-  "DQimhLvgpvh"
+  "DQimhLvgpvh",
+  "DPsmPQXAh_J",
+  "DPlc5SXDQ5n",
+  "DPixNBqDapA"
 ];
 
 export default function InstagramReelsSlideshow() {

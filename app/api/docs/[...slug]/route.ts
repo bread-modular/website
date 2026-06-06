@@ -4,7 +4,7 @@ import path from 'path';
 export async function GET(req: Request, { params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params;
   const slugArr = slug;
-  const docsRoot = path.join(process.cwd(), 'content/docs');
+  const docsRoot = path.join(/*turbopackIgnore: true*/ process.cwd(), 'content/docs');
 
   // Helper to find the real folder/file with number prefix
   async function findWithPrefix(parent: string, clean: string): Promise<string | null> {
@@ -26,9 +26,9 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
       return new Response('Not found', { status: 404 });
     }
     realPathParts.push(found);
-    currentDir = path.join(currentDir, found);
+    currentDir = path.join(/*turbopackIgnore: true*/ currentDir, found);
   }
-  const filePath = path.join(docsRoot, ...realPathParts);
+  const filePath = path.join(/*turbopackIgnore: true*/ docsRoot, ...realPathParts);
   try {
     let content = await fs.readFile(filePath, 'utf8');
     // Rewrite internal links to append .md if not present

@@ -4,7 +4,7 @@ import path from 'path';
 export async function GET(req: Request, { params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params;
   const slugArr = slug;
-  const modulesRoot = path.join(process.cwd(), 'content/modules');
+  const modulesRoot = path.join(/*turbopackIgnore: true*/ process.cwd(), 'content/modules');
 
   // Helper to find the real file with number prefix
   async function findWithPrefix(parent: string, clean: string): Promise<string | null> {
@@ -23,7 +23,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   if (!found) {
     return new Response('Not found', { status: 404 });
   }
-  const filePath = path.join(modulesRoot, found);
+  const filePath = path.join(/*turbopackIgnore: true*/ modulesRoot, found);
   try {
     let content = await fs.readFile(filePath, 'utf8');
     // Rewrite internal links to append .md if not present

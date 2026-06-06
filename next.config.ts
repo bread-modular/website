@@ -27,12 +27,19 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    domains: [
-      'img.youtube.com',  // For YouTube thumbnails
-      'i.ytimg.com',      // Alternative YouTube image domain
-      'i.vimeocdn.com',   // In case Vimeo is used in the future
-    ],
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.vimeocdn.com',
+      },
       {
         protocol: 'https',
         hostname: '**.youtube.com',
@@ -45,20 +52,6 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '**.vimeocdn.com',
       },
-    ],
-  },
-  
-  // Public runtime configuration
-  publicRuntimeConfig: {
-    // Instagram reels from Bread Modular (latest reels fetched from @breadmodular)
-    instagramReels: [
-      "DRUNChhDTvY",
-      "DRPA20GDSgN",
-      "DQwJZ-ZDVWZ",
-      "DQimhLvgpvh",
-      "DPsmPQXAh_J",
-      "DPlc5SXDQ5n",
-      "DPixNBqDapA"
     ],
   },
 };

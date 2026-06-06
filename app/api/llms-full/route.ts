@@ -43,7 +43,7 @@ async function collectMarkdownFiles(dir: string, rel: string[] = []): Promise<{ 
 
 // Build section tree for TOC and content
 async function buildSectionTree() {
-  const root = process.cwd();
+  const root = /*turbopackIgnore: true*/ process.cwd();
   // Docs: group by first and second folder
   const docsFiles = await collectMarkdownFiles(path.join(root, 'content/docs'));
   const modulesFiles = await collectMarkdownFiles(path.join(root, 'content/modules'));
