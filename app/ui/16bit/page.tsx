@@ -8,6 +8,7 @@ import AppSampler from "./components/apps/AppSampler";
 import AppFxRack from "./components/apps/AppFxRack";
 import AppPolysynth from "./components/apps/AppPolysynth";
 import AppElab, { AppElabRef } from "./components/apps/AppElab";
+import AppBass from "./components/apps/AppBass";
 import Image from "next/image";
 
 export interface AppSamplerState {
@@ -33,7 +34,6 @@ const PicoWebSerial = () => {
   const [input, setInput] = useState("");
   const [unsupported, setUnsupported] = useState(false);
   const [selectedApp, setSelectedApp] = useState("");
-  const [switchingApp, setSwitchingApp] = useState(false);
   const [samplerState, setSamplerState] = useState<AppSamplerState>({
     fx1: "noop",
     fx2: "noop",
@@ -111,33 +111,13 @@ const PicoWebSerial = () => {
       if (result === "elab") {
         // No specific state needed for elab app currently
       }
+
+      if (result === "monosynth") {
+        // Monosynth is controlled by hardware CV knobs and the MCC; no serial state to load.
+      }
     } catch (error) {
       setSelectedApp("");
       displayMessage(`Error getting app info: ${error}`, "error");
-    }
-  };
-
-  const handleAppChange = async (appName: string) => {
-    if (!connected || switchingApp || !appName) {
-      return;
-    }
-
-    try {
-      setSwitchingApp(true);
-      setSelectedApp(appName);
-      
-      if (serialManagerRef.current) {
-        await serialManagerRef.current.sendMessage(`set-app ${appName}`);
-      }
-      
-      // Wait a moment for the app to switch, then get the new app info
-      setTimeout(async () => {
-        await getAppInfo();
-        setSwitchingApp(false);
-      }, 1000);
-    } catch (error) {
-      setSwitchingApp(false);
-      console.error("Error switching app:", error);
     }
   };
 
@@ -281,8 +261,6 @@ const PicoWebSerial = () => {
               connectToPico={connectToPico}
               disconnectFromPico={disconnectFromPico}
               selectedApp={selectedApp}
-              switchingApp={switchingApp}
-              onAppChange={handleAppChange}
               unsupported={true}
             />
           </div>
@@ -313,8 +291,6 @@ const PicoWebSerial = () => {
             connectToPico={connectToPico}
             disconnectFromPico={disconnectFromPico}
             selectedApp={selectedApp}
-            switchingApp={switchingApp}
-            onAppChange={handleAppChange}
           />
         </div>
 
@@ -322,7 +298,7 @@ const PicoWebSerial = () => {
         
         {selectedApp === "sampler" && (
           <div className={styles.section}>
-            <h2 className={styles.sectionHeader}>App: Sampler</h2>
+            <h2 className={styles.sectionHeader}>Firmware: Sampler</h2>
             <p className={styles.sectionDescription}>
               A 12-voice sampler that is ideal for drums. It features two groups of samples and three FX slots.
             </p>
@@ -337,7 +313,7 @@ const PicoWebSerial = () => {
 
         {selectedApp === "fxrack" && (
           <div className={styles.section}>
-            <h2 className={styles.sectionHeader}>App: FX Rack</h2>
+            <h2 className={styles.sectionHeader}>Firmware: FX Rack</h2>
             <p className={styles.sectionDescription}>
               A versatile FX rack with pluggable effects.
             </p>
@@ -350,7 +326,7 @@ const PicoWebSerial = () => {
 
         {selectedApp === "polysynth" && (
           <div className={styles.section}>
-            <h2 className={styles.sectionHeader}>App: PolySynth</h2>
+            <h2 className={styles.sectionHeader}>Firmware: PolySynth</h2>
             <p className={styles.sectionDescription}>
               A 9-voice polyphonic synthesizer with a ladder filter.
             </p>
@@ -363,7 +339,7 @@ const PicoWebSerial = () => {
 
         {selectedApp === "elab" && (
           <div className={styles.section}>
-            <h2 className={styles.sectionHeader}>App: Elab</h2>
+            <h2 className={styles.sectionHeader}>Firmware: Elab</h2>
             <p className={styles.sectionDescription}>
               Electronic Lab tool with data capturing and waveform generation.
             </p>
@@ -378,10 +354,20 @@ const PicoWebSerial = () => {
 
         {selectedApp === "noop" && (
           <div className={styles.section}>
-            <h2 className={styles.sectionHeader}>App: Noop</h2>
+            <h2 className={styles.sectionHeader}>Firmware: Noop</h2>
             <p className={styles.sectionDescription}>
               This is just an empty app. It does literally nothing.
             </p>
+          </div>
+        )}
+
+        {selectedApp === "monosynth" && (
+          <div className={styles.section}>
+            <h2 className={styles.sectionHeader}>Firmware: Monosynth</h2>
+            <p className={styles.sectionDescription}>
+              A monophonic Pulsar-23 style bass synth in percussion mode, with a shape-morphing oscillator, WARP drive and resonant low-pass filter.
+            </p>
+            <AppBass />
           </div>
         )}
 

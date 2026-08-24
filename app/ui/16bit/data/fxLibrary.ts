@@ -47,12 +47,12 @@ export const FX_LIBRARY: Record<string, FX> = {
   },
   "rumble": {
     title: "Techno Rumble",
-    knobs: ["Decay", "Color", "Volume", "Drive"],
+    knobs: ["Cutoff", "Decay", "Rumble Vol", "Saturate"],
     knobDescriptions: [
-      "Decay. Controls the feedback of the delay tail.",
-      "Color. Rumble lowpass cutoff. Left is brighter (500Hz), Right is darker (30Hz).",
+      "Rumble low-pass cutoff (100-180 Hz). Left is brighter, right is darker.",
+      "Shapes how fast the burst decays; past 50% it becomes a sine-LFO tremolo.",
       "Rumble volume relative to the dry signal.",
-      "Drive. Adds distortion and bitcrushing (downsampling) for industrial texture."
+      "Bass-shaper saturation. 0 = off; past 50% the Colour wavefold adds crisp upper harmonics."
     ]
   }
 }; 

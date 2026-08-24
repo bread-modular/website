@@ -9,8 +9,6 @@ interface HeaderProps {
   connectToPico: () => Promise<void>;
   disconnectFromPico: () => Promise<void>;
   selectedApp: string;
-  switchingApp: boolean;
-  onAppChange: (appName: string) => void;
   unsupported?: boolean;
 }
 
@@ -19,31 +17,19 @@ const Header: React.FC<HeaderProps> = ({
   connectToPico,
   disconnectFromPico,
   selectedApp,
-  switchingApp,
-  onAppChange,
   unsupported = false,
 }) => {
   const appOptions = [
     { value: "sampler", label: "Sampler" },
     { value: "polysynth", label: "PolySynth" },
+    { value: "monosynth", label: "Monosynth" },
     { value: "fxrack", label: "FX Rack" },
     { value: "elab", label: "Elab" },
     { value: "noop", label: "Noop" }
   ];
 
-  const handleAppChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const appName = e.target.value;
-
-    const confirmed = window.confirm(
-      `Are you sure you want to switch to ${appOptions.find(app => app.value === appName)?.label || appName}?`
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    onAppChange(appName);
-  };
+  const firmwareLabel =
+    appOptions.find((app) => app.value === selectedApp)?.label || selectedApp;
 
   return (
     <>
@@ -53,26 +39,12 @@ const Header: React.FC<HeaderProps> = ({
         <div className={styles.buttonRow}>
           {connected && (
             <div className={styles.appSwitcher}>
-              <label htmlFor="app-select" className={styles.appSwitcherLabel}>
-                Current App:
-              </label>
-              <select
-                id="app-select"
-                value={selectedApp}
-                onChange={handleAppChange}
-                disabled={switchingApp}
-                className={styles.appSelect}
-              >
-                <option value="">Select an app...</option>
-                {appOptions.map((app) => (
-                  <option key={app.value} value={app.value}>
-                    {app.label}
-                  </option>
-                ))}
-              </select>
-              {switchingApp && (
-                <span className={styles.switchingIndicator}>Switching...</span>
-              )}
+              <span className={styles.appSwitcherLabel}>
+                Firmware: {firmwareLabel}
+              </span>
+              <span className={styles.appSwitcherNote}>
+                This firmware runs a single app. To use a different one, flash the matching firmware.
+              </span>
             </div>
           )}
 

@@ -5,6 +5,8 @@ summary: Learn how to update your 16bit firmware to get the latest features and 
 
 Although you can load apps using the web UI, each of these apps is bundled into the firmware. As we release new features and apps, you need to update the firmware. It's very easy:
 
+> The 16bit UI can only configure the app that is built into your firmware. It cannot change the app. For example, to use the Monosynth app instead of the Sampler, you need to upload the firmware compiled with the Monosynth app.
+
 1. Plug your 16bit into a computer using the USB-C cable.
 2. Visit the 16bit UI. If there's an update, you will see a banner on top of the screen. If so, click it and download the firmware.
 3. Additionally, you can directly [visit here](/modules/16bit#firmware) and download the latest firmware.
