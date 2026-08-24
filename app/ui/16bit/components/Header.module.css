@@ -358,4 +358,12 @@
   padding: 4px 8px;
   background: #fef3c7;
   border-radius: 4px;
+}
+
+.appSwitcherNote {
+  flex-basis: 100%;
+  font-size: 0.75rem;
+  color: var(--neutral-500, #6b7280);
+  font-style: italic;
+  margin-top: 4px;
 } 
