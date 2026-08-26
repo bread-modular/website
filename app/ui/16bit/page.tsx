@@ -8,7 +8,7 @@ import AppSampler from "./components/apps/AppSampler";
 import AppFxRack from "./components/apps/AppFxRack";
 import AppPolysynth from "./components/apps/AppPolysynth";
 import AppElab, { AppElabRef } from "./components/apps/AppElab";
-import AppBass from "./components/apps/AppBass";
+import AppMonosynth from "./components/apps/AppMonosynth";
 import Image from "next/image";
 
 export interface AppSamplerState {
@@ -365,9 +365,9 @@ const PicoWebSerial = () => {
           <div className={styles.section}>
             <h2 className={styles.sectionHeader}>Firmware: Monosynth</h2>
             <p className={styles.sectionDescription}>
-              A monophonic Pulsar-23 style bass synth in percussion mode, with a shape-morphing oscillator, WARP drive and resonant low-pass filter.
+              A monophonic Pulsar-23 style bass synth in percussion mode, with a shape-morphing oscillator, WARP drive and resonant low-pass filter. It also features a hardware motion recorder that captures knob and CV movements into a four-bar loop.
             </p>
-            <AppBass />
+            <AppMonosynth />
           </div>
         )}
 

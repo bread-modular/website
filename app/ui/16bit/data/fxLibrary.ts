@@ -17,12 +17,12 @@ export const FX_LIBRARY: Record<string, FX> = {
   },
   "delay": {
     title: "Delay",
-    knobs: ["Beats", "Feedback", "Wet/Dry", "Lowpass Cutoff"],
+    knobs: ["Beats", "Feedback", "Wet/Dry", "Highpass Cutoff"],
     knobDescriptions: [
       "Delay beats from 0 to 1/2 beats (requires MIDI clock in the MIDI transport).",
       "Feedback of the delay from 0 to 100%.",
       "Wet/dry mix. 0 is dry and 100% is wet.",
-      "Lowpass cutoff. 0 is no lowpass filtering and 100% is full filtering."
+      "Highpass cutoff that shapes the delay's repeats by removing lows. 0 disables filtering entirely; increasing sweeps the highpass upward (100 Hz–20 kHz), thinning and brightening the repeats."
     ]
   },
   "metalverb": {
