@@ -366,3 +366,49 @@
 
 
 
+
+/* Video, figure & column styles */
+.video {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+  background: #000;
+}
+
+.figure {
+  margin: 1.5rem 0;
+}
+
+.figure img,
+.figure .video {
+  margin: 0;
+}
+
+.figure figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--neutral-600);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+  margin: 1.5rem 0;
+}
+
+.columns > *,
+.columns img,
+.columns .video {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+}

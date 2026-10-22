@@ -1,0 +1,328 @@
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 32px;
+  align-self: flex-start;
+  max-height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--neutral-200);
+  background: var(--background);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.header,
+.progress,
+.action,
+.mobileToggle {
+  flex-shrink: 0;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #737373;
+}
+
+.title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--foreground);
+  transition: color 0.2s ease;
+}
+
+.title:hover {
+  color: var(--neutral-600);
+}
+
+/* With a progress bar, the divider moves below it */
+.stepsVariant .header {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.progressTrack {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--neutral-200);
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--foreground);
+  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.progressText {
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: #737373;
+}
+
+.action {
+  margin-top: 16px;
+}
+
+.mobileToggle {
+  display: none;
+}
+
+.nav {
+  /* Only the list scrolls; the header stays in place */
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin: 16px -8px 0;
+  padding: 0 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #d4d4d4 transparent;
+}
+
+.section + .section {
+  margin-top: 20px;
+}
+
+.sectionTitle {
+  margin: 0 0 6px;
+  padding: 0 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #737373;
+  transition: color 0.2s ease;
+}
+
+.currentSectionTitle {
+  color: var(--foreground);
+}
+
+.items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  position: relative;
+}
+
+/* Connector line between markers */
+.item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 21px;
+  top: 34px;
+  bottom: -6px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--neutral-200);
+  transition: background-color 0.35s ease;
+}
+
+.itemLink {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--neutral-600);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.itemLink:hover {
+  background: #f5f5f5;
+  color: var(--foreground);
+}
+
+.marker {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #d4d4d4;
+  background: var(--background);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #737373;
+  transition: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease,
+    box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.itemTitle {
+  padding-top: 2px;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.done .marker {
+  background: var(--foreground);
+  border-color: var(--foreground);
+  color: var(--background);
+}
+
+.done .itemLink {
+  color: var(--foreground);
+}
+
+.done::after {
+  background: var(--foreground);
+}
+
+.current .marker {
+  border-color: var(--foreground);
+  color: var(--foreground);
+  box-shadow: 0 0 0 4px var(--neutral-200);
+}
+
+.current .itemLink {
+  background: #f5f5f5;
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+/* List variant: compact rows with small dots on the rail instead of numbers */
+.sidebar:not(.stepsVariant) .itemLink {
+  padding: 6px 10px;
+}
+
+.sidebar:not(.stepsVariant) .item:not(:last-child)::after {
+  top: 22px;
+  bottom: -9px;
+  left: 18px;
+}
+
+.sidebar:not(.stepsVariant) .marker {
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: transparent;
+  position: relative;
+}
+
+.sidebar:not(.stepsVariant) .marker::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d4d4d4;
+  transition: background-color 0.35s ease, transform 0.35s ease;
+}
+
+.sidebar:not(.stepsVariant) .current .marker {
+  box-shadow: none;
+}
+
+.sidebar:not(.stepsVariant) .current .marker::before {
+  background: var(--foreground);
+  transform: scale(1.4);
+  box-shadow: 0 0 0 3px var(--neutral-200);
+}
+
+.sidebar:not(.stepsVariant) .itemTitle {
+  padding-top: 0;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    position: relative;
+    top: 0;
+    max-height: none;
+    box-shadow: none;
+  }
+
+  .header,
+  .progress {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .mobileToggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--neutral-200);
+    border-radius: 8px;
+    background: #f5f5f5;
+    color: var(--foreground);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .mobileToggleTitle {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .chevron {
+    font-size: 0.7rem;
+    color: #737373;
+    transition: transform 0.2s ease;
+  }
+
+  .chevronUp {
+    transform: rotate(180deg);
+  }
+
+  .nav {
+    display: none;
+    margin-top: 12px;
+    overflow: visible;
+  }
+
+  .nav.expanded {
+    display: block;
+    animation: navIn 0.25s ease;
+  }
+}
+
+@keyframes navIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

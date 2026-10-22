@@ -1,10 +1,8 @@
 import { notFound } from 'next/navigation';
-import Layout from '@/app/components/Layout';
 import MarkdownContent from '@/app/components/media/MarkdownContent';
 import { getDoc, getDocCategories, extractFirstImageFromHtml } from '@/lib/docs';
 import { getAllModulesMetadata } from '@/lib/modules';
 import styles from './page.module.css';
-import DocsSidebarNav from '@/app/components/DocsSidebarNav';
 import DocsMobileNav from '@/app/components/DocsMobileNav';
 import { Metadata } from 'next';
 
@@ -13,6 +11,14 @@ interface Props {
     category: string;
     slug: string;
   }>;
+}
+
+// Prerender every doc so pages load (and prefetch) instantly
+export async function generateStaticParams() {
+  const categories = await getDocCategories();
+  return categories.flatMap(category =>
+    category.docs.map(doc => ({ category: category.slug, slug: doc.slug }))
+  );
 }
 
 // Add generateMetadata function for dynamic metadata
@@ -63,17 +69,12 @@ export default async function DocPage({ params }: Props) {
   }
 
   return (
-    <Layout>
-      <div className={styles.container}>
-        <DocsSidebarNav categories={categories} currentDoc={doc} />
-        <main className={styles.content}>
-          <h1>{doc.title}</h1>
-          <div className={styles.markdownWrapper}>
-            <MarkdownContent content={doc.contentHtml} moduleMetadataList={moduleMetadataList} />
-          </div>
-          <DocsMobileNav categories={categories} currentDoc={doc} />
-        </main>
+    <article>
+      <h1 className={styles.title}>{doc.title}</h1>
+      <div className={styles.markdownWrapper}>
+        <MarkdownContent content={doc.contentHtml} moduleMetadataList={moduleMetadataList} />
       </div>
-    </Layout>
+      <DocsMobileNav categories={categories} currentDoc={doc} />
+    </article>
   );
-} 
+}

@@ -1,0 +1,14 @@
+.title {
+  font-size: 2.5rem;
+  font-weight: 500;
+  margin-bottom: 24px;
+  background: linear-gradient(90deg, var(--foreground) 0%, var(--neutral-600) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.markdownWrapper {
+  max-width: 800px;
+  line-height: 1.7;
+}
