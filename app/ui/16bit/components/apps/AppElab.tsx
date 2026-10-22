@@ -1,5 +1,5 @@
 "use client";
-import React, { forwardRef, useImperativeHandle, useState, useRef } from "react";
+import React, { forwardRef, useImperativeHandle, useState, useRef, useCallback } from "react";
 import styles from "./AppElab.module.css";
 import common from "./AppCommon.module.css";
 import Oscilloscope from "../common/Oscilloscope";
@@ -14,43 +14,30 @@ export interface AppElabRef {
   onBinaryData: (data: Uint8Array) => void;
 }
 
-interface VoltageStats {
-  current: number;
-  average: number;
-  min: number;
-  max: number;
-  samples: number;
-}
-
 const AppElab = forwardRef<AppElabRef, AppElabProps>(({
   isListeningForBinary,
   onBinaryListeningToggle,
   sampleIntervalMs = 1,
 }, ref) => {
-  const [voltageStats, setVoltageStats] = useState<VoltageStats>({
-    current: 0,
-    average: 0,
-    min: 3.3,
-    max: 0,
-    samples: 0
-  });
-
   // Store voltage data in state so React can detect changes for the oscilloscope
-  const [voltageData, setVoltageData] = useState<number[]>([]);
+  const [voltageData, setVoltageData] = useState<{ samples: number[]; total: number }>({ samples: [], total: 0 });
   const voltageDataRef = useRef<number[]>([]);
+  const totalSamplesRef = useRef<number>(0);
   const maxBufferSize = Math.floor(10000 / sampleIntervalMs); // 10 seconds worth of samples
-  const lastStatsUpdate = useRef<number>(0);
   const lastOscilloscopeUpdate = useRef<number>(0);
+  const [scopeFullscreen, setScopeFullscreen] = useState(false);
+  const toggleScopeFullscreen = useCallback(() => setScopeFullscreen((f) => !f), []);
 
   const convertToVoltage = (byteValue: number): number => {
     return (byteValue / 255) * 3.3;
   };
 
-  const updateVoltageStats = (newVoltages: number[]) => {
+  const appendVoltages = (newVoltages: number[]) => {
     if (newVoltages.length === 0) return;
 
     // Update ref immediately
     voltageDataRef.current.push(...newVoltages);
+    totalSamplesRef.current += newVoltages.length;
     
     // Keep only last 10 seconds of data
     if (voltageDataRef.current.length > maxBufferSize) {
@@ -62,33 +49,7 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
     // Update oscilloscope more frequently but still throttled (every 50ms for smooth animation)
     if (now - lastOscilloscopeUpdate.current > 50) {
       lastOscilloscopeUpdate.current = now;
-      setVoltageData([...voltageDataRef.current]);
-    }
-
-    // Throttle stats updates to avoid infinite loops (update max once every 100ms)
-    if (now - lastStatsUpdate.current > 100) {
-      lastStatsUpdate.current = now;
-      
-      const trimmedData = voltageDataRef.current;
-      const currentVoltage = newVoltages[newVoltages.length - 1];
-      
-      // Calculate 1-second average
-      const oneSecondSamples = Math.floor(1000 / sampleIntervalMs);
-      const recentSamples = trimmedData.slice(-oneSecondSamples);
-      const average = recentSamples.length > 0 
-        ? recentSamples.reduce((sum: number, v: number) => sum + v, 0) / recentSamples.length 
-        : currentVoltage;
-      
-      const min = trimmedData.length > 0 ? Math.min(...trimmedData) : currentVoltage;
-      const max = trimmedData.length > 0 ? Math.max(...trimmedData) : currentVoltage;
-
-      setVoltageStats({
-        current: currentVoltage,
-        average: average,
-        min: min,
-        max: max,
-        samples: trimmedData.length
-      });
+      setVoltageData({ samples: [...voltageDataRef.current], total: totalSamplesRef.current });
     }
   };
 
@@ -96,7 +57,7 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
     onBinaryData: (data: Uint8Array) => {      
       // Convert byte data to voltage values
       const voltages = Array.from(data).map(convertToVoltage);
-      updateVoltageStats(voltages);
+      appendVoltages(voltages);
     }
   }));
 
@@ -124,51 +85,24 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
       </div>
 
       <div className={common.appSection}>
-        <h2 className={common.appSubTitle}>Voltmeter</h2>
-        
-        <div className={styles.voltmeter}>
-          <div className={styles.voltageDisplay}>
-            <div className={styles.voltageItem}>
-              <label className={styles.voltageLabel}>Current</label>
-              <span className={styles.voltageValue}>
-                {voltageStats.current.toFixed(3)}V
-              </span>
-            </div>
-            
-            <div className={styles.voltageItem}>
-              <label className={styles.voltageLabel}>Average (1s)</label>
-              <span className={styles.voltageValue}>
-                {voltageStats.average.toFixed(3)}V
-              </span>
-            </div>
-            
-            <div className={styles.voltageItem}>
-              <label className={styles.voltageLabel}>Minimum</label>
-              <span className={styles.voltageValue}>
-                {voltageStats.min.toFixed(3)}V
-              </span>
-            </div>
-            
-            <div className={styles.voltageItem}>
-              <label className={styles.voltageLabel}>Maximum</label>
-              <span className={styles.voltageValue}>
-                {voltageStats.max.toFixed(3)}V
-              </span>
-            </div>
-          </div>
-          
+        <div className={styles.titleRow}>
+          <h2 className={common.appSubTitle}>Oscilloscope</h2>
+          <button
+            className={`${styles.fullscreenToggle} ${scopeFullscreen ? styles.fullscreenToggleOn : ''}`}
+            onClick={toggleScopeFullscreen}
+          >
+            {scopeFullscreen ? '✕ Exit Fullscreen' : '⛶ Fullscreen'}
+          </button>
         </div>
-      </div>
-
-      <div className={common.appSection}>
-        <h2 className={common.appSubTitle}>Oscilloscope</h2>        
         <Oscilloscope 
-          data={voltageData}
+          data={voltageData.samples}
+          totalSamples={voltageData.total}
           maxVoltage={3.3}
-          maxDisplayPoints={10000}
           sampleIntervalMs={sampleIntervalMs}
-          height={300}
-          showZoomControls={true}
+          height={340}
+          fullscreen={scopeFullscreen}
+          onToggleFullscreen={toggleScopeFullscreen}
+          title="Oscilloscope"
         />
       </div>
 

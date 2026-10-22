@@ -123,48 +123,6 @@
   transform: translateY(-1px);
 }
 
-/* Voltmeter styles */
-.voltmeter {
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1.5rem;
-  background: #f9f9f9;
-}
-
-.voltageDisplay {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.voltageItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;
-  background: white;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.voltageLabel {
-  font-size: 12px;
-  font-weight: 600;
-  color: #666;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 0.5rem;
-}
-
-.voltageValue {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #2c3e50;
-  font-family: 'Courier New', Courier, monospace;
-}
-
 .sampleCount {
   font-weight: 600;
 }
@@ -182,4 +140,33 @@
 .sampleRate {
   font-weight: bold;
   color: #00ff00;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.fullscreenToggle {
+  padding: 6px 12px;
+  border: 1px solid #c8c8c8;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.fullscreenToggle:hover {
+  background: #f0f0f0;
+}
+
+.fullscreenToggleOn {
+  background: #2f78d1;
+  border-color: #2f78d1;
+  color: #fff;
 }
