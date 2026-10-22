@@ -31,7 +31,13 @@
 
 .nav ul {
   display: flex;
-  gap: 32px;
+  gap: 20px;
+}
+
+@media (min-width: 640px) {
+  .nav ul {
+    gap: 32px;
+  }
 }
 
 .nav a:hover {

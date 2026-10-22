@@ -95,6 +95,22 @@ function processImagesWithMaxWidth(html: string): string {
   });
 }
 
+// Function to process [video URL /] and [columns]...[/columns] shortcodes and image/video captions
+function processMediaBlocks(html: string): string {
+  return html
+    // [video /path/to/video.mp4 /]
+    .replace(/<p>\[video\s+(\S+?)\s*\/?\]<\/p>/g, (match, src) => {
+      return `<p><video class="${styles.video}" src="${src}" controls playsinline muted loop preload="metadata"></video></p>`;
+    })
+    // An image or video followed by a paragraph made only of italic text becomes a captioned figure
+    .replace(
+      /<p>(<img[^>]*>|<video[^>]*><\/video>)<\/p>\s*<p>(<em>(?:(?!<\/p>)[\s\S])*<\/em>)<\/p>/g,
+      (match, media, caption) => `<figure class="${styles.figure}">${media}<figcaption>${caption}</figcaption></figure>`
+    )
+    .replace(/<p>\[columns\]<\/p>/g, `<div class="${styles.columns}">`)
+    .replace(/<p>\[\/columns\]<\/p>/g, '</div>');
+}
+
 // Function to render input/output sections
 function renderIOSection(inputs?: ModuleIO[], outputs?: ModuleIO[]): string {
   if (!inputs || !outputs || (inputs.length === 0 && outputs.length === 0)) {
@@ -400,6 +416,7 @@ export default function MarkdownContent({ content, inputs, outputs, moduleMetada
             // Regular HTML content
             let processedPart = addHeadingIds(part);
             processedPart = processImagesWithMaxWidth(processedPart);
+            processedPart = processMediaBlocks(processedPart);
             processedPart = enhanceCodeBlocks(processedPart);
             return <div key={index} dangerouslySetInnerHTML={{ __html: processedPart }} />;
           }
