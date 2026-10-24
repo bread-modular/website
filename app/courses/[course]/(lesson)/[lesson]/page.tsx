@@ -68,7 +68,6 @@ export default async function LessonPage({ params }: Props) {
     <article>
       <p className={styles.lessonLabel}>Lesson {index + 1} of {course.lessons.length}</p>
       <h1 className={styles.title}>{lesson.title}</h1>
-      <p className={styles.summary}>{lesson.summary}</p>
       <div className={styles.markdownWrapper}>
         <MarkdownContent content={lesson.contentHtml} />
       </div>

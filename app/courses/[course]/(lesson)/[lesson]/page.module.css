@@ -10,14 +10,7 @@
 .title {
   font-size: 2.5rem;
   font-weight: 500;
-  margin-bottom: 12px;
-}
-
-.summary {
-  font-size: 1.2rem;
-  color: var(--neutral-600);
-  line-height: 1.5;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .markdownWrapper {
