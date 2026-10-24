@@ -33,9 +33,9 @@ The 16bit has a basic oscilloscope which can be accessed using a web UI. Here's 
 - Visit the [16bit UI](/ui/16bit)
 - Click the connect button & select **16bit** from the list of devices
 - Click the "Start Capturing" button
-- Now connect 16bit input A1 → 16bit output A2
+- Now connect 16bit input A1 → 16bit output A1
 
-Then you will be able to inspect the super-saw waveform on the screen.
+Then you will be able to inspect the sawtooth waveform of the A1 output on the screen.
 
 ![16bit oscilloscope](/images/courses/audio-electronics/part1-03.png)
 
