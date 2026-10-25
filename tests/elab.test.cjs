@@ -382,12 +382,16 @@ test('legacy scope UI has labeled A1 only and no phantom A2 source/visibility co
   assert.match(app, /Start Capturing/);
   assert.doesNotMatch(app, /Show A2|Measurement source|Trigger source/);
 });
-test('modern scope UI exposes distinct-color A1/A2 labels, visibility and independent trigger/measurement sources', () => {
+test('modern scope UI exposes distinct-color A1/A2 labels, visibility, color pickers, trigger source and per-channel readouts', () => {
   const markup = renderToStaticMarkup(React.createElement(Oscilloscope, { data: [0, 3.3], secondaryData: [3.3, 0], channelLabels: ['A1', 'A2'], sampleIntervalMs: 0.1 }));
   assert.match(markup, /A1 and A2, time-aligned/);
-  for (const control of ['Show A1', 'Show A2', 'Trigger source', 'Measurement source']) assert.ok(markup.includes(control));
+  for (const control of ['Show A1', 'Show A2', 'Trigger source', 'A1 color', 'A2 color']) assert.ok(markup.includes(control));
+  assert.doesNotMatch(markup, /Measurement source|Measure \/ X cursors|orange marker/);
+  assert.equal(markup.match(/Vpp/g).length, 2);
   assert.match(markup, /#ffd23f/); assert.match(markup, /#7ea6ff/);
   assert.match(markup, /A1 ON/); assert.match(markup, /A2 ON/);
+
+  assert.match(markup, /aria-expanded="false"/); assert.match(markup, /panel panelHidden/); assert.match(markup, /CONTROLS/);
 });
 test('existing scope callers retain default channel name, timebase, height and fullscreen API', () => {
   const markup = renderToStaticMarkup(React.createElement(Oscilloscope, { data: [] }));
@@ -395,6 +399,7 @@ test('existing scope callers retain default channel name, timebase, height and f
   assert.match(markup, /10ms/); assert.match(markup, /height:340px/);
   const fullscreen = renderToStaticMarkup(React.createElement(Oscilloscope, { data: [], fullscreen: true, onToggleFullscreen: () => {}, title: 'Custom Scope' }));
   assert.match(fullscreen, /Custom Scope/); assert.match(fullscreen, /Exit fullscreen \(Esc\)/);
+  assert.match(fullscreen, /aria-expanded="true"/); assert.doesNotMatch(fullscreen, /panelHidden/); assert.match(fullscreen, /Hide controls/);
 });
 
 
