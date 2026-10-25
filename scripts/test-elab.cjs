@@ -25,10 +25,11 @@ try {
       mkdirSync(dirname(dest), { recursive: true });
       copyFileSync(css, dest);
     }
-    const tests = spawnSync(process.execPath, ['--test', 'tests/elab.test.cjs'], {
+    const tests = spawnSync(process.execPath, ['--test', 'tests/elab.test.cjs', 'tests/elab-runner.test.cjs'], {
       stdio: 'inherit', env: { ...process.env, ELAB_TEST_BUILD_DIR: buildDir, NODE_PATH: resolve('node_modules') },
     });
-    process.exitCode = tests.status || 0;
+    // A signal or failed spawn has no numeric exit status: never report it as success.
+    process.exitCode = tests.status ?? 1;
   }
 } finally {
   rmSync(buildDir, { recursive: true, force: true });
