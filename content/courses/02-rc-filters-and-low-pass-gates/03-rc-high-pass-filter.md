@@ -14,25 +14,22 @@ We don't use a high pass filter in the LOW module. But it shows up in almost eve
 - The cutoff frequency formula is exactly the same: `fc = 1 / (2 × π × R × C)`
 - With 10k and 100nF, it's about 160Hz.
 
-![RC high pass filter on the breadboard](/images/courses/rc-filters/photo-rc-high-pass.jpg)
+Build it on the breadboard the same way as the low pass filter, just with the resistor and the capacitor swapped. The capacitor sits in the audio path, and the resistor goes to the 1.65V rail.
 
-*The capacitor sits in the audio path. The resistor goes to the 1.65V rail.*
+Connect the scope just like in the previous lesson:
 
-[columns]
+- The audio input goes to the 16bit's A2 input (blue).
+- The filter output goes to the 16bit's A1 input through the buffered oscilloscope probe (yellow).
 
-![Input sawtooth](/images/courses/rc-filters/scope-hpf-input.png)
+![Input and high pass output](/images/courses/rc-filters/scope-hpf-10k-100n.png)
 
-*The input (sawtooth)*
+*Blue: the input sawtooth (about 81Hz). Yellow: the output with 10k and 100nF.*
 
-![High pass output](/images/courses/rc-filters/scope-hpf-10k-100n.png)
-
-*The output with 10k and 100nF*
-
-[/columns]
+Our sawtooth is below the cutoff frequency, so the slow ramp mostly gets removed. Only the sharp edge passes through as a spike, and the output quickly settles back to 1.65V.
 
 > 👂 Listen to it. It's thinner. You lose the body of the sound, but the buzz stays.
 
-> 🛠 Now use a 10nF capacitor (fc ≈ 1.6kHz). The sawtooth turns into a series of spikes and sounds very thin.
+> 🛠 Now use a 10nF capacitor (fc ≈ 1.6kHz). The spikes get even narrower and it sounds very thin.
 
 ![High pass output with 10nF](/images/courses/rc-filters/scope-hpf-10k-10n.png)
 
@@ -40,11 +37,11 @@ We don't use a high pass filter in the LOW module. But it shows up in almost eve
 
 ## 2. Why the Resistor Goes to 1.65V
 
-Now, connect the resistor to 0V instead of the 1.65V rail and check the output.
+Now, go back to the 100nF capacitor, connect the resistor to 0V instead of the 1.65V rail, and check the output.
 
 ![High pass with the resistor at 0V](/images/courses/rc-filters/scope-hpf-gnd-ref.png)
 
-*The waveform now wiggles around 0V. The bottom half is cut off.*
+*The output now sits near 0V. The spikes go below 0V, so they get cut off.*
 
 A capacitor blocks DC (any voltage that doesn't change). It only lets the changes through. So the output has no idea where the original midpoint was. The resistor decides it:
 
