@@ -13,9 +13,10 @@ Let's try the obvious way first. Just connect two RC filters back to back:
 
 ![Two cascaded RC low pass filters](/images/courses/rc-filters/sch-rc-cascade-unbuffered.png)
 
-![Unbuffered cascade on the breadboard](/images/courses/rc-filters/photo-cascade-unbuffered.jpg)
+We use 10k and 100nF for both stages (fc ≈ 160Hz), so the effect is easy to see on the scope. Connect the scope just like in the previous lessons:
 
-*The orange wire is the probe. Measure at the middle node (C1) and at the output (C2).*
+- The audio input goes to the 16bit's A2 input (blue).
+- The probe goes to the 16bit's A1 input through the buffered oscilloscope probe (yellow).
 
 Now probe the middle point (C1) with and without the second stage connected.
 
@@ -23,17 +24,17 @@ Now probe the middle point (C1) with and without the second stage connected.
 
 ![Middle node without the second stage](/images/courses/rc-filters/scope-cascade-mid-alone.png)
 
-*C1 without the second stage*
+*C1 without the second stage (Vpp ≈ 1.13V)*
 
 ![Middle node with the second stage](/images/courses/rc-filters/scope-cascade-mid-loaded.png)
 
-*C1 with the second stage connected*
+*C1 with the second stage connected (Vpp ≈ 0.82V)*
 
 [/columns]
 
-The first stage changes as soon as we connect the second one. It's the same loading effect we saw with voltage dividers. The second stage draws current from the first stage's capacitor, so the first filter is no longer a 1.6kHz filter.
+The first stage changes as soon as we connect the second one. It's the same loading effect we saw with voltage dividers. The second stage draws current from the first stage's capacitor, so the first filter is no longer a 160Hz filter. It filters more than it should, and the signal gets smaller.
 
-> 💡 You can fix this with the 10X rule. Make the second stage's R 10X bigger and C 10X smaller (100k and 1nF). The cutoff frequency stays the same (~1.6kHz), but the second stage now loads the first stage 10X less.
+> 💡 You can fix this with the 10X rule. Make the second stage's R 10X bigger and C 10X smaller (100k and 10nF). The cutoff frequency stays the same (~160Hz), but the second stage now loads the first stage 10X less.
 >
 > This trick was used a lot in old designs. But we have a better tool now.
 
@@ -49,19 +50,15 @@ Put a buffer after each stage:
 
 Now both stages are exactly the same and work independently. No calculations needed.
 
-![Buffered cascade on the breadboard](/images/courses/rc-filters/photo-cascade-buffered.jpg)
-
-*Both buffers come from the opamp breakout. Don't forget to connect V+ and V-.*
-
 [columns]
 
 ![Output of one stage](/images/courses/rc-filters/scope-cascade-one-stage.png)
 
-*After the first stage (6dB/octave)*
+*After the first stage (6dB/octave). Same as C1 without the second stage.*
 
 ![Output of two stages](/images/courses/rc-filters/scope-cascade-two-stages.png)
 
-*After the second stage (12dB/octave)*
+*After the second stage (12dB/octave). The sharp corners are rounded off.*
 
 [/columns]
 
