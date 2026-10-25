@@ -414,3 +414,29 @@
     grid-template-columns: 1fr;
   }
 }
+
+.traceLabel {
+  font-weight: 700;
+}
+
+.channelKey {
+  border-bottom: 2px solid currentColor;
+}
+
+.sourceLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 10px;
+  color: #b5c4cf;
+}
+
+.sourceLabel select {
+  padding: 4px 6px;
+  border: 1px solid #59616a;
+  border-radius: 4px;
+  background: #20272b;
+  color: #e8f5ee;
+  font: inherit;
+}

@@ -1,9 +1,15 @@
 "use client";
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import styles from "./Oscilloscope.module.css";
+import { buildScopeCapture, freezeScopeFrame, type ScopeFrame as Frame, type FrozenScopeFrame as Frozen, type TriggerMode, type TriggerEdge, type ScopeStatus as Status } from "./scope-capture";
 
 export interface OscilloscopeProps {
   data: number[];
+  // Optional synchronized second channel. Same sample count/origin as data.
+  secondaryData?: number[];
+  channelLabels?: readonly [string, string];
+  // Reset acquisition state without discarding timebase/cursor/channel controls.
+  captureKey?: number;
   // Total number of samples received so far (used to tell new triggers apart from old ones)
   totalSamples?: number;
   maxVoltage?: number;
@@ -16,22 +22,7 @@ export interface OscilloscopeProps {
   title?: string;
 }
 
-type TriggerMode = 'off' | 'auto' | 'normal';
-type TriggerEdge = 'rising' | 'falling';
-type Status = 'RUN' | "TRIG'D" | 'AUTO' | 'WAIT' | 'STOP';
 type DragKind = 'level' | 'pan' | 'x0' | 'x1' | 'y0' | 'y1';
-
-interface Frame {
-  buf: number[];
-  start: number;      // index in buf of the left edge of the screen
-  trigIndex: number;  // index in buf of the trigger point (-1 if none)
-}
-
-interface Frozen {
-  buf: number[];
-  anchor: number;     // index in buf placed at the trigger position on screen
-  trigIndex: number;
-}
 
 interface Measurements {
   vmax: number;
@@ -45,9 +36,10 @@ const V_DIVS = 8;
 const TIME_DIVS_MS = [0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
 const VOLT_DIVS = [0.05, 0.1, 0.2, 0.5, 1];
 const HYSTERESIS = 0.04;
-const AUTO_TIMEOUT_MS = 200;
 
 const TRACE_COLOR = '#ffd23f';
+const SECONDARY_COLOR = '#7ea6ff';
+const DEFAULT_CHANNEL_LABELS = ['CH1', 'CH2'] as const;
 const TRIG_COLOR = '#ff8a3d';
 const GRID_COLOR = 'rgba(160, 200, 180, 0.06)';
 const AXIS_COLOR = 'rgba(160, 200, 180, 0.11)';
@@ -65,22 +57,6 @@ const formatTime = (ms: number) => {
 const formatVolt = (v: number) => Math.abs(v) < 1 ? `${(v * 1000).toFixed(0)}mV` : `${v.toFixed(2)}V`;
 
 const formatFreq = (hz: number) => hz >= 1000 ? `${(hz / 1000).toFixed(2)}kHz` : `${hz.toFixed(hz < 10 ? 2 : 1)}Hz`;
-
-// Find the most recent edge crossing the level (with hysteresis) in buf[from..to].
-function findTrigger(buf: number[], level: number, edge: TriggerEdge, from: number, to: number): number {
-  const s = edge === 'rising' ? 1 : -1;
-  const lvl = level * s;
-  let candidate = -1;
-  for (let j = Math.min(to, buf.length - 1); j >= Math.max(from, 1); j--) {
-    const v = buf[j] * s;
-    if (candidate !== -1) {
-      if (v <= lvl - HYSTERESIS) return candidate;
-      if (v >= lvl) candidate = -1;
-    }
-    if (candidate === -1 && v >= lvl && buf[j - 1] * s < lvl) candidate = j;
-  }
-  return -1;
-}
 
 function measure(buf: number[], start: number, count: number, sampleIntervalMs: number): Measurements | null {
   const from = Math.max(0, start);
@@ -119,6 +95,9 @@ function measure(buf: number[], start: number, count: number, sampleIntervalMs: 
 
 const Oscilloscope: React.FC<OscilloscopeProps> = ({
   data,
+  secondaryData,
+  channelLabels = DEFAULT_CHANNEL_LABELS,
+  captureKey = 0,
   totalSamples,
   maxVoltage = 3.3,
   sampleIntervalMs = 1,
@@ -133,6 +112,9 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
   const [timeDivIndex, setTimeDivIndex] = useState(TIME_DIVS_MS.indexOf(10));
   const [voltDivIndex, setVoltDivIndex] = useState(VOLT_DIVS.indexOf(0.5));
   const [vCenter, setVCenter] = useState(2); // voltage at the vertical center of the screen
+  const [channelVisible, setChannelVisible] = useState<[boolean, boolean]>([true, true]);
+  const [triggerSource, setTriggerSource] = useState<0 | 1>(0);
+  const [measurementSource, setMeasurementSource] = useState<0 | 1>(0);
   const [trigMode, setTrigMode] = useState<TriggerMode>('auto');
   const [trigEdge, setTrigEdge] = useState<TriggerEdge>('rising');
   const [trigLevel, setTrigLevel] = useState(triggerVoltage);
@@ -147,6 +129,7 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
   const [yCursors, setYCursors] = useState<[number, number]>([1, 2.3]);   // volts
 
   const frameRef = useRef<Frame | null>(null);
+  const lastCaptureKeyRef = useRef(captureKey);
   const lastTrigFrameRef = useRef<Frame | null>(null);
   const hoverRef = useRef<{ x: number; y: number } | null>(null);
   const dragRef = useRef<{ kind: DragKind; lastX: number } | null>(null);
@@ -163,6 +146,9 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
   const vMin = vCenter - (voltDiv * V_DIVS) / 2;
   const vMax = vCenter + (voltDiv * V_DIVS) / 2;
   const total = totalSamples ?? data.length;
+  const dual = secondaryData !== undefined;
+  const activeTriggerSource = dual ? triggerSource : 0;
+  const activeMeasurementSource = dual ? measurementSource : 0;
 
   // Screen fraction of the trigger point, used as t = 0 for time readouts
   const trigFrac = (frame: Frame | null) =>
@@ -171,7 +157,8 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
   const sampleAt = (f: number, frame: Frame | null) => {
     if (!frame) return null;
     const idx = frame.start + Math.round(f * windowSamples);
-    return idx >= 0 && idx < frame.buf.length ? frame.buf[idx] : null;
+    const buf = activeMeasurementSource === 1 ? frame.secondary : frame.buf;
+    return buf && idx >= 0 && idx < buf.length ? buf[idx] : null;
   };
 
   const draw = useCallback(() => {
@@ -212,53 +199,58 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
     const frame = frameRef.current;
 
     // Waveform
-    if (frame && frame.buf.length > 1) {
-      const { buf, start } = frame;
-      const samplesPerPx = windowSamples / w;
+    if (frame) {
+      const { start } = frame;
+      const traces = [frame.buf, dual ? frame.secondary : undefined];
+      traces.forEach((buf, channel) => {
+        if (!buf || buf.length < 2 || !channelVisible[channel]) return;
+        const color = channel === 0 ? TRACE_COLOR : SECONDARY_COLOR;
+        const samplesPerPx = windowSamples / w;
 
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(0, 0, w, h);
-      ctx.clip();
-      ctx.strokeStyle = TRACE_COLOR;
-      ctx.fillStyle = TRACE_COLOR;
-      ctx.lineWidth = 1.5;
-      ctx.lineJoin = 'round';
-      ctx.shadowColor = TRACE_COLOR;
-      ctx.shadowBlur = 6;
-      ctx.beginPath();
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, 0, w, h);
+        ctx.clip();
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.lineJoin = 'round';
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
 
-      if (samplesPerPx <= 1) {
-        // Fewer samples than pixels: connect the dots
-        let started = false;
-        for (let i = 0; i <= windowSamples; i++) {
-          const idx = start + i;
-          if (idx < 0 || idx >= buf.length) continue;
-          const x = (i / windowSamples) * w;
-          const y = voltToY(buf[idx]);
-          if (!started) { ctx.moveTo(x, y); started = true; } else ctx.lineTo(x, y);
-        }
-      } else {
-        // More samples than pixels: draw a min/max envelope per pixel column
-        let started = false;
-        for (let px = 0; px < w; px++) {
-          const a = Math.max(0, Math.floor(start + px * samplesPerPx));
-          const b = Math.min(buf.length, Math.floor(start + (px + 1) * samplesPerPx));
-          if (b <= a) continue;
-          let lo = Infinity, hi = -Infinity;
-          for (let i = a; i < b; i++) {
-            const v = buf[i];
-            if (v < lo) lo = v;
-            if (v > hi) hi = v;
+        if (samplesPerPx <= 1) {
+          // Fewer samples than pixels: connect the dots
+          let started = false;
+          for (let i = 0; i <= windowSamples; i++) {
+            const idx = start + i;
+            if (idx < 0 || idx >= buf.length) continue;
+            const x = (i / windowSamples) * w;
+            const y = voltToY(buf[idx]);
+            if (!started) { ctx.moveTo(x, y); started = true; } else ctx.lineTo(x, y);
           }
-          const yHi = voltToY(hi);
-          const yLo = voltToY(lo);
-          if (!started) { ctx.moveTo(px, yHi); started = true; } else ctx.lineTo(px, yHi);
-          if (yLo - yHi > 1) ctx.lineTo(px, yLo);
+        } else {
+          // More samples than pixels: draw a min/max envelope per pixel column
+          let started = false;
+          for (let px = 0; px < w; px++) {
+            const a = Math.max(0, Math.floor(start + px * samplesPerPx));
+            const b = Math.min(buf.length, Math.floor(start + (px + 1) * samplesPerPx));
+            if (b <= a) continue;
+            let lo = Infinity, hi = -Infinity;
+            for (let i = a; i < b; i++) {
+              const v = buf[i];
+              if (v < lo) lo = v;
+              if (v > hi) hi = v;
+            }
+            const yHi = voltToY(hi);
+            const yLo = voltToY(lo);
+            if (!started) { ctx.moveTo(px, yHi); started = true; } else ctx.lineTo(px, yHi);
+            if (yLo - yHi > 1) ctx.lineTo(px, yLo);
+          }
         }
-      }
-      ctx.stroke();
-      ctx.restore();
+        ctx.stroke();
+        ctx.restore();
+      });
     }
 
     // Ground (0V) marker on the left edge
@@ -441,58 +433,38 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
       ctx.fillText(text, lx + 5, ly + 12);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vMin, vMax, windowSamples, trigMode, trigLevel, trigPos, sampleIntervalMs, xCursorsOn, yCursorsOn, xCursors, yCursors]);
+  }, [vMin, vMax, windowSamples, trigMode, trigLevel, trigPos, sampleIntervalMs, xCursorsOn, yCursorsOn, xCursors, yCursors, channelVisible, activeMeasurementSource, dual]);
 
   // Build the frame to display (live or frozen) and handle triggering
   useEffect(() => {
-    let frame: Frame | null = null;
-    let nextStatus: Status = 'RUN';
-
-    if (frozen) {
-      frame = { buf: frozen.buf, start: frozen.anchor - preSamples, trigIndex: frozen.trigIndex };
-      nextStatus = 'STOP';
-    } else if (data.length > 0) {
-      const len = data.length;
-      const postSamples = windowSamples - preSamples;
-      const firstAbs = total - len; // absolute sample number of data[0]
-      const isSingle = singleArmedAt !== null;
-
-      if (trigMode === 'off' && !isSingle) {
-        frame = { buf: data, start: len - windowSamples, trigIndex: -1 };
-        nextStatus = 'RUN';
-      } else {
-        let from = 1;
-        if (isSingle) from = Math.max(1, singleArmedAt - firstAbs);
-        else if (trigMode === 'auto') {
-          from = len - postSamples - windowSamples - Math.round(AUTO_TIMEOUT_MS / sampleIntervalMs);
-        }
-        const t = findTrigger(data, trigLevel, trigEdge, from, len - 1 - postSamples);
-
-        if (t !== -1) {
-          frame = { buf: data, start: t - preSamples, trigIndex: t };
-          lastTrigFrameRef.current = frame;
-          nextStatus = "TRIG'D";
-          if (isSingle) {
-            setFrozen({ buf: data, anchor: t, trigIndex: t });
-            setSingleArmedAt(null);
-            nextStatus = 'STOP';
-          }
-        } else if (trigMode === 'auto' && !isSingle) {
-          frame = { buf: data, start: len - windowSamples, trigIndex: -1 };
-          nextStatus = 'AUTO';
-        } else {
-          // Normal / single: keep showing the last triggered frame while waiting
-          frame = isSingle ? frameRef.current : lastTrigFrameRef.current;
-          nextStatus = 'WAIT';
-        }
-      }
+    const reset = lastCaptureKeyRef.current !== captureKey;
+    if (reset) {
+      lastCaptureKeyRef.current = captureKey;
+      frameRef.current = null;
+      lastTrigFrameRef.current = null;
+      hoverRef.current = null;
+      dragRef.current = null;
+      setFrozen(null);
+      setSingleArmedAt(null);
     }
-
+    const result = buildScopeCapture({
+      data, secondaryData, total, windowSamples, preSamples, sampleIntervalMs,
+      mode: trigMode, edge: trigEdge, level: trigLevel, triggerSource: activeTriggerSource,
+      armedAt: reset ? null : singleArmedAt, frozen: reset ? null : frozen,
+      previousFrame: frameRef.current, lastTrigger: lastTrigFrameRef.current,
+    });
+    const { frame } = result;
+    if (result.triggered) lastTrigFrameRef.current = result.triggered;
+    if (result.captured) {
+      setFrozen(result.captured);
+      setSingleArmedAt(null);
+    }
     frameRef.current = frame;
-    setStatus(nextStatus);
-    setMeasurements(frame ? measure(frame.buf, frame.start, windowSamples, sampleIntervalMs) : null);
+    setStatus(result.status);
+    const measured = activeMeasurementSource === 1 ? frame?.secondary : frame?.buf;
+    setMeasurements(frame && measured ? measure(measured, frame.start, windowSamples, sampleIntervalMs) : null);
     draw();
-  }, [data, total, frozen, singleArmedAt, trigMode, trigEdge, trigLevel, windowSamples, preSamples, sampleIntervalMs, draw]);
+  }, [data, secondaryData, captureKey, total, frozen, singleArmedAt, trigMode, trigEdge, trigLevel, activeTriggerSource, activeMeasurementSource, windowSamples, preSamples, sampleIntervalMs, draw]);
 
   // Keep the canvas sized to its container
   useEffect(() => {
@@ -532,6 +504,19 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
     setSingleArmedAt(null);
   };
 
+  const freeze = () => {
+    if (!frameRef.current) return;
+    setFrozen(freezeScopeFrame(frameRef.current, preSamples));
+    setSingleArmedAt(null);
+  };
+
+  const changeTriggerSource = (source: 0 | 1) => {
+    setTriggerSource(source);
+    lastTrigFrameRef.current = null;
+    if (!frozen) frameRef.current = null;
+    if (singleArmedAt !== null) setSingleArmedAt(total);
+  };
+
   const single = () => {
     setFrozen(null);
     setSingleArmedAt(total);
@@ -540,7 +525,8 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
 
   const autoSet = () => {
     if (data.length < 2) return;
-    const recent = data.slice(-Math.round(1000 / sampleIntervalMs));
+    const source = activeTriggerSource === 1 ? secondaryData ?? data : data;
+    const recent = source.slice(-Math.round(1000 / sampleIntervalMs));
     const m = measure(recent, 0, recent.length, sampleIntervalMs);
     if (!m) return;
 
@@ -695,13 +681,15 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
       <div className={styles.screenArea}>
         <div className={styles.topBar}>
           <span className={`${styles.statusBadge} ${statusClass}`}>{singleArmedAt !== null ? 'ARMED' : status}</span>
+          <span className={styles.traceLabel} style={{ color: TRACE_COLOR }}>{channelLabels[0]}{!channelVisible[0] ? ' OFF' : ''}</span>
+          {dual && <span className={styles.traceLabel} style={{ color: SECONDARY_COLOR }}>{channelLabels[1]}{!channelVisible[1] ? ' OFF' : ''}</span>}
           <span className={styles.barItem}>H <b>{formatTime(timeDiv)}</b>/div</span>
           <span className={styles.barItem}>
             {trigMode === 'off' ? (
               <span className={styles.dim}>TRIG OFF</span>
             ) : (
               <span className={styles.trigText}>
-                T {trigEdge === 'rising' ? '↑' : '↓'} {trigLevel.toFixed(2)}V {trigMode.toUpperCase()}
+                T {channelLabels[activeTriggerSource]} {trigEdge === 'rising' ? '↑' : '↓'} {trigLevel.toFixed(2)}V {trigMode.toUpperCase()}
               </span>
             )}
           </span>
@@ -710,6 +698,7 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
         <div className={styles.canvasWrap} style={fullscreen ? undefined : { height }}>
           <canvas
             ref={canvasRef}
+            aria-label={`${title}: ${channelLabels[0]}${dual ? ` and ${channelLabels[1]}, time-aligned` : ''}`}
             className={`${styles.canvas} ${frozen ? styles.canvasPannable : ''}`}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
@@ -720,7 +709,9 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
         </div>
 
         <div className={styles.bottomBar}>
-          <span className={styles.channelBadge}>CH1</span>
+          <span className={styles.channelBadge} style={{ background: activeMeasurementSource === 0 ? TRACE_COLOR : SECONDARY_COLOR }}>
+            {channelLabels[activeMeasurementSource]}
+          </span>
           <span className={styles.barItem}><b>{formatVolt(voltDiv)}</b>/div</span>
           <span className={styles.measure}>Max <b>{measurements ? measurements.vmax.toFixed(2) + 'V' : '--'}</b></span>
           <span className={styles.measure}>Min <b>{measurements ? measurements.vmin.toFixed(2) + 'V' : '--'}</b></span>
@@ -738,10 +729,31 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
       </div>
 
       <div className={styles.panel}>
+        {dual && (
+          <div className={styles.group}>
+            <div className={styles.groupTitle}>Channels · shared timebase</div>
+            <div className={styles.buttonRow}>
+              {([0, 1] as const).map((channel) => (
+                <button key={channel} aria-label={`Show ${channelLabels[channel]}`} aria-pressed={channelVisible[channel]}
+                  className={`${styles.key} ${styles.channelKey}`}
+                  style={{ color: channel === 0 ? TRACE_COLOR : SECONDARY_COLOR, opacity: channelVisible[channel] ? 1 : 0.5 }}
+                  onClick={() => setChannelVisible((visible) => channel === 0 ? [!visible[0], visible[1]] : [visible[0], !visible[1]])}>
+                  {channelLabels[channel]} {channelVisible[channel] ? 'ON' : 'OFF'}
+                </button>
+              ))}
+            </div>
+            <label className={styles.sourceLabel}>Measure / X cursors
+              <select aria-label="Measurement source" value={activeMeasurementSource} onChange={(event) => setMeasurementSource(Number(event.target.value) as 0 | 1)}>
+                <option value={0}>{channelLabels[0]}</option><option value={1}>{channelLabels[1]}</option>
+              </select>
+            </label>
+          </div>
+        )}
         <div className={styles.group}>
           <div className={styles.groupTitle}>Acquire</div>
           <div className={styles.buttonRow}>
             <button className={`${styles.key} ${!frozen && singleArmedAt === null ? styles.keyRun : ''}`} onClick={run}>RUN</button>
+            <button className={`${styles.key} ${frozen ? styles.keyStop : ''}`} onClick={freeze}>FREEZE</button>
             <button
               className={`${styles.key} ${singleArmedAt !== null ? styles.keyArmed : frozen ? styles.keyStop : ''}`}
               onClick={single}
@@ -800,6 +812,11 @@ const Oscilloscope: React.FC<OscilloscopeProps> = ({
 
         <div className={styles.group}>
           <div className={styles.groupTitle}>Trigger</div>
+          {dual && <label className={styles.sourceLabel}>Source
+            <select aria-label="Trigger source" value={activeTriggerSource} onChange={(event) => changeTriggerSource(Number(event.target.value) as 0 | 1)}>
+              <option value={0}>{channelLabels[0]}</option><option value={1}>{channelLabels[1]}</option>
+            </select>
+          </label>}
           <div className={styles.segmented}>
             {(['off', 'auto', 'normal'] as TriggerMode[]).map((mode) => (
               <button

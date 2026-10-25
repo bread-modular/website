@@ -1,3 +1,5 @@
+import { SerialBinaryDecoder } from "./serial-binary";
+
 declare global {
   interface Navigator {
     serial?: {
@@ -38,10 +40,33 @@ export class WebSerialManager {
   private writePipePromise: Promise<void> | null = null;
   private abortController: AbortController | null = null;
 
+  private textBuffer = "";
+  private connectionEpoch = 0;
+  private disconnectPromise: Promise<void> | null = null;
+  private queryQueue: Promise<unknown> = Promise.resolve();
+  private messageObservers = new Set<(message: string, type: MessageType) => void>();
+  private pendingQueries = new Set<() => void>();
+  private binaryDecoder: SerialBinaryDecoder | null = null;
+
   private onMessageCallback: (message: string, type: MessageType) => void;
 
   constructor(onMessage: (message: string, type: MessageType) => void) {
     this.onMessageCallback = onMessage;
+  }
+
+  private emit(message: string, type: MessageType): void {
+    this.onMessageCallback(message, type);
+    for (const observer of this.messageObservers) observer(message, type);
+  }
+
+  private receiveText(text: string): void {
+    this.textBuffer += text;
+    let newline: number;
+    while ((newline = this.textBuffer.indexOf("\n")) !== -1) {
+      const line = this.textBuffer.slice(0, newline);
+      this.textBuffer = this.textBuffer.slice(newline + 1);
+      if (line.trim()) this.emit(line, "received");
+    }
   }
 
   /**
@@ -49,6 +74,8 @@ export class WebSerialManager {
    * This mirrors the behaviour of connect(), but skips navigator.serial.requestPort().
    */
   async connectWithExistingPort(port: SerialPort): Promise<void> {
+    await this.disconnectPromise;
+    if (this.port) throw new Error("Already connected to device");
     try {
       if (!port) {
         throw new Error("No serial port provided");
@@ -61,12 +88,15 @@ export class WebSerialManager {
         flowControl: "none",
       });
       this.port = port;
-      this.onMessageCallback("Connected", "status");
+      this.connectionEpoch++;
+      this.textBuffer = "";
       this.setupCommunication();
-      this.readLoop();
+      this.emit("Connected", "status");
+      void this.readLoop();
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      this.onMessageCallback("Connection error: " + errorMessage, "error");
+      this.emit("Connection error: " + errorMessage, "error");
+      await this.disconnect();
       throw error;
     }
   }
@@ -87,6 +117,8 @@ export class WebSerialManager {
   }
 
   async connect(): Promise<void> {
+    await this.disconnectPromise;
+    if (this.port) throw new Error("Already connected to device");
     try {
       if (!navigator.serial) {
         throw new Error("Web Serial API not supported");
@@ -100,12 +132,15 @@ export class WebSerialManager {
         flowControl: "none",
       });
       this.port = port;
-      this.onMessageCallback("Connected", "status");
+      this.connectionEpoch++;
+      this.textBuffer = "";
       this.setupCommunication();
-      this.readLoop();
+      this.emit("Connected", "status");
+      void this.readLoop();
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      this.onMessageCallback("Connection error: " + errorMessage, "error");
+      this.emit("Connection error: " + errorMessage, "error");
+      await this.disconnect();
       throw error;
     }
   }
@@ -119,6 +154,7 @@ export class WebSerialManager {
       textDecoder.writable,
       { signal: this.abortController.signal }
     );
+    void this.readPipePromise.catch(() => { /* Reported by the reader / disconnect. */ });
     this.reader = textDecoder.readable.getReader();
 
     const textEncoder = new window.TextEncoderStream();
@@ -127,54 +163,48 @@ export class WebSerialManager {
       this.port.writable,
       { signal: this.abortController.signal }
     );
+    const epoch = this.connectionEpoch;
+    void this.writePipePromise.catch((error) => {
+      // TextEncoderStream can accept a write before the physical sink rejects it.
+      if (!this.port || epoch !== this.connectionEpoch) return;
+      this.emit("Write error: " + (error instanceof Error ? error.message : String(error)), "error");
+      void this.disconnect();
+    });
   }
 
   private async readLoop(): Promise<void> {
     this.readLoopActive = true;
-    let buffer = "";
-    
+    const reader = this.reader;
+    const epoch = this.connectionEpoch;
     try {
-      while (this.port && this.readLoopActive) {
-        if (!this.reader) break;
-        const { value, done } = await this.reader.read();
-        if (done) break;
+      while (this.port && this.readLoopActive && reader) {
+        const { value, done } = await reader.read();
+        if (done || epoch !== this.connectionEpoch || !this.readLoopActive) break;
         if (value) {
-          // Add received data to buffer
-          buffer += value;
-          
-          // Process complete lines
-          let newlineIndex;
-          while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
-            // Extract the complete line (without the newline)
-            const line = buffer.substring(0, newlineIndex);
-            
-            // Remove the processed line from buffer
-            buffer = buffer.substring(newlineIndex + 1);
-            
-            // Only send non-empty lines
-            if (line.trim()) {
-              this.onMessageCallback(line, "received");
-            }
-          }
+          if (this.binaryDecoder) this.binaryDecoder.push(value);
+          else this.receiveText(value);
         }
       }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      this.onMessageCallback("Read error: " + errorMessage, "error");
-      if (this.port) this.disconnect();
+      if (this.readLoopActive && epoch === this.connectionEpoch) {
+        this.emit("Read error: " + (error instanceof Error ? error.message : String(error)), "error");
+      }
     } finally {
-      this.readLoopActive = false;
+      if (epoch === this.connectionEpoch && this.port) {
+        void this.disconnect().catch(() => { /* Disconnect emits its error. */ });
+      }
     }
   }
 
   async sendMessage(message: string): Promise<void> {
-    if (!message.trim() || !this.writer) return;
+    if (!message.trim()) return;
+    if (!this.writer || !this.port) throw new Error("Not connected to device");
     try {
       await this.writer.write(message + "\n");
-      this.onMessageCallback("Sent: " + message, "sent");
+      this.emit("Sent: " + message, "sent");
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      this.onMessageCallback("Send error: " + errorMessage, "error");
+      this.emit("Send error: " + errorMessage, "error");
       throw error;
     }
   }
@@ -185,128 +215,75 @@ export class WebSerialManager {
    * @param timeoutMs Timeout in milliseconds (default: 5000)
    * @returns The value between ::val:: markers or null if timeout or no match
    */
-  async sendAndReceive(message: string, timeoutMs: number = 5000): Promise<string | null> {
-    if (!message.trim() || !this.writer || !this.port) {
-      return null;
-    }
+  sendAndReceive(
+    message: string,
+    timeoutMs: number = 5000,
+    options: { signal?: AbortSignal; exactResponse?: boolean } = {},
+  ): Promise<string | null> {
+    const epoch = this.connectionEpoch;
+    // The wire has no request IDs. Never let simultaneous value queries steal replies.
+    const result = this.queryQueue.then(() => this.queryValue(message, timeoutMs, options, epoch));
+    this.queryQueue = result.catch(() => null);
+    return result;
+  }
 
-    let timeoutId = 0;
+  private async queryValue(
+    message: string,
+    timeoutMs: number,
+    options: { signal?: AbortSignal; exactResponse?: boolean },
+    epoch: number,
+  ): Promise<string | null> {
+    if (!message.trim() || !this.writer || !this.port || epoch !== this.connectionEpoch || options.signal?.aborted) return null;
     let responseBuffer = "";
-    const originalCallback = this.onMessageCallback;
-    
+    let resolveResponse: (value: string | null) => void = () => {};
+    const response = new Promise<string | null>((resolve) => { resolveResponse = resolve; });
+    const cancel = () => resolveResponse(null);
+    const observer = (data: string, type: MessageType) => {
+      if (type !== "received") return;
+      responseBuffer = (responseBuffer + data).slice(-8192);
+      const match = options.exactResponse
+        ? data.match(/^::val::([^\r\n]*?)::val::\r?$/)
+        : responseBuffer.match(/::val::(.*?)::val::/);
+      if (match) resolveResponse(match[1]);
+      else if (options.exactResponse) resolveResponse(null);
+    };
+    this.messageObservers.add(observer);
+    this.pendingQueries.add(cancel);
+    options.signal?.addEventListener("abort", cancel, { once: true });
+    const timeout = setTimeout(() => {
+      this.emit("Response timeout for: " + message, "error");
+      cancel();
+    }, timeoutMs);
     try {
-      // Create a promise that will resolve when we get a matching response or timeout
-      const responsePromise = new Promise<string | null>((resolve) => {
-        // Set up a temporary callback to look for the response
-        this.onMessageCallback = (data, type) => {
-          // Call the original callback to maintain normal message display
-          originalCallback(data, type);
-          
-          // Process the response if it's from the device
-          if (type === "received") {
-            responseBuffer += data;
-            
-            // Check for the pattern ::val::...::val::
-            const pattern = /::val::(.*?)::val::/;
-            const match = responseBuffer.match(pattern);
-            
-            if (match) {
-              // We found a match, clear the timeout and resolve
-              window.clearTimeout(timeoutId);
-              
-              // Extract the value between ::val:: markers
-              resolve(match[1]);
-            }
-          }
-        };
-        
-        // Set up timeout
-        timeoutId = window.setTimeout(() => {
-          this.onMessageCallback("Response timeout for: " + message, "error");
-          resolve(null);
-        }, timeoutMs);
-      });
-      
-      // Send the message
       await this.writer.write(message + "\n");
-      this.onMessageCallback("Sent: " + message, "sent");
-      
-      // Wait for the response or timeout
-      const result = await responsePromise;
-      
-      // Restore the original callback
-      this.onMessageCallback = originalCallback;
-      
-      return result;
+      this.emit("Sent: " + message, "sent");
+      return await response;
     } catch (error: unknown) {
-      // Restore the original callback in case of error
-      this.onMessageCallback = originalCallback;
-      
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      this.onMessageCallback("Send error: " + errorMessage, "error");
+      this.emit("Send error: " + (error instanceof Error ? error.message : String(error)), "error");
       return null;
+    } finally {
+      clearTimeout(timeout);
+      this.messageObservers.delete(observer);
+      this.pendingQueries.delete(cancel);
+      options.signal?.removeEventListener("abort", cancel);
     }
   }
 
-  /**
-   * Listens for binary data in the format ::bin::base64data::bin:: and decodes it
-   * @param callback Function to call with the decoded binary data
-   * @returns Function to stop listening
-   */
+  /** Listen for streamed base64 envelopes without replacing normal message/query callbacks. */
   listenForBinary(callback: (data: Uint8Array) => void): () => void {
-    if (!this.port) {
-      throw new Error("Not connected to device");
-    }
-
-    let responseBuffer = "";
-    const originalCallback = this.onMessageCallback;
-    let isListening = true;
-    
-    // Set up a temporary callback to look for binary data
-    this.onMessageCallback = (data, type) => {
-      // We won't call the original callback to avoid cluttering the UI
-      
-      // Process the response if it's from the device and we're still listening
-      if (type === "received" && isListening) {
-        responseBuffer += data;
-        
-        // Check for the pattern ::bin::...::bin::
-        const pattern = /::bin::(.*?)::bin::/;
-        const match = responseBuffer.match(pattern);
-        
-        if (match) {
-          try {
-            // Extract the base64 data between ::bin:: markers
-            const base64Data = match[1];
-            
-            // Decode base64 to binary
-            const binaryString = atob(base64Data);
-            const uint8Array = new Uint8Array(binaryString.length);
-            for (let i = 0; i < binaryString.length; i++) {
-              uint8Array[i] = binaryString.charCodeAt(i);
-            }
-            
-            // Call the callback with the decoded binary data
-            callback(uint8Array);
-            
-            // Remove the processed pattern from the buffer
-            responseBuffer = responseBuffer.replace(pattern, "");
-          } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            originalCallback("Binary decode error: " + errorMessage, "error");
-          }
-        } else {
-          // Call the original callback to maintain normal message display
-          // So we can still see other messages
-          originalCallback(data, type)
-        }
-      }
-    };
-    
-    // Return stop function
+    if (!this.port) throw new Error("Not connected to device");
+    if (this.binaryDecoder) throw new Error("A binary listener is already active");
+    const decoder = new SerialBinaryDecoder(
+      callback,
+      (text) => this.receiveText(text),
+      (message) => this.emit(message, "error"),
+    );
+    this.binaryDecoder = decoder;
     return () => {
-      isListening = false;
-      this.onMessageCallback = originalCallback;
+      // Idempotent; an old cleanup must not detach a newer listener.
+      if (this.binaryDecoder !== decoder) return;
+      this.binaryDecoder = null;
+      decoder.stop();
     };
   }
 
@@ -401,7 +378,7 @@ export class WebSerialManager {
       // Validate WAV file format
       const validationResult = await this.validateWavFile(sampleFile);
       if (!validationResult.valid) {
-        // this.onMessageCallback(validationResult.error || "Unknown error", "error");
+        // this.emit(validationResult.error || "Unknown error", "error");
         throw new Error(validationResult.error || "Unknown error");
       }
 
@@ -424,7 +401,7 @@ export class WebSerialManager {
 
       // Send the write-sample-base64 command
       await this.writer.write(`write-sample-base64 ${sampleId} ${arrayBuffer.byteLength} ${length}\n`);
-      this.onMessageCallback(`Sent: write-sample-base64 ${sampleId} ${arrayBuffer.byteLength} ${length}`, "sent");
+      this.emit(`Sent: write-sample-base64 ${sampleId} ${arrayBuffer.byteLength} ${length}`, "sent");
 
       // Wait for Pico to respond with 'Ready to receive ...'
       await new Promise((res) => setTimeout(res, 300));
@@ -432,7 +409,7 @@ export class WebSerialManager {
       // Send base64 data in chunks
       const chunkSize = 1024;
       let sent = 0;
-      this.onMessageCallback("Sending base64 data...", "status");
+      this.emit("Sending base64 data...", "status");
       while (sent < length) {
         const end = Math.min(sent + chunkSize, length);
         const chunk = base64Data.substring(sent, end);
@@ -440,56 +417,57 @@ export class WebSerialManager {
         sent = end;
         if (Math.floor((sent / length) * 10) > Math.floor(((sent - chunk.length) / length) * 10)) {
           const percent = Math.floor((sent / length) * 100);
-          this.onMessageCallback(`Sending: ${percent}% (${sent}/${length} chars)`, "status");
+          this.emit(`Sending: ${percent}% (${sent}/${length} chars)`, "status");
         }
         await new Promise(res => setTimeout(res, 5));
       }
       // Send end marker
       await this.writer.write("\n");
-      this.onMessageCallback(`Sample file sent (${arrayBuffer.byteLength} bytes as ${length} base64 chars)`, "sent");
+      this.emit(`Sample file sent (${arrayBuffer.byteLength} bytes as ${length} base64 chars)`, "sent");
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      this.onMessageCallback("Sample upload error: " + errorMessage, "error");
+      this.emit("Sample upload error: " + errorMessage, "error");
       throw error;
     }
   }
 
-  async disconnect(): Promise<void> {
+  disconnect(): Promise<void> {
+    if (this.disconnectPromise) return this.disconnectPromise;
+    if (!this.port) return Promise.resolve();
+    const port = this.port;
+    const reader = this.reader;
+    const writer = this.writer;
+    const abortController = this.abortController;
+    const pipes = [this.readPipePromise, this.writePipePromise];
+    this.port = null;
+    this.reader = null;
+    this.writer = null;
+    this.abortController = null;
     this.readLoopActive = false;
-    
-    if (this.reader) {
+    this.connectionEpoch++;
+    this.binaryDecoder?.stop();
+    this.binaryDecoder = null;
+    this.textBuffer = "";
+    for (const cancel of this.pendingQueries) cancel();
+    // Notify consumers immediately, including physical removal / readable EOF.
+    this.emit("Disconnected", "status");
+    this.disconnectPromise = (async () => {
       try {
-        await this.reader.cancel();
+        await reader?.cancel().catch(() => {});
+        // Flush accepted commands (notably stop-send) before aborting the pipes.
+        // Failed/removed serial sinks reject close; teardown still continues.
+        await writer?.close().catch(() => {});
+        abortController?.abort();
+        await Promise.allSettled(pipes);
+        await port.close();
+      } catch (error) {
+        this.emit("Disconnect error: " + (error instanceof Error ? error.message : String(error)), "error");
       } finally {
-        this.reader = null;
+        this.readPipePromise = null;
+        this.writePipePromise = null;
+        this.disconnectPromise = null;
       }
-    }
-    
-    if (this.writer) {
-      try {
-        await this.writer.close();
-      } finally {
-        this.writer = null;
-      }
-    }
-    
-    if (this.abortController) {
-      try {
-        this.abortController.abort();
-      } finally {
-        this.abortController = null;
-      }
-    }
-    
-    if (this.port) {
-      try {
-        await this.port.close();
-      } finally {
-        this.port = null;
-      }
-    }
-    
-    this.readPipePromise = null;
-    this.writePipePromise = null;
+    })();
+    return this.disconnectPromise;
   }
 }
