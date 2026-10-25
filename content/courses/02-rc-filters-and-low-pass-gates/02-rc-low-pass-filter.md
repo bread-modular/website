@@ -15,26 +15,24 @@ It's the same circuit as before. There are only two changes:
 
 - The input is now audio (use the 16bit's A1 output).
 - The capacitor is connected to 1.65V (our virtual ground rail) instead of 0V.
+- We use a 104 (100nF) capacitor.
 
 > 💡 For a low pass filter, connecting the capacitor to 0V or 1.65V gives you the same result. The capacitor only cares about changes (and audio is all about changes). But using the virtual ground keeps everything referenced to the middle of our signal. You will see why this matters in the next lesson.
 
 ![RC low pass filter on the breadboard](/images/courses/rc-filters/photo-rc-low-pass.jpg)
 
-*The blue wire is the audio input. The orange wire is the buffered oscilloscope probe. The "-" rail carries 1.65V, just like in the previous course.*
+*The green wire is the audio input. The gray wire connects the capacitor to the virtual ground rail (1.65V), just like in the previous course.*
 
-Now connect the filter output to the line out as well and listen while you look at the scope.
+Now, connect the scope:
 
-[columns]
+- Connect the audio input to the 16bit's A2 input. This is the original waveform (blue).
+- Connect the filter output to the 16bit's A1 input through the buffered oscilloscope probe. This is the filtered waveform (yellow).
 
-![Input sawtooth](/images/courses/rc-filters/scope-lpf-input.png)
+Connect the filter output to the line out as well and listen while you look at the scope.
 
-*The input (sawtooth)*
+![Input and filtered output](/images/courses/rc-filters/scope-lpf-10k-100n.png)
 
-![Filtered output](/images/courses/rc-filters/scope-lpf-10k-10n.png)
-
-*The output with 10k and 10nF*
-
-[/columns]
+*Blue: the input sawtooth. Yellow: the output with 10k and 100nF.*
 
 The sharp edge of the sawtooth gets rounded. Those sharp edges are where the high frequencies live, and that's what the filter removes.
 
@@ -48,18 +46,20 @@ Every RC filter has a cutoff frequency (fc). Frequencies below it pass through, 
 fc = 1 / (2 × π × R × C)
 ```
 
-For 10k and 10nF:
+For 10k and 100nF:
 
 ```
-fc = 1 / (2 × 3.14 × 10,000 × 0.00000001) ≈ 1.6kHz
+fc = 1 / (2 × 3.14 × 10,000 × 0.0000001) ≈ 160Hz
 ```
 
-> 💡 Here's a shortcut: with a **10nF** capacitor,
+Our sawtooth is about 137Hz, which is right around the cutoff frequency. That's why the output is still a sawtooth, just smaller and rounder.
+
+> 💡 Here's a shortcut: with a **100nF** capacitor,
 >
-> - 1k → ~16kHz (almost no filtering for audio)
-> - 10k → ~1.6kHz
-> - 100k → ~160Hz
-> - 1M → ~16Hz (almost nothing gets through)
+> - 1k → ~1.6kHz
+> - 10k → ~160Hz
+> - 100k → ~16Hz
+> - 1M → ~1.6Hz (almost nothing gets through)
 >
 > Every time you make R (or C) 10X bigger, the cutoff frequency gets 10X lower.
 
@@ -67,15 +67,21 @@ fc = 1 / (2 × 3.14 × 10,000 × 0.00000001) ≈ 1.6kHz
 
 [columns]
 
-![Output with 1k](/images/courses/rc-filters/scope-lpf-1k-10n.png)
-
-*With 1k: looks almost like the input*
-
-![Output with 100k](/images/courses/rc-filters/scope-lpf-100k-10n.png)
+![Output with 100k](/images/courses/rc-filters/scope-lpf-100k-100n.png)
 
 *With 100k: much smaller, almost a triangle*
 
+![Output with 1M](/images/courses/rc-filters/scope-lpf-1m-100n.png)
+
+*With 1M: almost nothing gets through*
+
 [/columns]
+
+Now, go back to the 10k resistor and slowly increase the frequency of the sawtooth.
+
+[video /images/courses/rc-filters/scope-lpf-increasing-frequency.mp4 /]
+
+*As the frequency goes up, the filtered waveform (yellow) gets smaller and smaller.*
 
 ## 3. It's Not a Brick Wall
 
@@ -94,8 +100,6 @@ Our RC filter is just a resistor followed by a capacitor. So, we can reuse what 
 
 - **Output impedance** is about R. With 100k, the output impedance is 100k. If you connect it directly to anything (like the line out or the 16bit A1 probe), it will get loaded.
 - **Input impedance** is at least R. With 1k, the filter loads the source a lot (remember, every Bread Modular output already has a 1k resistor in series).
-
-> 🚨 Did you notice? Since every Bread Modular output has 1k output impedance, it acts as part of R. With a 10k resistor, the real R is 11k.
 
 This is why we always put a buffer after an RC filter. It gives us high input impedance (so it won't load the capacitor) and 0 ohms output impedance (so the filter can drive anything).
 
