@@ -1,64 +1,88 @@
 "use client";
-import React, { forwardRef, useImperativeHandle, useState, useRef, useCallback } from "react";
+import React, { forwardRef, useImperativeHandle, useState, useRef, useCallback, useEffect } from "react";
 import styles from "./AppElab.module.css";
 import common from "./AppCommon.module.css";
 import Oscilloscope from "../common/Oscilloscope";
+import { decodeScopeFrame, type ScopeChannels, type ScopePhase } from "../../lib/elab-scope";
 
 export interface AppElabProps {
   isListeningForBinary: boolean;
   onBinaryListeningToggle: () => void;
   sampleIntervalMs?: number;
+  channelCount?: ScopeChannels;
+  capturePhase?: ScopePhase;
 }
 
 export interface AppElabRef {
   onBinaryData: (data: Uint8Array) => void;
+  resetCapture: (channels?: ScopeChannels) => void;
 }
 
 const AppElab = forwardRef<AppElabRef, AppElabProps>(({
   isListeningForBinary,
   onBinaryListeningToggle,
   sampleIntervalMs = 1,
+  channelCount = 1,
+  capturePhase = isListeningForBinary ? 'capturing' : 'idle',
 }, ref) => {
-  // Store voltage data in state so React can detect changes for the oscilloscope
-  const [voltageData, setVoltageData] = useState<{ samples: number[]; total: number }>({ samples: [], total: 0 });
-  const voltageDataRef = useRef<number[]>([]);
-  const totalSamplesRef = useRef<number>(0);
-  const maxBufferSize = Math.floor(10000 / sampleIntervalMs); // 10 seconds worth of samples
-  const lastOscilloscopeUpdate = useRef<number>(0);
+  // Append, trim and publish both channels as ONE capture snapshot.
+  const [voltageData, setVoltageData] = useState<{ a1: number[]; a2?: number[]; total: number }>({ a1: [], total: 0 });
+  const voltageDataRef = useRef<{ a1: number[]; a2?: number[]; total: number }>({ a1: [], total: 0 });
+  const channelsRef = useRef<ScopeChannels>(channelCount);
+  const publishTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastUpdateRef = useRef(0);
+  const [captureId, setCaptureId] = useState(0);
   const [scopeFullscreen, setScopeFullscreen] = useState(false);
   const toggleScopeFullscreen = useCallback(() => setScopeFullscreen((f) => !f), []);
+  const maxBufferSize = Math.max(500, Math.floor(10000 / sampleIntervalMs));
 
-  const convertToVoltage = (byteValue: number): number => {
-    return (byteValue / 255) * 3.3;
-  };
+  const resetCapture = useCallback((channels: ScopeChannels = channelCount) => {
+    if (publishTimerRef.current) clearTimeout(publishTimerRef.current);
+    publishTimerRef.current = null;
+    channelsRef.current = channels;
+    const empty = { a1: [], a2: channels === 2 ? [] : undefined, total: 0 };
+    voltageDataRef.current = empty;
+    setVoltageData({ a1: [], a2: channels === 2 ? [] : undefined, total: 0 });
+    lastUpdateRef.current = 0;
+    setCaptureId((id) => id + 1);
+  }, [channelCount]);
 
-  const appendVoltages = (newVoltages: number[]) => {
-    if (newVoltages.length === 0) return;
+  useEffect(() => {
+    if (channelsRef.current !== channelCount) resetCapture(channelCount);
+  }, [channelCount, resetCapture]);
 
-    // Update ref immediately
-    voltageDataRef.current.push(...newVoltages);
-    totalSamplesRef.current += newVoltages.length;
-    
-    // Keep only last 10 seconds of data
-    if (voltageDataRef.current.length > maxBufferSize) {
-      voltageDataRef.current = voltageDataRef.current.slice(-maxBufferSize);
-    }
-
-    const now = Date.now();
-    
-    // Update oscilloscope more frequently but still throttled (every 50ms for smooth animation)
-    if (now - lastOscilloscopeUpdate.current > 50) {
-      lastOscilloscopeUpdate.current = now;
-      setVoltageData({ samples: [...voltageDataRef.current], total: totalSamplesRef.current });
-    }
-  };
+  useEffect(() => () => {
+    if (publishTimerRef.current) clearTimeout(publishTimerRef.current);
+  }, []);
 
   useImperativeHandle(ref, () => ({
-    onBinaryData: (data: Uint8Array) => {      
-      // Convert byte data to voltage values
-      const voltages = Array.from(data).map(convertToVoltage);
-      appendVoltages(voltages);
-    }
+    resetCapture,
+    onBinaryData: (bytes: Uint8Array) => {
+      const frame = decodeScopeFrame(bytes, channelsRef.current);
+      if (!frame) return;
+      const buffer = voltageDataRef.current;
+      buffer.a1.push(...frame.a1);
+      if (frame.a2) {
+        buffer.a2 ??= [];
+        buffer.a2.push(...frame.a2);
+      }
+      buffer.total += frame.a1.length; // Paired sample count, not summed channel lengths.
+      if (buffer.a1.length > maxBufferSize) {
+        buffer.a1 = buffer.a1.slice(-maxBufferSize);
+        buffer.a2 = buffer.a2?.slice(-maxBufferSize);
+      }
+      const publish = () => {
+        publishTimerRef.current = null;
+        lastUpdateRef.current = Date.now();
+        const current = voltageDataRef.current;
+        setVoltageData({ a1: [...current.a1], a2: current.a2 ? [...current.a2] : undefined, total: current.total });
+      };
+      const wait = Math.max(0, 50 - (Date.now() - lastUpdateRef.current));
+      if (!publishTimerRef.current) {
+        if (wait === 0) publish();
+        else publishTimerRef.current = setTimeout(publish, wait);
+      }
+    },
   }));
 
   return (
@@ -67,19 +91,22 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
         <div className={styles.controls}>
           <button 
             onClick={onBinaryListeningToggle}
+            disabled={capturePhase === 'stopping'}
             className={`${styles.button} ${isListeningForBinary ? styles.buttonStop : styles.buttonStart}`}
           >
-            {isListeningForBinary ? 'Stop Capturing' : 'Start Capturing'}
+            {isListeningForBinary ? (capturePhase === 'capturing' ? 'Stop Capturing' : 'Cancel Capture') : capturePhase === 'stopping' ? 'Stopping…' : 'Start Capturing'}
           </button>
           
           {isListeningForBinary && (
             <div className={styles.statusIndicator}>
               <div className={styles.pulsingDot}></div>
-              <span>Listening for incoming data...</span>
+              <span role="status">{capturePhase === 'probing' ? 'Checking scope channels…' : capturePhase === 'starting' ? 'Starting capture…' : 'Listening for incoming data...'}</span>
             </div>
           )}
           <div className={styles.instructionsHighlight}>
-              Send voltage to the Input pin <code>A1</code> to see measurements.
+              {channelCount === 2
+                ? <>Paired inputs <code>A1</code> and <code>A2</code> · two time-aligned traces.</>
+                : <>Send voltage to input <code>A1</code> to see measurements. A1-only capture (legacy compatible).</>}
           </div>
         </div>
       </div>
@@ -95,7 +122,10 @@ const AppElab = forwardRef<AppElabRef, AppElabProps>(({
           </button>
         </div>
         <Oscilloscope 
-          data={voltageData.samples}
+          captureKey={captureId}
+          data={voltageData.a1}
+          secondaryData={voltageData.a2}
+          channelLabels={['A1', 'A2']}
           totalSamples={voltageData.total}
           maxVoltage={3.3}
           sampleIntervalMs={sampleIntervalMs}

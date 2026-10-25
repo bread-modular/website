@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import styles from "./page.module.css";
 import { WebSerialManager, MessageType, MessageObj } from "@/app/lib/webserial";
 import Header from "./components/Header";
@@ -10,6 +10,7 @@ import AppPolysynth from "./components/apps/AppPolysynth";
 import AppElab, { AppElabRef } from "./components/apps/AppElab";
 import AppMonosynth from "./components/apps/AppMonosynth";
 import Image from "next/image";
+import { ElabScopeSession, type ScopeChannels, type ScopePhase } from "./lib/elab-scope";
 
 export interface AppSamplerState {
   fx1: string;
@@ -49,100 +50,152 @@ const PicoWebSerial = () => {
   });
   const [isListeningForBinary, setIsListeningForBinary] = useState(false);  
   const serialManagerRef = useRef<WebSerialManager | null>(null);
-  const stopBinaryListenerRef = useRef<(() => void) | null>(null);
+  const scopeSessionRef = useRef<ElabScopeSession | null>(null);
+  const connectionEpochRef = useRef(0);
+  const connectingRef = useRef(false);
+  const mountedRef = useRef(false);
+  const [scopeChannels, setScopeChannels] = useState<ScopeChannels>(1);
+  const [capturePhase, setCapturePhase] = useState<ScopePhase>('idle');
   const appElabRef = useRef<AppElabRef | null>(null);
 
-  const displayMessage = (message: string, type: MessageType) => {
+  const displayMessage = useCallback((message: string, type: MessageType) => {
+    if (!mountedRef.current) return;
     setMessages((msgs) => [...msgs, { message, type }]);
-  };
-
-  useEffect(() => {
-    // Initialize the WebSerialManager
-    serialManagerRef.current = new WebSerialManager(displayMessage);
-    
-    // Check for Web Serial API support
-    if (!serialManagerRef.current.isWebSerialSupported()) {
-      setUnsupported(true);
+    if (type === 'status' && message === 'Disconnected') {
+      connectionEpochRef.current++;
+      void scopeSessionRef.current?.dispose();
+      scopeSessionRef.current = null;
+      appElabRef.current?.resetCapture(1);
+      setScopeChannels(1);
+      setCapturePhase('idle');
+      setIsListeningForBinary(false);
+      setConnected(false);
+      setSelectedApp('');
+      setStatus('Disconnected');
     }
-    
-    // Cleanup on unmount
-    return () => {
-      if (stopBinaryListenerRef.current) {
-        stopBinaryListenerRef.current();
-        stopBinaryListenerRef.current = null;
-      }
-      if (serialManagerRef.current && connected) {
-        serialManagerRef.current.disconnect();
-      }
-    };
   }, []);
 
-  const getAppInfo = async () => {
-    if (!serialManagerRef.current || !serialManagerRef.current.isConnected()) {
-      return;
-    }
+  useEffect(() => {
+    mountedRef.current = true;
+    const manager: WebSerialManager = new WebSerialManager((message, type) => {
+      if (serialManagerRef.current === manager) displayMessage(message, type);
+    });
+    serialManagerRef.current = manager;
+    setUnsupported(!manager.isWebSerialSupported());
+    return () => {
+      mountedRef.current = false;
+      // Invalidate asynchronous connection work on unmount (not a DOM ref).
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      connectionEpochRef.current++;
+      const session = scopeSessionRef.current;
+      scopeSessionRef.current = null;
+      void (async () => {
+        await session?.dispose();
+        await manager.disconnect();
+      })();
+    };
+  }, [displayMessage]);
+
+  const getAppInfo = async (manager = serialManagerRef.current, epoch = connectionEpochRef.current) => {
+    if (!manager?.isConnected()) return;
+    const current = () => mountedRef.current && manager === serialManagerRef.current && epoch === connectionEpochRef.current && manager.isConnected();
     
     try {
       displayMessage("Requesting app info...", "status");
       // Send a command that will return a value in the format ::val::value::val::
-      const result = await serialManagerRef.current.sendAndReceive("get-app");
+      const result = await manager.sendAndReceive("get-app");
+      if (!current()) return;
       setSelectedApp(result || "");
+      if (result !== 'elab' && scopeSessionRef.current) {
+        await scopeSessionRef.current.dispose();
+        scopeSessionRef.current = null;
+        if (!current()) return;
+        setScopeChannels(1);
+        setCapturePhase('idle');
+        setIsListeningForBinary(false);
+      }
 
       if (result === "sampler") {
         // Get the FX values
-        const fx1 = await serialManagerRef.current.sendAndReceive("get-fx1") || "noop";
-        const fx2 = await serialManagerRef.current.sendAndReceive("get-fx2") || "noop";
-        const fx3 = await serialManagerRef.current.sendAndReceive("get-fx3") || "noop";
+        const fx1 = await manager.sendAndReceive("get-fx1") || "noop";
+        const fx2 = await manager.sendAndReceive("get-fx2") || "noop";
+        const fx3 = await manager.sendAndReceive("get-fx3") || "noop";
+        if (!current()) return;
         setSamplerState({ fx1, fx2, fx3 });
       }
 
       if (result === "polysynth") {
-        const waveform = await serialManagerRef.current.sendAndReceive("get-waveform") || "saw";
+        const waveform = await manager.sendAndReceive("get-waveform") || "saw";
+        if (!current()) return;
         setPolysynthState({ waveform });
       }
 
       if (result === "fxrack") {
-        const fx1 = await serialManagerRef.current.sendAndReceive("get-fx1") || "noop";
-        const fx2 = await serialManagerRef.current.sendAndReceive("get-fx2") || "noop";
-        const fx3 = await serialManagerRef.current.sendAndReceive("get-fx3") || "noop";
+        const fx1 = await manager.sendAndReceive("get-fx1") || "noop";
+        const fx2 = await manager.sendAndReceive("get-fx2") || "noop";
+        const fx3 = await manager.sendAndReceive("get-fx3") || "noop";
+        if (!current()) return;
         setFXRackState({ fx1, fx2, fx3 });
       }
 
       if (result === "elab") {
-        // No specific state needed for elab app currently
+        if (!scopeSessionRef.current) scopeSessionRef.current = new ElabScopeSession(manager, {
+          onState: ({ channels, phase, wanted }) => {
+            if (!current()) return;
+            setScopeChannels(channels);
+            setCapturePhase(phase);
+            setIsListeningForBinary(wanted);
+          },
+          onReset: (channels) => {
+            if (current()) {
+              setScopeChannels(channels);
+              appElabRef.current?.resetCapture(channels);
+            }
+          },
+          onFrame: (bytes) => { if (current()) appElabRef.current?.onBinaryData(bytes); },
+          onError: (message) => { if (current()) displayMessage(message, 'error'); },
+        });
       }
 
       if (result === "monosynth") {
         // Monosynth is controlled by hardware CV knobs and the MCC; no serial state to load.
       }
     } catch (error) {
+      if (!current()) return;
       setSelectedApp("");
       displayMessage(`Error getting app info: ${error}`, "error");
     }
   };
 
   const connectToPico = async () => {
+    const manager = serialManagerRef.current;
+    if (!manager || connectingRef.current || manager.isConnected()) return;
+    connectingRef.current = true;
+    const epoch = ++connectionEpochRef.current;
+    setStatus('Connecting…');
+    setScopeChannels(1);
+    setCapturePhase('idle');
+    setIsListeningForBinary(false);
     try {
-      if (!serialManagerRef.current) return;
-      
-      await serialManagerRef.current.connect();
+      await manager.connect();
+      if (!mountedRef.current || epoch !== connectionEpochRef.current) {
+        await manager.disconnect();
+        return;
+      }
       setConnected(true);
-      setStatus("Connected");
-      
-      // Wait for the WebSerialManager to be fully ready before getting app info
-      const waitForConnection = () => {
-        if (serialManagerRef.current?.isConnected()) {
-          getAppInfo();
-        } else {
-          console.log("Connection not ready yet, waiting...");
-          setTimeout(waitForConnection, 500);
-        }
-      };
-      
-      setTimeout(waitForConnection, 500);
+      setStatus('Connected');
+      // Preserve the existing firmware startup grace period, but never retry a
+      // disconnected/stale connection or let a delayed callback resurrect its UI.
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      if (!mountedRef.current || epoch !== connectionEpochRef.current) return;
+      await getAppInfo(manager, epoch);
     } catch {
-      setConnected(false);
-      setStatus("Disconnected");
+      if (mountedRef.current && epoch === connectionEpochRef.current) {
+        setConnected(false);
+        setStatus('Disconnected');
+      }
+    } finally {
+      connectingRef.current = false;
     }
   };
 
@@ -182,17 +235,19 @@ const PicoWebSerial = () => {
   };
 
   const disconnectFromPico = async () => {
-    if (serialManagerRef.current) {
-      // Stop binary listening if active
-      if (stopBinaryListenerRef.current) {
-        stopBinaryListenerRef.current();
-        stopBinaryListenerRef.current = null;
-      }
-      setIsListeningForBinary(false);
-      
-      // Reload the page after disconnection
-      window.location.reload();
-    }
+    const manager = serialManagerRef.current;
+    if (!manager) return;
+    connectionEpochRef.current++;
+    setStatus('Disconnecting…');
+    setConnected(false);
+    setSelectedApp('');
+    setIsListeningForBinary(false);
+    setScopeChannels(1);
+    setCapturePhase('idle');
+    const session = scopeSessionRef.current;
+    scopeSessionRef.current = null;
+    await session?.dispose();
+    await manager.disconnect();
   };
 
   const handleKeyPress = async (key: number) => {    
@@ -207,35 +262,9 @@ const PicoWebSerial = () => {
   };
 
   const handleBinaryListening = () => {
-    if (!serialManagerRef.current || !connected) return;
-
-    if (isListeningForBinary) {
-      // Stop listening
-      if (stopBinaryListenerRef.current) {
-        stopBinaryListenerRef.current();
-        stopBinaryListenerRef.current = null;
-      }
-      setIsListeningForBinary(false);
-      displayMessage("Stopped listening for binary data", "status");
-      serialManagerRef.current.sendMessage("stop-send");
-    } else {
-      // Start listening
-      try {
-        const stopFunction = serialManagerRef.current.listenForBinary((binaryData: Uint8Array) => {
-          // Pass data to AppElab component if it's the selected app and ref is available
-          if (selectedApp === "elab" && appElabRef.current) {
-            appElabRef.current.onBinaryData(binaryData);
-          }
-        });
-        stopBinaryListenerRef.current = stopFunction;
-        setIsListeningForBinary(true);
-        displayMessage("Started listening for binary data", "status");
-        serialManagerRef.current.sendMessage("start-send");
-      } catch (error) {
-        console.error("Error starting binary listener:", error);
-        displayMessage("Error starting binary listener: " + error, "error");
-      }
-    }
+    const session = scopeSessionRef.current;
+    if (!session || !serialManagerRef.current?.isConnected()) return;
+    void session.setCapturing(!session.wantsCapture());
   };
 
   if (unsupported) {
@@ -348,6 +377,8 @@ const PicoWebSerial = () => {
               isListeningForBinary={isListeningForBinary}
               onBinaryListeningToggle={handleBinaryListening}
               sampleIntervalMs={0.1}
+              channelCount={scopeChannels}
+              capturePhase={capturePhase}
             />
           </div>
         )}
