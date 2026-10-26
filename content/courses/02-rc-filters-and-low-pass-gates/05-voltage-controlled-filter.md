@@ -15,34 +15,47 @@ Let's start with a single stage:
 - The LED side is wired the same way as in the previous course (with a 1k resistor).
 - U2A buffers the output.
 
-![Vactrol filter on the breadboard](/images/courses/rc-filters/photo-vactrol-filter.jpg)
+The audio (a sawtooth wave) goes into the resistor side of the Vactrol. For CV_IN, use the 16bit's pulse generator. Connect the scope like this:
 
-*The audio goes into the resistor side of the Vactrol. CV_IN comes from the first potentiometer of the 50k pots module, wired as a voltage divider between 3.3V and 0V (with a 1k resistor in series on the 3.3V side, as we learned in the previous course).*
+- The pulse (CV_IN) goes to the 16bit's A2 input (blue).
+- The probe goes to the 16bit's A1 input through the buffered oscilloscope probe (yellow).
 
-Now listen to the output and turn the potentiometer.
+![Vactrol filter with a pulse as the CV](/images/courses/rc-filters/scope-vcf-pulse.png)
 
-- When the LED is off, the Vactrol is around 10M ohms. With 10nF, the cutoff frequency is below 2Hz. So, almost no sound.
-- As the LED gets brighter, the resistance drops to a few kilohms, and the filter opens up.
+*Blue: the pulse (CV_IN). Yellow: the filtered sawtooth wave.*
 
-[columns]
+- When the LED is off, the Vactrol is around 10M ohms. With 10nF, the cutoff frequency is below 2Hz. So, almost no sound (just a tiny ripple).
+- When the pulse arrives, the LED lights up, the resistance drops to a few kilohms, and the filter opens up.
+- After the pulse, the filter doesn't close immediately. Vactrols are slow, so the resistance rises gradually and the sound fades out smoothly. The pulse lasts less than 100ms, but the sound keeps fading for about half a second.
 
-![Vactrol filter, low CV](/images/courses/rc-filters/scope-vcf-low-cv.png)
-
-*Low CV: the filter is almost closed*
-
-![Vactrol filter, high CV](/images/courses/rc-filters/scope-vcf-high-cv.png)
-
-*High CV: the filter is open*
-
-[/columns]
+Now listen to the output. Each pulse gives you a short, plucky sound.
 
 > 🛠 Use the pulse generator → envelope generator setup (from the first lesson of the previous course) as CV_IN. Now you have an envelope-controlled filter.
 
 ## 2. The Problem with the LED Resistor
 
-Turn the potentiometer slowly from 0 and watch the scope. For the first part of the knob, nothing happens. Then, suddenly, the filter starts to open.
+Now, let's replace the pulse with a potentiometer, so we can set the CV by hand:
 
-That's because an LED needs about 1.8V before it lights up. Below that, there's no current and the Vactrol stays dark. So, we waste more than half of our 0-3.3V CV range.
+![Vactrol filter with a potentiometer as the CV](/images/courses/rc-filters/sch-vactrol-pot-cv.png)
+
+- RV1 is the first potentiometer of the 50k pots module.
+- Pin 1 of the pot goes to GND.
+- Pin 3 goes to 3.3V through R3 (1k). This resistor limits the current through the LED.
+- The wiper (pin 2) is our CV_IN. It goes directly into the Vactrol's LED (no resistor this time).
+
+Move the blue probe (A2) to CV_IN, so we can see the voltage at the LED's input. Keep the yellow probe on the output.
+
+Turn the knob slowly from 0 and watch the scope:
+
+- At first, the blue trace rises with the knob, but nothing happens to the sound. The LED needs about 1.5V before it starts to light up. Below that, there's no current and the Vactrol stays dark.
+- Once the LED turns on, the filter starts to open. By about 1.7V, it's almost fully open.
+- But the blue trace never goes higher than about 1.9V. Once the LED is on, it holds its own voltage at around 1.9V, and the rest of the 3.3V drops across R3 (1k).
+
+[video /images/courses/rc-filters/scope-vcf-pot-cv.mp4 /]
+
+*As the knob goes up, the filtered sawtooth (yellow) gets bigger, but the CV (blue) stops at around 1.9V.*
+
+So, the CV range is very limited. The useful part of the knob is a small region near the top, and all of it is squeezed into a tiny range of voltages, from about 1.5V to 1.7V.
 
 Also, the brightness of an LED depends on the **current** through it, not the voltage. With a resistor, the current depends on the LED's forward voltage, which changes from LED to LED and with temperature.
 
@@ -73,10 +86,6 @@ Now, the other parts:
 - **SW1 (BLAST)** connects R7 (330) in parallel with the pot. It instantly opens the filter, no matter where the CUTOFF knob is.
 
 Build U5A, R3, R4, R6 and the potentiometer on the breadboard (use the 50k pots module as RV1, using pins 2 and 3 only). For now, feed the CV directly into R3.
-
-![Current driver on the breadboard](/images/courses/rc-filters/photo-current-driver.jpg)
-
-*U5A is the third opamp of the breakout. The Vactrol LED's "+" goes to the opamp output and its "-" goes to the "-" input.*
 
 > 🛠 Turn the CV knob slowly again. The filter now starts opening almost immediately and follows the knob much more smoothly.
 
