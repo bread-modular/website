@@ -37,9 +37,10 @@ Let me walk you through it:
 
 You need 4 opamps (the whole opamp breakout), 2 Vactrols and two 10nF capacitors.
 
-![The LOW module built on the breadboard](/images/courses/rc-filters/photo-low-on-breadboard.jpg)
-
-*The top half is the core filter. The bottom half is the CV input and the current driver. Use the 50k pots module as the CUTOFF control, and a jumper wire as the BLAST switch.*
+- Build the core filter on the top half of the breadboard. It's the same two-stage filter from the 4th lesson, with Vactrols in place of the resistors.
+- Build the CV input and the current driver on the bottom half. It's the same driver from the previous lesson.
+- Use the 50k pots module as the CUTOFF control.
+- Use a jumper wire as the BLAST switch.
 
 > 🚨 Double-check the Vactrol orientation before powering up. The LED side has polarity. If it's reversed, the filter stays closed no matter what CV you send.
 
@@ -49,17 +50,11 @@ You need 4 opamps (the whole opamp breakout), 2 Vactrols and two 10nF capacitors
 - Connect 3.3V to the CV input.
 - Turn the CUTOFF pot.
 
-[columns]
+With 3.3V on the CV input, the Vactrols get a steady current. So, the LOW works as a normal low pass filter, and the CUTOFF pot sets its cutoff frequency.
 
-![LPF mode, CUTOFF low](/images/courses/rc-filters/scope-low-lpf-cutoff-low.png)
-
-*CUTOFF low*
-
-![LPF mode, CUTOFF high](/images/courses/rc-filters/scope-low-lpf-cutoff-high.png)
-
-*CUTOFF high*
-
-[/columns]
+- With the CUTOFF low, the super-saw loses its sharp edges and sounds dark and muffled.
+- As you turn the CUTOFF up, the filter opens and the sound gets brighter.
+- With the CUTOFF high, almost all the harmonics pass through and you hear the full super-saw.
 
 > 🛠 Now touch the BLAST jumper wire (connect R7 to VAC_NEG) while the CUTOFF is low. The filter opens fully while you hold it.
 
@@ -70,19 +65,13 @@ A Low Pass Gate (LPG) is a filter and a VCA at the same time. When the CV is 0V,
 - Connect the 16bit's G1 output (pulse) to the CV input.
 - Set the pulse to a slow rate.
 
-[columns]
+Now you'll hear a short "pluck" with every pulse:
 
-![Gate input](/images/courses/rc-filters/scope-low-lpg-gate.png)
+- When the pulse goes high, the Vactrol LEDs turn on and the filter opens quickly. That's the sharp attack.
+- When the pulse goes low, the sound doesn't stop right away. It fades out and gets darker at the same time.
+- Between the pulses, the filter is fully closed and you hear nothing.
 
-*The gate (CV) input*
-
-![LPG output](/images/courses/rc-filters/scope-low-lpg-output.png)
-
-*The output: a sharp attack and a natural decay*
-
-[/columns]
-
-Look at the decay. We never added an envelope generator, but the sound fades out smoothly. That's the Vactrol. Remember from the previous course: the Vactrol is slow to react, especially when it goes dark. That slow response acts as a built-in decay envelope.
+Listen to the decay. We never added an envelope generator, but the sound fades out smoothly. That's the Vactrol. Remember from the previous course: the Vactrol is slow to react, especially when it goes dark. That slow response acts as a built-in decay envelope.
 
 > 💡 This is why Vactrol LPGs are famous for their "bongo" or "plucked" sound. It was made popular by Don Buchla in the 1970s, and it's still one of the most loved sounds in modular synthesis.
 
