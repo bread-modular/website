@@ -70,6 +70,47 @@
   top: 14px;
 }
 
+/* Shown only if loading takes a moment: a quick change does not flash it */
+.viewerLoading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(246, 246, 244, 0.55);
+  pointer-events: none;
+  animation: viewerLoadingIn 0.2s ease-out 0.2s both;
+}
+
+.viewerLoading p {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.viewerSpinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  border-top-color: var(--ink);
+  animation: viewerSpin 0.8s linear infinite;
+}
+
+@keyframes viewerLoadingIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes viewerSpin {
+  to { transform: rotate(360deg); }
+}
+
 /* Assembly steps, on the preview */
 
 .stepStart,
