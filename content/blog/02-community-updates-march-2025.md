@@ -37,7 +37,7 @@ This is the first bug reported & we have already made a design change. This was 
 
 As a result, this transistor was damaged & the power reset functionality was broken.
 
-As a quick fix, we added a load control resistor to the [UPDI programmer](/modules/updi-programmer). As a proper fix, we are now working on a short-circuit detection & prevention circuit for the power supply.
+As a quick fix, we added a load control resistor to the [UPDI programmer](/original/modules/updi-programmer). As a proper fix, we are now working on a short-circuit detection & prevention circuit for the power supply.
 
 ---
 

@@ -5,7 +5,7 @@ summary: Learn about 16bit, BreadModular's realtime audio computer for effects a
 
 ![16bit](/images/modules/16bit.jpg#max-width=300px)
 
-[16bit](/modules/16bit) is a realtime audio computer, which is BreadModular's go-to choice for effects and complex sound sources. It features:
+[16bit](/original/modules/16bit) is a realtime audio computer, which is BreadModular's go-to choice for effects and complex sound sources. It features:
 
 * Raspberry Pi RP2350A Microcontroller (dual-core)
 * Floating-point calculation support (for enhanced DSP capabilities)

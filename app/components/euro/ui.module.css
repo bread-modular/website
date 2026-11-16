@@ -1,0 +1,110 @@
+/* Shared building blocks for the Eurorack pages. Colours come from EuroLayout. */
+
+.container {
+  max-width: var(--page);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.pageHead {
+  padding: 64px 0 40px;
+  max-width: 720px;
+}
+
+.pageHead h1 {
+  margin-top: 12px;
+  font-size: clamp(2.25rem, 6vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  font-weight: 650;
+}
+
+.pageHead p {
+  margin-top: 16px;
+  font-size: 1.125rem;
+  color: var(--ink-soft);
+}
+
+.button,
+.buttonGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1px solid var(--ink);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 550;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s, color 0.15s, opacity 0.15s;
+}
+
+.button {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.buttonGhost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  opacity: 0.88;
+}
+
+.buttonGhost:hover {
+  border-color: var(--ink);
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: progress;
+  transform: none;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--paper-soft);
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.textLink {
+  font-weight: 550;
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 4px;
+}
+
+.textLink:hover {
+  text-decoration-color: var(--ink);
+}

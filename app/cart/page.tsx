@@ -72,7 +72,7 @@ export default function CartPage() {
         {itemCount === 0 ? (
           <div className={styles.emptyCart}>
             <p>Your cart is empty.</p>
-            <Link href="/modules" className={styles.continueShoppingLink}>
+            <Link href="/original/modules" className={styles.continueShoppingLink}>
               Continue Shopping
             </Link>
           </div>
@@ -83,7 +83,7 @@ export default function CartPage() {
                 <div key={`${item.moduleId}-${item.version.name}`} className={styles.cartItem}>
                   <div className={styles.itemInfo}>
                     <h3 className={styles.itemTitle}>
-                      <Link href={`/modules/${item.moduleId}`}>
+                      <Link href={`/original/modules/${item.moduleId}`}>
                         {item.moduleTitle}
                       </Link>
                     </h3>
@@ -124,7 +124,7 @@ export default function CartPage() {
               >
                 {isLoading ? 'Processing...' : 'Proceed to Checkout'}
               </button>
-              <Link href="/modules" className={styles.continueShoppingLink}>
+              <Link href="/original/modules" className={styles.continueShoppingLink}>
                 Continue Shopping
               </Link>
             </div>

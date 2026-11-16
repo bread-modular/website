@@ -5,7 +5,7 @@ summary: Learn about 32bit, BreadModular's high-quality audio computer for profe
 
 ![32bit](/images/modules/32bit.jpg#max-width=300px)
 
-[32bit](/modules/32bit) is a realtime audio computer designed for high-quality audio effects processing. It features:
+[32bit](/original/modules/32bit) is a realtime audio computer designed for high-quality audio effects processing. It features:
 
 * ESP32-S3 Microcontroller (dual-core)
 * Floating-point calculation support (for enhanced DSP capabilities)
@@ -19,7 +19,7 @@ summary: Learn about 32bit, BreadModular's high-quality audio computer for profe
 
 ## Modular Design
 
-32bit is designed in a modular way where you can customize it with different firmwares. Currently, it supports the FX Rack firmware, which provides effects designed for use with the [4mix](/modules/4mix)'s send/return setup.
+32bit is designed in a modular way where you can customize it with different firmwares. Currently, it supports the FX Rack firmware, which provides effects designed for use with the [4mix](/original/modules/4mix)'s send/return setup.
 
 We achieve modularity using our [MCC](/docs/32bit/mcc-module) module, which allows you to control effects via MIDI CCs. You can load different firmwares using the [32bit Web UI](/ui/32bit).
 

@@ -80,7 +80,7 @@ function buildAnchorMap(docsTree: Record<string, Record<string, { file: string, 
   }
   // Modules
   for (const entry of modulesFiles) {
-    const url = '/modules/' + entry.rel.map(stripPrefix).join('/');
+    const url = '/original/modules/' + entry.rel.map(stripPrefix).join('/');
     const urlMd = url + '.md';
     const anchor = makeAnchorFromUrl(url);
     anchorMap[url] = anchor;
@@ -100,7 +100,7 @@ function buildAnchorMap(docsTree: Record<string, Record<string, { file: string, 
 // Rewrite internal links (with or without .md) to anchors, and image URLs to absolute
 function rewriteLinks(content: string, anchorMap: Record<string, string>) {
   // Internal links
-  let result = content.replace(/\]\((\/(docs|modules|blog)\/[^)\s]+?(?:\.md)?)\)/g, (m, link) => {
+  let result = content.replace(/\]\((\/(?:original\/)?(?:docs|modules|blog)\/[^)\s]+?(?:\.md)?)\)/g, (m, link) => {
     const anchor = anchorMap[link];
     if (anchor) return `](${anchor})`;
     return m;
@@ -114,7 +114,7 @@ export async function GET() {
   const { docsTree, modulesFiles, blogFiles } = await buildSectionTree();
   const anchorMap = buildAnchorMap(docsTree, modulesFiles, blogFiles);
   const howTo = [
-    '# Bread Modular Full Documentation',
+    '# Bread Modular Original Full Documentation',
     '',
     '---',
     '## How to Read This Document',
@@ -167,7 +167,7 @@ export async function GET() {
   body += '\n\n## Modules\n';
   for (const entry of modulesFiles) {
     const cleanName = stripPrefix(entry.rel[entry.rel.length - 1]);
-    const anchor = anchorMap['/modules/' + entry.rel.map(stripPrefix).join('/') + '.md'];
+    const anchor = anchorMap['/original/modules/' + entry.rel.map(stripPrefix).join('/') + '.md'];
     const content = await fs.readFile(entry.file, 'utf8');
     const { title, desc } = parseFrontmatter(content);
     toc += `\n  - [${title || cleanName}](#${anchor.slice(1)})`;

@@ -1,152 +1,100 @@
-import Link from "next/link";
-import ImageSlideshow from "./components/media/ImageSlideshow";
-import InstagramReelsSlideshow from "./components/media/InstagramReelsSlideshow";
-import Layout from "./components/Layout";
-import NewsletterSignup from "./components/NewsletterSignup";
-import type { Metadata } from "next";
-import styles from './page.module.css';
+import Link from 'next/link';
+import type { Metadata } from 'next';
+import EuroLayout from './components/euro/EuroLayout';
+import HeroRack from './components/euro/HeroRack';
+import NewsletterSignup from './components/NewsletterSignup';
+import ui from './components/euro/ui.module.css';
+import styles from './home.module.css';
+
+const title = 'Bread Modular - Eurorack Made Affordable';
+const description = 'Bread Modular: Eurorack Made Affordable. A complete system with MIDI native modules. Launching in 2027. For now, 3D print our Eurorack cases from free STL files.';
 
 export const metadata: Metadata = {
-  title: "Bread Modular - Affordable Modular Synth Platform",
-  description: "Open Source modular synth with minimalistic PCB design, MIDI, and USB-C power. Affordable and feature-rich.",
-  keywords: ["modular synth", "synthesizer", "DIY electronics", "open source hardware", "USB-C", "MIDI", "affordable synth"],
-  openGraph: {
-    title: "Bread Modular - Affordable Modular Synth Platform",
-    description: "Open Source modular synth with minimalistic PCB design, MIDI, and USB-C power. Affordable and feature-rich.",
-    images: [
-      "/images/home-slide/01.jpg"
-    ],
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Bread Modular - Affordable Modular Synth Platform",
-    description: "Open Source modular synth with minimalistic PCB design, MIDI, and USB-C power. Affordable and feature-rich.",
-    images: ["/images/home-slide/01.jpg"],
-  },
+  title,
+  description,
+  keywords: ['bread modular', 'eurorack', 'eurorack modules', '3d printed eurorack case', 'modular synth', 'synthesizer'],
+  alternates: { canonical: '/' },
+  openGraph: { title, description, images: ['/images/home-slide/01.jpg'], type: 'website', url: '/' },
+  twitter: { card: 'summary_large_image', title, description, images: ['/images/home-slide/01.jpg'] },
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      name: 'Bread Modular',
+      url: 'https://breadmodular.com',
+      logo: 'https://breadmodular.com/images/bread-modular-logo.png',
+      slogan: 'Eurorack Made Affordable',
+      sameAs: ['https://instagram.com/breadmodular', 'https://youtube.com/@breadmodular', 'https://github.com/bread-modular/bread-modular'],
+    },
+    { '@type': 'WebSite', name: 'Bread Modular', url: 'https://breadmodular.com', description },
+  ],
 };
 
 export default function Home() {
   return (
-    <Layout>
-      <section aria-label="Hero section" className={styles.heroSection}>
-        <h1 className={styles.heroTitle}>AFFORDABLE<br />MODULAR SYNTH PLATFORM</h1>
-      </section>
-      <section aria-label="Product showcase slideshow" className={styles.slideshowSection}>
-        <ImageSlideshow />
-      </section>
-      <section id="key-features" aria-label="Key features" className={styles.featuresSection}>
-        <article className={styles.featureArticle}>
-          <div className={styles.featureContent}>
-            <div>
-              <h2 className={styles.featureHeader}><span style={{ fontWeight: 'bold' }}>Minimalistic</span> Design</h2>
-              <p className={styles.featureText}>We combine modern electronics with minimalistic design to reduce costs.</p>
-              <Link 
-                href="/docs/getting-started/introduction#minimalistic-design" 
-                className={styles.featureLink}
-                aria-label="Learn more about our minimalistic design"
-              >
-                SEE HOW
-              </Link>
-            </div>
-            <div className={styles.featureImage}>
-              <p className={styles.featureImageText}>Module Image</p>
-            </div>
-          </div>
-        </article>
+    <EuroLayout>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
 
-        <article className={styles.featureArticle}>
-          <div className={styles.featureContent}>
-            <div>
-              <h2 className={styles.featureHeader}><span style={{ fontWeight: 'bold' }}>Open Source</span> from Day One</h2>
-              <p className={styles.featureText}>Everything is open source, including schematics, PCB designs, and code.</p>
-              <Link 
-                href="/docs/getting-started/introduction#open-source-everything" 
-                className={styles.featureLink}
-                aria-label="Learn more about our open source policy"
-              >
-                LEARN MORE
-              </Link>
-            </div>
-            <div className={styles.featureImage}>
-              <p className={styles.featureImageText}>Circuit Image</p>
-            </div>
+      <section className={styles.hero} aria-label="Introduction">
+        <div className={ui.container}>
+          <h1 className={styles.heroTitle}>Eurorack Made Affordable</h1>
+          <p className={styles.heroSecond}>A complete system with MIDI native modules.</p>
+          <p className={styles.heroText}>
+            Launching in 2027. For now, 3D print our Eurorack cases.
+          </p>
+          <div className={styles.heroActions}>
+            <Link href="/case" className={ui.button}>Make your 3D printed case</Link>
           </div>
-        </article>
-
-        <article className={styles.featureArticle}>
-          <div className={styles.featureContent}>
-            <div>
-              <h2 className={styles.featureHeader}><span style={{ fontWeight: 'bold' }}>Modern</span> Capabilities</h2>
-              <p className={styles.featureText}>We use proven analog designs while leveraging modern features like modular MIDI and USB-C power.</p>
-              <Link 
-                href="/docs/getting-started/introduction#modern-capabilities" 
-                className={styles.featureLink}
-                aria-label="Explore the modern capabilities of Bread Modular"
-              >
-                EXPLORE FEATURES
-              </Link>
-            </div>
-            <div className={styles.featureImage}>
-              <p className={styles.featureImageText}>Interface Image</p>
-            </div>
+        </div>
+        <div className={styles.rackWrap}>
+          <div className={styles.rackStage}>
+            <HeroRack />
           </div>
-        </article>
-      </section>
-
-      {/* CTA Buttons */}
-      <section aria-label="Call to action" className={styles.ctaSection}>
-        <div className={styles.ctaButtons}>
-          <Link 
-            href="/docs/getting-started/getting-started" 
-            className={styles.ctaButton}
-            role="button"
-            aria-label="Get started with Bread Modular"
-          >
-            GET STARTED NOW
-          </Link>
-          <a 
-            href="https://notebooklm.google.com/notebook/09159f54-4055-407e-a2f8-818cbaf1744f/preview"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.ctaButtonSecondary}
-            role="button"
-            aria-label="Ask questions about Bread Modular"
-          >
-            ASK QUESTIONS
-          </a>
+          <p className={styles.rackCaption}>
+            The case configurator, playing by itself: from one 42 HP case to a 252 HP studio set. The modules are still in the works.
+          </p>
         </div>
       </section>
 
-      {/* Newsletter Signup */}
-      <NewsletterSignup />
-
-      {/* Instagram Reels */}
-      <section aria-label="Instagram Reels showcase" className={styles.reelsSection}>
-        <div className={styles.reelsSeparator} role="separator"></div>
-        <h2 className={styles.reelsTitle}>LATEST FROM INSTAGRAM</h2>
-        <div className={styles.reelsDescription}>
-          <p>Check out our latest demos & updates</p>
+      <section className={ui.container} aria-labelledby="home-instagram">
+        <div className={`${styles.callout} ${styles.calloutFirst}`}>
+          <div>
+            <p className={ui.eyebrow}>Updates</p>
+            <h2 id="home-instagram" className={styles.calloutTitle}>Follow the progress on Instagram</h2>
+            <p className={styles.sectionText}>
+              We post updates there on the way to the 2027 launch.
+            </p>
+          </div>
+          <Link href="https://instagram.com/breadmodular" className={ui.button}>@breadmodular on Instagram</Link>
         </div>
-        <InstagramReelsSlideshow />
       </section>
 
-      {/* Social Links */}
-      <section aria-label="Social media links" className={styles.socialSection}>
-        <div className={styles.socialSeparator} role="separator"></div>
-        <h2 className={styles.socialTitle}>FIND US ON SOCIALS</h2>
-        <nav className={styles.socialNav} aria-label="Social media navigation">
-          <Link href="https://instagram.com/breadmodular" className={styles.socialLink} aria-label="Follow us on Instagram for updates">
-            INSTAGRAM FOR UPDATES
-          </Link>
-          <Link href="https://youtube.com/@breadmodular" className={styles.socialLink} aria-label="Watch our tutorials on YouTube">
-            YOUTUBE FOR TUTORIALS
-          </Link>
-          <Link href="https://discord.gg/W72YQKU7mq" className={styles.socialLink} aria-label="Join our Discord community for discussions">
-            DISCORD FOR DISCUSSIONS
-          </Link>
+      <div className={styles.newsletter}>
+        <NewsletterSignup />
+      </div>
+
+      <section className={ui.container} aria-label="Social media links">
+        <nav className={styles.socials} aria-label="Social media navigation">
+          <Link href="https://youtube.com/@breadmodular">YouTube <span>for tutorials</span></Link>
+          <Link href="https://discord.gg/W72YQKU7mq">Discord <span>for discussions</span></Link>
         </nav>
       </section>
-    </Layout>
+
+      <section className={ui.container} aria-labelledby="home-original">
+        <div className={styles.callout}>
+          <div>
+            <p className={ui.eyebrow}>Still here</p>
+            <h2 id="home-original" className={styles.calloutTitle}>Bread Modular Original</h2>
+            <p className={styles.sectionText}>
+              The affordable, open source modular synth platform with modular MIDI and USB-C power.
+            </p>
+          </div>
+          <Link href="/original" className={ui.buttonGhost}>See Original</Link>
+        </div>
+      </section>
+    </EuroLayout>
   );
 }

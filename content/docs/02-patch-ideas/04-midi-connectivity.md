@@ -3,7 +3,7 @@ title: MIDI Connectivity
 summary: Connect MIDI devices to Bread Modular and make sounds.
 ---
 
-Most Bread Modular modules accept MIDI and can be controlled via MIDI. To connect a MIDI device, we will use the [MIDI](/modules/midi) module.
+Most Bread Modular modules accept MIDI and can be controlled via MIDI. To connect a MIDI device, we will use the [MIDI](/original/modules/midi) module.
 
 You can listen to the final patch below:
 
@@ -34,7 +34,7 @@ For this patch, send a simple MIDI sequence like this:
 
 ## Initial Patch
 
-Here we use the [MCO](/modules/mco) module as the sound source.
+Here we use the [MCO](/original/modules/mco) module as the sound source.
 
 [patch]
 midi:MIDI[1] -> mco:MIDI
@@ -54,7 +54,7 @@ Now, when you play the MIDI sequence, you should hear a continuous oscillator ou
 
 ## Let's Make It a Fat Bass
 
-Now we’ll add a low‑pass gate using the [LOW](/modules/low) module and distortion using the [DRIVE](/modules/drive) module.
+Now we’ll add a low‑pass gate using the [LOW](/original/modules/low) module and distortion using the [DRIVE](/original/modules/drive) module.
 
 [patch]
 midi:MIDI[1] -> mco:MIDI
@@ -82,6 +82,6 @@ This patch borrows heavily from the [Overdrive / Distortion](/docs/patch-ideas/o
 
 ## Hoemwork
 
-As an exercise, try to use the [8bit](/modules/8bit) module instead of the MCO module. In order to accept MIDI in 8bit, you have to set the MODE to LED_ON (hold the MODE button for a second).
+As an exercise, try to use the [8bit](/original/modules/8bit) module instead of the MCO module. In order to accept MIDI in 8bit, you have to set the MODE to LED_ON (hold the MODE button for a second).
 
 You can also check the [Supersaw Bass](/docs/patch-ideas/supersaw-bass) patch to learn how to use the 8bit module.

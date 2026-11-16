@@ -31,7 +31,7 @@ drive:GAIN@0.9 This is the amount of distortion. Increase it to add more drive.
 
 [/patch]
 
-If you followed the Supersaw Bass patch, the only new thing here is the [DRIVE](/modules/drive) module. It has three knobs:
+If you followed the Supersaw Bass patch, the only new thing here is the [DRIVE](/original/modules/drive) module. It has three knobs:
 
 - **OD1**: This is the tone shaper for the upper half of the waveform. Turning it to the right will add more harmonics.
 - **OD2**: This is the tone shaper for the lower half of the waveform. Turning it to the right will add more harmonics.

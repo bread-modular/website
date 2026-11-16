@@ -1,4 +1,5 @@
 import Layout from '@/app/components/Layout';
+import OriginalDocsNotice from '@/app/components/OriginalDocsNotice';
 import styles from '../page.module.css';
 import Link from 'next/link';
 import type { Metadata } from 'next';
@@ -11,14 +12,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category: categoryParam } = await params;
   const categories = await getDocCategories();
   const category = categories.find(c => c.slug === categoryParam);
-  const title = category ? `${category.name} Docs - Bread Modular` : 'Docs - Bread Modular';
+  const title = category ? `${category.name} Docs - Bread Modular Original` : 'Docs - Bread Modular Original';
   const description = category
     ? `Browse all documentation in ${category.name}.`
-    : 'Documentation - Bread Modular';
+    : 'Documentation - Bread Modular Original';
 
   return {
     title,
     description,
+    alternates: { canonical: `/docs/${categoryParam}` },
     openGraph: {
       title,
       description,
@@ -46,6 +48,7 @@ export default async function DocsCategoryPage({ params }: Props) {
     <Layout>
       <div className={styles.fullWidthContainer}>
         <main className={styles.content}>
+          <OriginalDocsNotice />
           <h1>{category.name}</h1>
 
           <div className={styles.chatBanner}>

@@ -27,8 +27,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const imageUrl = course.image || '/images/home-slide/01.jpg';
 
   return {
-    title: `${course.title} | Bread Modular Courses`,
+    title: `${course.title} | Bread Modular Original Courses`,
     description: course.summary,
+    alternates: { canonical: `/courses/${course.slug}` },
     openGraph: {
       title: course.title,
       description: course.summary,

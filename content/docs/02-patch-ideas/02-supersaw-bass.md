@@ -35,7 +35,7 @@ Now play with the knobs and listen to the sound.
 
 ## Adding the Low-pass Gate
 
-In Bread Modular, the low-pass gate is the [LOW](/modules/low) module. Let's patch it:
+In Bread Modular, the low-pass gate is the [LOW](/original/modules/low) module. Let's patch it:
 
 [patch]
 8bit:AUDIO -> low:AUDIO

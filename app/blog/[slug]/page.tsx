@@ -31,6 +31,7 @@ export async function generateMetadata({
     title: `${post.title} | Bread Modular Blog`,
     description: post.summary,
     metadataBase: new URL(process.env.SITE_URL || 'https://breadmodular.com'),
+    alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
       title: post.title,
       description: post.summary,

@@ -2,5 +2,10 @@
 ==> Installing JS dependencies (node_modules in workspace)…
 
 added 440 packages in 3s
+npm notice
+npm notice New major version of npm available! 10.9.8 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
 ==> JS dependencies ready.
 ==> Workspace ready.

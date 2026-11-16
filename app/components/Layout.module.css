@@ -2,7 +2,9 @@
   min-height: 100vh;
   display: grid;
   grid-template-rows: auto 1fr 20px;
-  padding: 40px 0 80px;
+  /* minmax(0, ...) stops wide tables and code blocks from stretching the page */
+  grid-template-columns: minmax(0, 1fr);
+  padding: 20px 0 80px;
   gap: 64px;
 }
 

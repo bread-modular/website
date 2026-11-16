@@ -7,7 +7,7 @@ level: Intermediate
 
 This is the second hands-on audio electronics course created by Bread Modular.
 
-In this course, we are going to build a **Vactrol-based Low Pass Gate**. It's the exact circuit inside our [LOW](/modules/low) module:
+In this course, we are going to build a **Vactrol-based Low Pass Gate**. It's the exact circuit inside our [LOW](/original/modules/low) module:
 
 ![LOW module schematic](/images/courses/rc-filters/sch-low-full.png)
 
@@ -17,4 +17,4 @@ Just like the previous course, we learn by building and listening. We use a few 
 
 > 💡 This course builds on top of the [Introduction to Audio Electronics](/courses/intro-to-audio-electronics) course. Make sure you are comfortable with voltage dividers, the 10X rule, opamp buffers and Vactrols before you start.
 
-> 💡 This course is meant to be used with the [Bread Modular Lab Kit](/modules/lab-kit). But you can learn the concepts and use them with your own electronics lab setup too.
+> 💡 This course is meant to be used with the [Bread Modular Lab Kit](/original/modules/lab-kit). But you can learn the concepts and use them with your own electronics lab setup too.

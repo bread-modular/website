@@ -20,13 +20,14 @@ export async function generateMetadata({ params }: {params: Promise<{ id: string
   }
 
   return {
-    title: `${moduleData.title} | Bread Modular`,
+    title: `${moduleData.title} | Bread Modular Original`,
     description: moduleData.description,
+    alternates: { canonical: `/original/modules/${id}` },
     openGraph: {
       title: moduleData.title,
       description: moduleData.description,
       type: 'article',
-      url: `/modules/${id}`,
+      url: `/original/modules/${id}`,
       images: [
         {
           url: moduleData.image,

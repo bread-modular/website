@@ -21,7 +21,7 @@ We recommend using a PCB assembly service like [JLCPCB](https://jlcpcb.com) to f
 
 ## Base 
 
-We recommend using our [base](/modules/base) to stack modules and patch them, as it handles power and audio output. However, you don't need to use it. You can use a simple breadboard as a primitive base. Make sure to power it as follows:
+We recommend using our [base](/original/modules/base) to stack modules and patch them, as it handles power and audio output. However, you don't need to use it. You can use a simple breadboard as a primitive base. Make sure to power it as follows:
 
 * +3.3V - Use the top rail + 
 * 0V - Use the bottom rail +

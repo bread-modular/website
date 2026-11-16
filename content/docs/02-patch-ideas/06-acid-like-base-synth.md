@@ -3,7 +3,7 @@ title: ACID‑Like Bass Synth
 summary: Build an acid‑style bass synth using the SVF filter and friends
 ---
 
-In this patch, we’ll build a classic acid bass synth using the [SVF](/modules/svf) filter (especially its resonance), along with the [8bit](/modules/8bit) and [ENV](/modules/env) modules.
+In this patch, we’ll build a classic acid bass synth using the [SVF](/original/modules/svf) filter (especially its resonance), along with the [8bit](/original/modules/8bit) and [ENV](/original/modules/env) modules.
 
 Hear how it sounds:
 
@@ -56,8 +56,8 @@ Try adjusting the ENV and SVF knobs to hear how they affect the sound. Hover ove
 This is the basic patch. Try these tweaks to make it more interesting:
 
 * Use the HF (high‑pass) and BP (band‑pass) outputs instead of the LF (low‑pass) output of the SVF module.
-* Add the [DRIVE](/modules/drive) after the SVF to introduce distortion.
-* Use the [MCO](/modules/mco) module instead of 8bit for the basic sound source.
-* Add the [V2CA](/modules/v2ca) after the SVF for VCA control (use the same envelope for the V2CA).
+* Add the [DRIVE](/original/modules/drive) after the SVF to introduce distortion.
+* Use the [MCO](/original/modules/mco) module instead of 8bit for the basic sound source.
+* Add the [V2CA](/original/modules/v2ca) after the SVF for VCA control (use the same envelope for the V2CA).
 * Use a different envelope for the ENV module (try a second ENV or a GATE).
 

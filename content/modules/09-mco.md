@@ -42,10 +42,10 @@ Square waves are generated digitally and then mixed together using analog circui
 
 Here are some ideas:
 
-* Use [SVF](/modules/svf) and [ENV](/modules/env) with a short pulse envelope to create ACID sounds.
-* Use [LOW](/modules/low) with a gate input to produce solid bass sounds.
-* Use [SVF](/modules/svf) and [ENV](/modules/env) with a sustained envelope for lead sounds.
-* Use [Drive](/modules/drive) for more aggressive sounds.
+* Use [SVF](/original/modules/svf) and [ENV](/original/modules/env) with a short pulse envelope to create ACID sounds.
+* Use [LOW](/original/modules/low) with a gate input to produce solid bass sounds.
+* Use [SVF](/original/modules/svf) and [ENV](/original/modules/env) with a sustained envelope for lead sounds.
+* Use [Drive](/original/modules/drive) for more aggressive sounds.
 
 ## Inputs
 

@@ -1,6 +1,13 @@
 .content {
   font-size: 1.125rem;
   line-height: 1.6;
+  /* Long links and words wrap instead of widening the page on phones */
+  overflow-wrap: break-word;
+}
+
+.content pre {
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .content h2 {
@@ -410,5 +417,16 @@
 @media (max-width: 768px) {
   .columns {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Phones: images with their own max-width and inline formulas must not widen the page */
+@media (max-width: 768px) {
+  .content img {
+    max-width: 100% !important;
+  }
+
+  .content :not(pre) > code {
+    white-space: normal;
   }
 }

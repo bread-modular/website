@@ -36,7 +36,7 @@ outputs:
 
 This is a stereo line output module. It transforms the input signal (usually from a mixer) into a line-level output.
 
-> This is the same Line Out available in the [BASE](/modules/base) module, but as a separate module.
+> This is the same Line Out available in the [BASE](/original/modules/base) module, but as a separate module.
 
 ## Functionality
 

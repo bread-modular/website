@@ -37,9 +37,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const contentImage = await extractFirstImageFromHtml(doc.contentHtml);
   const imageUrl = contentImage || '/images/home-slide/01.jpg';
 
+  // Two categories can have a doc with the same title ("Using the MCC Module"),
+  // so name the category unless the title already says it
+  const categoryName = (await getDocCategories()).find(c => c.slug === category)?.name;
+  const pageTitle = !categoryName || doc.title.toLowerCase().includes(categoryName.toLowerCase())
+    ? doc.title
+    : `${doc.title} (${categoryName})`;
+
   return {
-    title: `${doc.title} | Bread Modular`,
+    title: `${pageTitle} | Bread Modular Original`,
     description: doc.summary,
+    alternates: { canonical: `/docs/${category}/${slug}` },
     openGraph: {
       title: doc.title,
       description: doc.summary,

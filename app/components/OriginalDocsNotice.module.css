@@ -1,0 +1,16 @@
+.notice {
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  background: #fafafa;
+  border-left: 3px solid var(--neutral-300, #d4d4d4);
+  font-size: 0.95rem;
+}
+
+.notice a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.notice a:hover {
+  opacity: 0.7;
+}

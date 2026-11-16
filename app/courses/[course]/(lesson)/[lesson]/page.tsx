@@ -34,8 +34,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = `${lesson.title} - ${course.title}`;
 
   return {
-    title: `${title} | Bread Modular`,
+    title: `${title} | Bread Modular Original`,
     description: lesson.summary,
+    alternates: { canonical: `/courses/${course.slug}/${lesson.slug}` },
     openGraph: {
       title,
       description: lesson.summary,

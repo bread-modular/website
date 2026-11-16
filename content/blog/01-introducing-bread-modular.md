@@ -34,7 +34,7 @@ The main goal behind Bread Modular is affordability. That's why we open-sourced 
 
 We also share where you can [find parts](/docs/technical-details/common-parts) & show how to [assemble modules](/docs/getting-started/build-it-yourself).
 
-Sometimes, you don't want to mess with assembling. So, we [sell](/modules) fully-assembled and semi-assembled modules with a sustainable profit margin.
+Sometimes, you don't want to mess with assembling. So, we [sell](/original/modules) fully-assembled and semi-assembled modules with a sustainable profit margin.
 
 ---
 

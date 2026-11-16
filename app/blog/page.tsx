@@ -25,6 +25,7 @@ export const metadata: Metadata = {
     images: ['/images/bread-modular-system.jpg'],
   },
   alternates: {
+    canonical: '/blog',
     types: {
       'application/rss+xml': [
         { url: '/rss.xml', title: 'Bread Modular Blog RSS Feed' }

@@ -36,7 +36,7 @@ outputs:
 
 This is a MIDI-controllable analog hi-hat module. You can also control the hi-hat via GATE & CV signals. 
 
-> You need to feed noise into the module to make it work. You may use our [Noise](/modules/noise) module.
+> You need to feed noise into the module to make it work. You may use our [Noise](/original/modules/noise) module.
 
 
 ## Features

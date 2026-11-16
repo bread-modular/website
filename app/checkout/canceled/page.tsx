@@ -16,7 +16,7 @@ export default function CheckoutCanceledPage() {
             <Link href="/cart" className={styles.primaryButton}>
               Return to Cart
             </Link>
-            <Link href="/modules" className={styles.secondaryButton}>
+            <Link href="/original/modules" className={styles.secondaryButton}>
               Continue Shopping
             </Link>
           </div>

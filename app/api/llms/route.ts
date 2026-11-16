@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { CASE_LAYOUTS, DEFAULT_CASE_CONFIG } from '@/lib/euro/case';
 
 // Simple YAML frontmatter parser
 function parseFrontmatter(content: string): { title: string, desc?: string } {
@@ -83,7 +84,7 @@ async function getDocsGroupedCleanUrls(root: string): Promise<Record<string, Arr
 export async function GET() {
   const root = /*turbopackIgnore: true*/ process.cwd();
   const docsGroups = await getDocsGroupedCleanUrls(path.join(root, 'content/docs'));
-  const modules = await getMarkdownFilesDetailedCleanUrls(path.join(root, 'content/modules'), '/modules');
+  const modules = await getMarkdownFilesDetailedCleanUrls(path.join(root, 'content/modules'), '/original/modules');
   const blog = await getMarkdownFilesDetailedCleanUrls(path.join(root, 'content/blog'), '/blog');
 
   function section(title: string, items: Array<{ url: string, title: string, desc?: string }>) {
@@ -103,7 +104,22 @@ export async function GET() {
   }
 
   const out = [
-    '# Bread Modular Documentation',
+    '# Bread Modular',
+    '',
+    '> Eurorack Made Affordable. Bread Modular makes Eurorack modules (launching in 2027) and a 3D printed',
+    '> Eurorack case with free STL files. Bread Modular Original, the earlier non-Eurorack platform, is documented below.',
+    '',
+    section('Eurorack', [
+      { url: '/', title: 'Bread Modular', desc: 'Eurorack Made Affordable: what is available today.' },
+      ...CASE_LAYOUTS.map(layout => ({
+        url: layout.id === DEFAULT_CASE_CONFIG.layout ? '/case' : `/case?layout=${layout.id}`,
+        title: `3D printed Eurorack case: ${layout.name} (${layout.cases} ${layout.cases === 1 ? 'case' : 'cases'}, ${layout.hp} HP)`,
+        desc: `${layout.description} Print list, hardware list and step by step assembly guide.`,
+      })),
+      { url: '/api/case', title: 'Case print list API (JSON)', desc: 'Query: layout, front, back, cable. Returns the parts to print with STL download URLs, the hardware and the assembly steps.' },
+      { url: '/firmwares', title: 'Firmwares', desc: 'Firmwares for the digital Eurorack modules (coming soon).' },
+    ]),
+    '# Bread Modular Original Documentation',
     '',
     docsSection(docsGroups),
     section('Modules', modules),

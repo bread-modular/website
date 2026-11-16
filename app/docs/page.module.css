@@ -10,6 +10,17 @@
   padding: 0 1rem;
 }
 
+/* The docs index has the Eurorack header: keep the title clear of its border */
+.belowTopBar {
+  padding: 40px 20px 0;
+}
+
+@media (min-width: 640px) {
+  .belowTopBar {
+    padding-top: 64px;
+  }
+}
+
 .content {
   min-width: 0;
   flex: 1;
@@ -188,3 +199,9 @@
     grid-template-columns: 1fr;
   }
 } 
+
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 48px 0 8px;
+}
