@@ -2,61 +2,227 @@
   max-width: 1024px;
   width: 100%;
   margin: 0 auto;
+  padding: 0 24px;
 }
 
 .headerContent {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  gap: 10px;
-}
-
-@media (min-width: 640px) {
-  .headerContent {
-    flex-direction: row;
-    gap: 0;
-  }
 }
 
 .logo {
   font-size: 1.125rem;
   font-weight: 500;
-  width: 298px;
-  height: 80px;
+  width: 190px;
+  height: 44px;
   position: relative;
+  display: block;
+  flex-shrink: 0;
+}
+
+.mobileActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.menuButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.menuIcon,
+.menuIconOpen {
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: currentColor;
+}
+
+.menuIcon::before,
+.menuIcon::after,
+.menuIconOpen::before,
+.menuIconOpen::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 22px;
+  height: 2px;
+  background: var(--foreground);
+  transition: transform 0.2s;
+}
+
+.menuIcon::before {
+  transform: translateY(-7px);
+}
+
+.menuIcon::after {
+  transform: translateY(7px);
+}
+
+.menuIconOpen {
+  background: transparent;
+}
+
+.menuIconOpen::before {
+  transform: rotate(45deg);
+}
+
+.menuIconOpen::after {
+  transform: rotate(-45deg);
+}
+
+.nav {
+  display: none;
+  flex-basis: 100%;
+  margin-top: 20px;
+  border-top: 1px solid var(--neutral-200);
+}
+
+.nav.navOpen {
   display: block;
 }
 
 .nav ul {
   display: flex;
-  gap: 20px;
+  flex-direction: column;
 }
 
-@media (min-width: 640px) {
-  .nav ul {
-    gap: 32px;
-  }
+.nav li {
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.nav li a {
+  display: block;
+  padding: 14px 0;
 }
 
 .nav a:hover {
   opacity: 0.7;
 }
 
+.cartItem {
+  display: none;
+}
+
 .separator {
   width: 100%;
   height: 1px;
   background: var(--neutral-200);
-  margin-top: 32px;
+  margin-top: 16px;
 }
 
-.hiddenOnMobile {
-  display: none;
+.variantBadge {
+  position: absolute;
+  right: 0;
+  bottom: -9px;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  padding: 1px 5px;
+  background: var(--neutral-200);
+  color: var(--neutral-600);
+}
+
+.variantSwitch {
+  margin-top: 20px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--neutral-600);
+}
+
+.variantSwitch a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+.variantSwitch a:hover {
+  opacity: 0.7;
 }
 
 @media (min-width: 640px) {
-  .hiddenOnMobile {
+  .header {
+    padding: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .headerContent {
+    flex-wrap: nowrap;
+  }
+
+  .logo {
+    width: 298px;
+    height: 80px;
+  }
+
+  .mobileActions {
+    display: none;
+  }
+
+  .nav,
+  .nav.navOpen {
+    display: block;
+    flex-basis: auto;
+    margin-top: 0;
+    border-top: 0;
+  }
+
+  .nav ul {
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .nav li {
+    border-bottom: 0;
+  }
+
+  .nav li a {
+    display: inline;
+    padding: 0;
+  }
+
+  .nav li.cartItem {
     display: block;
   }
-} 
+
+  .nav li.cartItem a {
+    display: flex;
+  }
+
+  .separator {
+    margin-top: 32px;
+  }
+
+  .variantBadge {
+    bottom: -6px;
+    font-size: 0.625rem;
+    padding: 2px 6px;
+  }
+
+  .variantSwitch {
+    margin-top: 16px;
+    text-align: right;
+  }
+}
+
+@media (min-width: 1120px) {
+  .nav ul {
+    gap: 32px;
+  }
+}

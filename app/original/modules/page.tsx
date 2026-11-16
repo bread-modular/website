@@ -8,17 +8,19 @@ import type { ModuleSpec } from '@/lib/modules';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
-  title: "Modules - Bread Modular",
+  title: "Modules - Bread Modular Original",
   description: "Explore our range of affordable, open-source modular synthesizer modules.",
+  alternates: { canonical: '/original/modules' },
   openGraph: {
-    title: "Modules - Bread Modular",
+    title: "Modules - Bread Modular Original",
     description: "Explore our range of affordable, open-source modular synthesizer modules.",
+    url: '/original/modules',
     images: ["/images/modules/starter-kit.jpg"],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Modules - Bread Modular",
+    title: "Modules - Bread Modular Original",
     description: "Explore our range of affordable, open-source modular synthesizer modules.",
     images: ["/images/modules/starter-kit.jpg"],
   },
@@ -81,6 +83,7 @@ export default async function ModulesPage() {
 
   return (
     <Layout>
+      <h1 className={styles.pageTitle}>Bread Modular Original Modules</h1>
       {categoryOrder.map((category) => {
         const categoryModules = modulesByCategory.get(category);
         if (!categoryModules || categoryModules.length === 0) return null;
@@ -99,7 +102,7 @@ export default async function ModulesPage() {
             {/* Featured Module (only for Featured category) */}
             {isFeatured && featuredModule && (
               <section className={styles.featuredModule} aria-label={`Featured module in ${category}`}>
-                <Link href={`/modules/${featuredModule.originalModuleId}`}>
+                <Link href={`/original/modules/${featuredModule.originalModuleId}`}>
                   <article className={styles.moduleCard}>
                     <div className={styles.moduleImageContainer}>
                       <Image
@@ -125,7 +128,7 @@ export default async function ModulesPage() {
                 {regularModules.map((module) => (
                   <Link 
                     key={module.id}
-                    href={`/modules/${module.originalModuleId}`}
+                    href={`/original/modules/${module.originalModuleId}`}
                     className={`${
                       module.size === 'double' ? styles.moduleDouble : 
                       module.size === 'triple' ? styles.moduleTriple : ''

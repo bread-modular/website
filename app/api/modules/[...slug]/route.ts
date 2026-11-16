@@ -27,7 +27,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   try {
     let content = await fs.readFile(filePath, 'utf8');
     // Rewrite internal links to append .md if not present
-    content = content.replace(/\]\((\/(docs|modules|blog)\/[^)\s]+?)(?<!\.md)\)/g, "]($1.md)");
+    content = content.replace(/\]\((\/(?:original\/)?(?:docs|modules|blog)\/[^)\s]+?)(?<!\.md)\)/g, "]($1.md)");
     return new Response(content, {
       headers: { 'Content-Type': 'text/markdown; charset=utf-8' }
     });

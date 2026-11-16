@@ -85,4 +85,4 @@ Listen to the decay. We never added an envelope generator, but the sound fades o
 - Remove the second stage (feed the U2A output to R5 directly). Compare the 6dB/octave and 12dB/octave versions.
 - Replace R6 with a 1k resistor. How does it change the maximum cutoff frequency?
 
-> 🎉 Yeah! Now you understand the complete LOW module, as we promised in the beginning. You can also build a [LOW](/modules/low) module yourself or get one for your Bread Modular system.
+> 🎉 Yeah! Now you understand the complete LOW module, as we promised in the beginning. You can also build a [LOW](/original/modules/low) module yourself or get one for your Bread Modular system.

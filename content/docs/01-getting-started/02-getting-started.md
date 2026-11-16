@@ -7,7 +7,7 @@ Since we are Open Source, you can get started with Bread Modular in a couple of 
 
 ## 1. Get the Starter Kit
 
-You can [buy](/modules/starter-kit) the Starter Kit with all the essential modules. Once you get the kit, it's just about patching & making sounds.
+You can [buy](/original/modules/starter-kit) the Starter Kit with all the essential modules. Once you get the kit, it's just about patching & making sounds.
 
 ![Bread Modular Starter Kit](/images/modules/starter-kit.jpg)
 
@@ -15,11 +15,11 @@ If you want to extend your system, you can follow the steps below:
 
 ## 2. Order Individually
 
-If you know exactly what you are looking for, you can [order](/modules) individual modules & build your Bread Modular system. We highly recommend you include the [base](/modules/base) module. 
+If you know exactly what you are looking for, you can [order](/original/modules) individual modules & build your Bread Modular system. We highly recommend you include the [base](/original/modules/base) module. 
 
 ## 3. Assemble Yourself
 
-If you are comfortable with soldering & sourcing general electronic parts, this is the way to go. You can buy PCBs with assembled SMT components from our [store](/modules). 
+If you are comfortable with soldering & sourcing general electronic parts, this is the way to go. You can buy PCBs with assembled SMT components from our [store](/original/modules). 
 
 ![How to buy semi-assembled modules](/images/docs/buy-semi-assembled.png)
 
@@ -29,7 +29,7 @@ If you are comfortable with soldering & sourcing general electronic parts, this 
 * Semi-assembled modules come with pre-assembled SMT components, but you need to solder potentiometers, sockets & pin headers.
 * Fully assembled modules are pre-programmed with firmware for our digital & hybrid modules, for semi-assembled modules you have to program the firmware using our given source code.
 
-Then you can source [additional parts](/docs/technical-details/common-parts) as listed in the docs. For example, these are the external parts you need to source for the [hihat](/modules/hihat#additional-parts) module.
+Then you can source [additional parts](/docs/technical-details/common-parts) as listed in the docs. For example, these are the external parts you need to source for the [hihat](/original/modules/hihat#additional-parts) module.
 
 ## 4. Build from Scratch
 

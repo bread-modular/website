@@ -3,7 +3,7 @@ title: Firmware - FX Rack
 summary: Learn about the FX Rack firmware with delay, reverb, and comb filter effects.
 ---
 
-FX Rack is a professional-quality effects processor designed to work with the [4mix](/modules/4mix)'s send/return setup. It provides delay, reverb, and comb filter effects with independent processing for two audio channels.
+FX Rack is a professional-quality effects processor designed to work with the [4mix](/original/modules/4mix)'s send/return setup. It provides delay, reverb, and comb filter effects with independent processing for two audio channels.
 
 ## Features
 

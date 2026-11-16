@@ -1,6 +1,7 @@
 import Layout from '@/app/components/Layout';
 import SidebarNav from '@/app/components/SidebarNav';
 import { getDocCategories } from '@/lib/docs';
+import OriginalDocsNotice from '@/app/components/OriginalDocsNotice';
 import styles from './layout.module.css';
 
 // The sidebar lives in a layout so it stays mounted (keeping its scroll
@@ -20,7 +21,7 @@ export default async function DocsArticleLayout({ children }: { children: React.
       <div className={styles.container}>
         <SidebarNav
           eyebrow="Documentation"
-          title="Bread Modular Docs"
+          title="Bread Modular Original Docs"
           titleHref="/docs"
           sections={sections}
           action={
@@ -35,7 +36,10 @@ export default async function DocsArticleLayout({ children }: { children: React.
             </a>
           }
         />
-        <div className={styles.content}>{children}</div>
+        <div className={styles.content}>
+          <OriginalDocsNotice />
+          {children}
+        </div>
       </div>
     </Layout>
   );

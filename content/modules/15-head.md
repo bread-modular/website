@@ -37,7 +37,7 @@ outputs:
 
 This is a stereo headphone output module. It can drive any DJ or studio headphones.
 
-> This is the same headphone output available in the [BASE](/modules/base) module, but as a separate module.
+> This is the same headphone output available in the [BASE](/original/modules/base) module, but as a separate module.
 
 ## Functionality
 

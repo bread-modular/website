@@ -128,3 +128,10 @@
 .categoryHeading:first-child {
   margin-top: 0;
 } 
+/* Sits closer to the first category than the 64px gap of the layout */
+.pageTitle {
+  font-size: 1.875rem;
+  font-weight: 500;
+  line-height: 1.3;
+  margin-bottom: -24px;
+}

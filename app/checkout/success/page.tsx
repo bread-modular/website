@@ -23,7 +23,7 @@ export default function CheckoutSuccessPage() {
           <h1>Thank you for your purchase!</h1>
           <p>Your order has been received and is being processed.</p>
           <p>You should receive a confirmation email shortly.</p>
-          <Link href="/modules" className={styles.continueShoppingLink}>
+          <Link href="/original/modules" className={styles.continueShoppingLink}>
             Continue Shopping
           </Link>
         </div>

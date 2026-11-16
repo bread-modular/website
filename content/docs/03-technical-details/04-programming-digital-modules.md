@@ -11,7 +11,7 @@ Most of the digital and hybrid modules of bread Modular including 8bit and MIDI 
 
 In order to program these modules, we need an interface between the computer and the module. That's a programmer. In this case we use a programmer with a protocol called UPDI (hence UPDI programmer).
 
-If you need the easiest way, you can get our [updi-programmer](/modules/updi-programmer) or you can [convert](https://youtu.be/YOGeoW_QySs?si=nZRVHnHZheLrTDw1&t=47) any Arduino into such a programmer. 
+If you need the easiest way, you can get our [updi-programmer](/original/modules/updi-programmer) or you can [convert](https://youtu.be/YOGeoW_QySs?si=nZRVHnHZheLrTDw1&t=47) any Arduino into such a programmer. 
 
 ## Interfacing
 
@@ -75,7 +75,7 @@ Yeah! You have successfully programmed your module.
 
 ## Experimentation
 
-Here's the fun part. Just don't stop here. Experiment with the source code and customize it. Especially firmwares for modules like [8bit](/modules/8bit). 
+Here's the fun part. Just don't stop here. Experiment with the source code and customize it. Especially firmwares for modules like [8bit](/original/modules/8bit). 
 
 If you are new to programming, use an IDE like [Cursor](https://www.cursor.com) to help you with the use of AI. 
 

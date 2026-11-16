@@ -6,7 +6,7 @@ summary: Meet our new 16bit module - a powerful real-time audio computer with we
 image: /images/docs/16bit-mcc-cascade-patch.png
 ---
 
-When we first launched Bread Modular, one of the things we lacked was effects and a way to run complex sound sources. [8bit](/modules/8bit) is quite good in its way, but wasn't capable enough.
+When we first launched Bread Modular, one of the things we lacked was effects and a way to run complex sound sources. [8bit](/original/modules/8bit) is quite good in its way, but wasn't capable enough.
 
 We tried different options including ESP32, Daisy Seed, and even custom STM32 designs. But everything had its own issues, and we couldn't find the best fit for us.
 
@@ -16,7 +16,7 @@ A couple of months back, our PCB assembly provider JLCPCB launched official supp
 
 It's not as powerful as Daisy Seed or as feature-rich as ESP32. But it's small, not so power-hungry, and most importantly, the development workflow is very smooth so we can iterate extremely fast.
 
-It doesn't come with a DAC or PSRAM. So, we made a module from the ground up that adds those capabilities: Enter [16bit](/modules/16bit).
+It doesn't come with a DAC or PSRAM. So, we made a module from the ground up that adds those capabilities: Enter [16bit](/original/modules/16bit).
 
 ## The Firmware
 
@@ -36,7 +36,7 @@ Check the [16bit documentation](/docs/16bit/introduction) to learn more about it
 
 Since MIDI is routed everywhere in Bread Modular, we want 16bit to be MIDI native. Yes, it can send and receive MIDI. But you can also control effects and other parameters using MIDI CC, just like in a DAW.
 
-To make that smooth, we introduced the [MCC](/modules/mcc) module where you can control up to 12 CCs using physical knobs. This brings 16bit into its own modular setup. Have a look at the following examples:
+To make that smooth, we introduced the [MCC](/original/modules/mcc) module where you can control up to 12 CCs using physical knobs. This brings 16bit into its own modular setup. Have a look at the following examples:
 
 ### Controlling a Ladder Filter with MCC
 
@@ -52,7 +52,7 @@ To make that smooth, we introduced the [MCC](/modules/mcc) module where you can 
 
 We believe 16bit is an essential part of Bread Modular. So, we replaced the Line-In module of the Starter Kit with the 16bit. We did it even without increasing the price.
 
-[Have a look at our Starter Kit](/modules/starter-kit).
+[Have a look at our Starter Kit](/original/modules/starter-kit).
 
 ## What's Next
 
@@ -62,5 +62,5 @@ We know this is not enough, but the core system is very stable and flexible. We'
 
 Finally, keeping with the Bread Modular spirit, everything about 16bit is open source—from the hardware designs to the firmware. And our development is open; check our GitHub [commits](https://github.com/bread-modular/bread-modular/commits/main/).
 
-We hope you'll love [16bit](/modules/16bit).
+We hope you'll love [16bit](/original/modules/16bit).
 

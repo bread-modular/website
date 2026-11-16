@@ -28,7 +28,7 @@ There are two major connectivity options:
 - 5 pin DIN
 - 3.5mm TRS
 
-We use 3.5mm TRS MIDI as it just uses a stereo aux cable. Although type-A TRS MIDI is the standard, the synth world is [divided](https://minimidi.world) between type-A and type-B. We support both types. Just change the jumper in the [MIDI](/modules/midi) module.
+We use 3.5mm TRS MIDI as it just uses a stereo aux cable. Although type-A TRS MIDI is the standard, the synth world is [divided](https://minimidi.world) between type-A and type-B. We support both types. Just change the jumper in the [MIDI](/original/modules/midi) module.
 
 ## Single Cable Communication
 
@@ -44,7 +44,7 @@ This is how we accept TRS MIDI and route it between modules.
 
 ### MIDI Host Module
 
-The [MIDI](/modules/midi) module accepts MIDI via a TRS cable(either type A or B). Then it splits MIDI data from channels 1 to 8 into separate MIDI streams. You can send one of these MIDI streams to a given module via a single patch cable.
+The [MIDI](/original/modules/midi) module accepts MIDI via a TRS cable(either type A or B). Then it splits MIDI data from channels 1 to 8 into separate MIDI streams. You can send one of these MIDI streams to a given module via a single patch cable.
 
 It also has GATE output for each channel to trigger any module that does not support MIDI but is willing to accept a GATE signal.
 
@@ -52,7 +52,7 @@ It also has GATE output for each channel to trigger any module that does not sup
 
 ### Accepting MIDI
 
-Handling MIDI is up to individual modules. Most of the voice modules in Bread Modular are MIDI-supported. Check the individual [module docs](/modules) for supported MIDI features.
+Handling MIDI is up to individual modules. Most of the voice modules in Bread Modular are MIDI-supported. Check the individual [module docs](/original/modules) for supported MIDI features.
 
 Since we use standard serial MIDI, you can use any existing Arduino (or similar) code to accept MIDI. You just need to forward the incoming MIDI signal into a serial RX pin of your microcontroller.
 
@@ -72,11 +72,11 @@ We categorize modules based on how they process MIDI.
 
 ### Current Modules
 
-- [8bit](/modules/8bit) (digital)
-- [hihat](/modules/hihat) (analog)
-- [mco](/modules/mco) (hybrid)
-- [env](/modules/env) (digital)
-- [noise](/modules/noise) (digital)
+- [8bit](/original/modules/8bit) (digital)
+- [hihat](/original/modules/hihat) (analog)
+- [mco](/original/modules/mco) (hybrid)
+- [env](/original/modules/env) (digital)
+- [noise](/original/modules/noise) (digital)
 
 ### Planned Modules
 

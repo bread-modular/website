@@ -15,4 +15,4 @@ By the end of the course, you will understand everything in the above diagram an
 
 We are going to learn audio electronics from first principles, so you will be able to come up with your own original designs. Rather than relying on pure math models, we use approximations and experiments to find the best-sounding design.
 
-> 💡 This course is meant to be used with the [Bread Modular Lab Kit](/modules/lab-kit). But you can learn the concepts and use them with your own electronics lab setup too.
+> 💡 This course is meant to be used with the [Bread Modular Lab Kit](/original/modules/lab-kit). But you can learn the concepts and use them with your own electronics lab setup too.

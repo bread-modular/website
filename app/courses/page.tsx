@@ -5,10 +5,11 @@ import Link from 'next/link';
 import { getAllCourses } from '@/lib/courses';
 
 export const metadata: Metadata = {
-  title: 'Courses - Bread Modular',
+  title: 'Courses - Bread Modular Original',
   description: 'Hands-on courses to learn audio electronics and synthesis with Bread Modular.',
+  alternates: { canonical: '/courses' },
   openGraph: {
-    title: 'Courses - Bread Modular',
+    title: 'Courses - Bread Modular Original',
     description: 'Hands-on courses to learn audio electronics and synthesis with Bread Modular.',
     type: 'website',
     url: '/courses',
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Courses - Bread Modular',
+    title: 'Courses - Bread Modular Original',
     description: 'Hands-on courses to learn audio electronics and synthesis with Bread Modular.',
     images: ['/images/courses/audio-electronics/part1-02.jpg'],
   },

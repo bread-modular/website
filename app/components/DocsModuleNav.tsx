@@ -13,7 +13,7 @@ export default async function ModuleNav({ currentModuleId }: { currentModuleId: 
           {modules.map((module) => (
             <Link
               key={module.id}
-              href={`/modules/${module.id}`}
+              href={`/original/modules/${module.id}`}
               className={`${styles.link} ${module.id === currentModuleId ? styles.active : ''}`}
               data-active={module.id === currentModuleId}
             >

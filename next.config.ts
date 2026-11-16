@@ -2,6 +2,20 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  // Bread Modular Original module pages moved under /original/modules so the
+  // Eurorack modules can own /modules. Keep old links (and rankings) alive.
+  async redirects() {
+    return [
+      { source: '/modules/:path+', destination: '/original/modules/:path+', permanent: true },
+      // No Eurorack modules page yet: temporary, so /modules can come back later
+      { source: '/modules', destination: '/original/modules', permanent: false },
+    ];
+  },
+  async headers() {
+    return [
+      { source: '/case/stl/:file*', headers: [{ key: 'Content-Type', value: 'model/stl' }] },
+    ];
+  },
   async rewrites() {
     return [
       {
@@ -17,7 +31,7 @@ const nextConfig: NextConfig = {
         destination: '/api/docs/:path*.md',
       },
       {
-        source: '/modules/:path*.md',
+        source: '/original/modules/:path*.md',
         destination: '/api/modules/:path*.md',
       },
       {

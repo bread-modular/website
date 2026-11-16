@@ -3,7 +3,7 @@ title: Getting to Know the Lab Kit
 summary: Get some audio out, use the built-in oscilloscope, make an LFO and learn how the breadboard works.
 ---
 
-To jump-start the process, we are going to use the [Bread Modular Lab Kit](/modules/lab-kit). It's the same tool we use to make new designs at Bread Modular. With it, you can focus solely on the electronic circuit (or module) you are building.
+To jump-start the process, we are going to use the [Bread Modular Lab Kit](/original/modules/lab-kit). It's the same tool we use to make new designs at Bread Modular. With it, you can focus solely on the electronic circuit (or module) you are building.
 
 ![Bread Modular Lab Kit](/images/courses/audio-electronics/part1-02.jpg)
 
@@ -58,7 +58,7 @@ An LFO is useful to drive a VCA. We don't have a built-in LFO, but using the 16b
 - Make sure the **MIDI GATE** light is turned off (if not, press the **MIDI GATE** button for half a second)
 - Use the first potentiometer (CV1) of Env to control the attack
 - Use the second potentiometer (CV2) to control the decay
-- There are [multiple envelope algorithms](/modules/env#algorithms) & you can change them by pressing the **ALGO CHANGE** button for half a second
+- There are [multiple envelope algorithms](/original/modules/env#algorithms) & you can change them by pressing the **ALGO CHANGE** button for half a second
 
 ## 4. Using the Breadboard
 
