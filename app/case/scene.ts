@@ -31,7 +31,8 @@ const FLAT_AZIMUTH = 0.3;
 const FIT_TIME = 1.2;                            // seconds the camera takes to a new view
 const STEP_BAR = 76;                             // px at the bottom of the preview that the step bar covers
 
-export function createCaseScene(container: HTMLElement): CaseScene {
+// `onBusy` is told when print files are loading for a new case, and when they are in
+export function createCaseScene(container: HTMLElement, onBusy: (busy: boolean) => void = () => {}): CaseScene {
   const stage = createStage(container, 560);
   const { renderer, scene, camera } = stage;
   camera.position.copy(HOME);
@@ -205,8 +206,15 @@ export function createCaseScene(container: HTMLElement): CaseScene {
     const config = normalizeCaseConfig(input);
     const key = caseConfigToQuery({ ...config, color: 'black' });   // the colour needs no rebuild
     const id = ++request;
-    if (key !== builtKey || !built) {
-      const next = await caseKit.build(config);
+    const rebuild = key !== builtKey || !built;
+    onBusy(rebuild);   // a change that needs no rebuild also ends the wait for an older one
+    if (rebuild) {
+      let next: CaseModel;
+      try {
+        next = await caseKit.build(config);
+      } finally {
+        if (!disposed && id === request) onBusy(false);
+      }
       if (disposed || id !== request) return;
       clearModel();
       built = next;

@@ -17,6 +17,7 @@ export default function CaseViewer({ config, view, children }: Props) {
   const sceneRef = useRef<CaseScene | null>(null);
   const latest = useRef({ config, view });
   const [status, setStatus] = useState<'loading' | 'ready' | 'failed'>('loading');
+  const [busy, setBusy] = useState(false);   // print files of a new case are loading
 
   useEffect(() => {
     latest.current = { config, view };
@@ -28,7 +29,7 @@ export default function CaseViewer({ config, view, children }: Props) {
     import('./scene')
       .then(({ createCaseScene }) => {
         if (cancelled || !containerRef.current) return;
-        const scene = createCaseScene(containerRef.current);
+        const scene = createCaseScene(containerRef.current, setBusy);
         scene.update(latest.current.config, latest.current.view);
         sceneRef.current = scene;
         setStatus('ready');
@@ -45,7 +46,12 @@ export default function CaseViewer({ config, view, children }: Props) {
 
   return (
     <div ref={containerRef} className={styles.viewer} role="img" aria-label="3D preview of the configured case">
-      {status === 'loading' && <p className={styles.viewerNote}>Loading 3D preview…</p>}
+      {(status === 'loading' || busy) && (
+        <div className={styles.viewerLoading} role="status">
+          <span className={styles.viewerSpinner} aria-hidden="true" />
+          <p>{status === 'loading' ? 'Loading 3D preview…' : 'Loading parts…'}</p>
+        </div>
+      )}
       {status === 'failed' && <p className={styles.viewerNote}>The 3D preview needs WebGL. The print list below still works.</p>}
       {status === 'ready' && !children && <p className={styles.viewerHint}>Drag to rotate · Scroll or pinch to zoom</p>}
       {children}
