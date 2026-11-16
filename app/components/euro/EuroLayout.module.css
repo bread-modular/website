@@ -30,9 +30,7 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.86);
-  backdrop-filter: saturate(160%) blur(14px);
-  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  background: #fff;
   border-bottom: 1px solid var(--line);
 }
 
