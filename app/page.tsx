@@ -38,63 +38,77 @@ export default function Home() {
     <EuroLayout>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
 
-      <section className={styles.hero} aria-label="Introduction">
-        <div className={ui.container}>
-          <h1 className={styles.heroTitle}>Eurorack Made Affordable</h1>
-          <p className={styles.heroSecond}>A complete system with MIDI native modules.</p>
-          <p className={styles.heroText}>
-            Launching in 2027. For now, 3D print our Eurorack cases.
-          </p>
-          <div className={styles.heroActions}>
-            <Link href="/case" className={ui.button}>Make your 3D printed case</Link>
+      <section className={`${ui.container} ${styles.hero}`} aria-labelledby="home-title">
+        <div className={styles.heroIntro}>
+          <div>
+            <h1 id="home-title" className={styles.heroTitle}>Eurorack Made <span>Affordable</span></h1>
+          </div>
+          <div className={styles.heroCopy}>
+            <p className={styles.heroSecond}>A complete system with MIDI native modules.</p>
+            <p className={styles.heroText}>
+              Launching in 2027. For now, 3D print our Eurorack cases.
+            </p>
+            <div className={styles.heroActions}>
+              <Link href="/case" className={ui.button}>Make your 3D printed case <span aria-hidden="true">→</span></Link>
+            </div>
           </div>
         </div>
-        <div className={styles.rackWrap}>
+
+        <figure className={styles.rackWrap}>
           <div className={styles.rackStage}>
             <HeroRack />
           </div>
-          <p className={styles.rackCaption}>
-            The case configurator, playing by itself: from one 42 HP case to a 252 HP studio set. The modules are still in the works.
-          </p>
-        </div>
+          <figcaption className={styles.rackCaption}>
+            <span><strong>One case. Room to grow.</strong> From 42 HP to a 252 HP studio set.</span>
+            <span>Case files available now. Modules in development.</span>
+          </figcaption>
+        </figure>
       </section>
 
-      <section className={ui.container} aria-labelledby="home-instagram">
-        <div className={`${styles.callout} ${styles.calloutFirst}`}>
-          <div>
-            <p className={ui.eyebrow}>Updates</p>
-            <h2 id="home-instagram" className={styles.calloutTitle}>Follow the progress on Instagram</h2>
-            <p className={styles.sectionText}>
-              We post updates there on the way to the 2027 launch.
-            </p>
+      <div className={ui.container}>
+        <section id="home-updates" className={styles.updates} aria-labelledby="home-instagram">
+          <div className={styles.instagram}>
+            <div>
+              <p className={styles.eyebrow}>From the workbench</p>
+              <h2 id="home-instagram" className={styles.sectionTitle}>Follow the build.</h2>
+              <p className={styles.sectionText}>
+                See what we’re working on, one update at a time.<br className={styles.desktopBreak} />
+                {' '}Follow our progress towards the 2027 launch on Instagram.
+              </p>
+            </div>
+            <a href="https://instagram.com/breadmodular" className={styles.instagramLink}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none" />
+              </svg>
+              <span><strong>@breadmodular</strong><span>Follow on Instagram</span></span>
+              <span className={styles.linkArrow} aria-hidden="true">↗</span>
+            </a>
           </div>
-          <Link href="https://instagram.com/breadmodular" className={ui.button}>@breadmodular on Instagram</Link>
-        </div>
-      </section>
+          <div className={styles.newsletter}>
+            <NewsletterSignup variant="minimal" />
+          </div>
+        </section>
 
-      <div className={styles.newsletter}>
-        <NewsletterSignup />
-      </div>
-
-      <section className={ui.container} aria-label="Social media links">
-        <nav className={styles.socials} aria-label="Social media navigation">
-          <Link href="https://youtube.com/@breadmodular">YouTube <span>for tutorials</span></Link>
-          <Link href="https://discord.gg/W72YQKU7mq">Discord <span>for discussions</span></Link>
+        <nav className={styles.socials} aria-label="More from the community">
+          <div>
+            <a href="https://youtube.com/@breadmodular" className={styles.textLink}>Tutorials on YouTube <span aria-hidden="true">↗</span></a>
+            <a href="https://discord.gg/W72YQKU7mq" className={styles.textLink}>Join us on Discord <span aria-hidden="true">↗</span></a>
+          </div>
         </nav>
-      </section>
 
-      <section className={ui.container} aria-labelledby="home-original">
-        <div className={styles.callout}>
+        <section className={styles.original} aria-labelledby="home-original">
           <div>
-            <p className={ui.eyebrow}>Still here</p>
-            <h2 id="home-original" className={styles.calloutTitle}>Bread Modular Original</h2>
+            <p className={styles.eyebrow}>Where it started</p>
+            <h2 id="home-original" className={styles.originalTitle}>Bread Modular Original</h2>
             <p className={styles.sectionText}>
-              The affordable, open source modular synth platform with modular MIDI and USB-C power.
+              Our affordable, open source modular synth platform with modular MIDI and USB-C power. Still here, still yours to explore.
             </p>
           </div>
-          <Link href="/original" className={ui.buttonGhost}>See Original</Link>
-        </div>
-      </section>
+          <Link href="/original" className={styles.textLink}>Explore Original <span aria-hidden="true">→</span></Link>
+        </section>
+      </div>
     </EuroLayout>
   );
 }

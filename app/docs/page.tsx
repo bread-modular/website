@@ -32,8 +32,8 @@ export default async function DocsPage() {
   
   return (
     <EuroLayout>
-      <div className={`${styles.fullWidthContainer} ${styles.belowTopBar}`}>
-        <main className={styles.content}>
+      <div className={ui.container}>
+        <div className={`${styles.content} ${styles.belowTopBar}`}>
           <h1>Documentation</h1>
           
           <p className={styles.introText}>
@@ -100,7 +100,7 @@ export default async function DocsPage() {
               <p>Documentation is coming soon.</p>
             </div>
           )}
-        </main>
+        </div>
       </div>
     </EuroLayout>
   );

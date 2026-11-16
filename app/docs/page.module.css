@@ -10,9 +10,9 @@
   padding: 0 1rem;
 }
 
-/* The docs index has the Eurorack header: keep the title clear of its border */
+/* Use the shared Eurorack container for alignment with the header logo. */
 .belowTopBar {
-  padding: 40px 20px 0;
+  padding-top: 40px;
 }
 
 @media (min-width: 640px) {
