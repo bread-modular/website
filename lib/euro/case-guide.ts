@@ -26,14 +26,14 @@ const HAS_MIDDLE: LayoutId[] = ['double', 'double-tier', 'studio'];
 const HAS_FUSED: LayoutId[] = ['quad', 'studio'];
 
 const DOUBLE_ROW = [
-  'Fit two rails to the left side panel with two M3 x 10 mm screws.',
+  'Fit two rails to the left side panel with two M3 x 8 mm screws.',
   'Slide the middle frame onto the two free rail ends. They go into its closed sockets along their length and need no screws. The lip on the middle frame faces the right case.',
   'Put the other two rails into the right side of the middle frame, then close the row with the right side panel and two more screws.',
   'Do not force the rails to the back of the sockets. A small gap is meant to stay there.',
 ];
 
 const FUSED_SET = [
-  'Put four rails, two per row, into the fused left side panel along their length. Fix them with four M3 x 10 mm screws from outside.',
+  'Put four rails, two per row, into the fused left side panel along their length. Fix them with four M3 x 8 mm screws from outside.',
   'Slide the fused middle frame onto the four free rail ends. No screws there.',
   'Put the other four rails into the middle frame, then add the fused right side panel and its four screws.',
 ];
@@ -54,7 +54,7 @@ function bottomSockets(layout: LayoutId): string {
 }
 
 function railPoints(layout: LayoutId): { text: string; points?: string[] } {
-  const single = 'Slide the rail ends into the notches in the top corners of the side panels, from the front and from the back. The hex sockets face up. Front and back rail are the same part. Fix every rail end with an M3 x 10 mm screw through the side panel wall, into the spacer in the rail end.';
+  const single = 'Slide the rail ends into the notches in the top corners of the side panels, from the front and from the back. The hex sockets face up. Front and back rail are the same part. Fix every rail end with an M3 x 8 mm screw through the side panel wall, into the spacer in the rail end.';
   switch (layout) {
     case 'single':
       return { text: single };
@@ -113,15 +113,15 @@ export function getCaseSteps(input: CaseConfig): CaseStep[] {
   const count = (kind: 'spacer' | 'screw', length?: number) => order.find(line => line.kind === kind && line.length === length)?.qty ?? 0;
   const orderPoints = [
     `${count('spacer')} x M3 hex spacer (standoff): 10 mm long, female thread at both ends, 5.5 mm across the flats. Brass ones work well. The printed sockets are made for 5.5 mm, so check the width before you buy.`,
-    `${count('screw', 10)} x M3 x 10 mm socket head screw, for the rail ends.`,
-    `${count('screw', 6)} x M3 x 6 mm socket head screw, for the bottom ${many ? 'plates' : 'plate'}.`,
+    `${count('screw', 8)} x M3 x 8 mm socket head screw: ${[
+      `${railEnds} for the rail ends`,
+      `${bottom} for the bottom ${many ? 'plates' : 'plate'}`,
+      layout.tilted ? '16 for the stand plates' : '',
+      braces ? `up to ${braces * 12} for the top ${braces > 1 ? 'braces' : 'brace'}` : '',
+    ].filter(Boolean).join(', ')}. The whole case uses this one screw size.`,
   ];
-  if (count('screw', 8)) {
-    const uses = [layout.tilted ? '16 for the stand plates' : '', braces ? `up to ${braces * 12} for the top ${braces > 1 ? 'braces' : 'brace'}` : ''].filter(Boolean);
-    orderPoints.push(`${count('screw', 8)} x M3 x 8 mm socket head screw: ${uses.join(', ')}.`);
-  }
   orderPoints.push(
-    'For every module you mount: two more spacers and two more M3 x 6 mm screws. Count your modules and add them to the order.',
+    'For every module you mount: two more spacers and two more M3 x 8 mm screws. Count your modules and add them to the order.',
     'Socket head screws are also sold as hex socket cap screws (ISO 4762 or DIN 912). An M3 one has a head 5.5 mm wide and 3 mm high, which is what the printed recesses are made for.',
   );
   if (layout.tilted) orderPoints.push('4 x adhesive rubber foot, 12 x 12 mm, all the same thickness.');
@@ -167,7 +167,7 @@ export function getCaseSteps(input: CaseConfig): CaseStep[] {
     title: many ? 'Join the rails and the side panels' : 'Screw the rails to the side panels',
     text: rails.text,
     points: rails.points,
-    needs: [`${layout.cases * 2} x Rail`, `${railEnds} x M3 x 10 mm socket head screw`, '2.5 mm hex key'],
+    needs: [`${layout.cases * 2} x Rail`, `${railEnds} x M3 x 8 mm socket head screw`, '2.5 mm hex key'],
     show: ['side', 'middle', 'rail', ...SPACERS, 'screw-rail'],
     focus: middle || fused ? ['rail', 'middle', 'screw-rail'] : ['rail', 'screw-rail'],
     arrange: 'built',
@@ -192,12 +192,12 @@ export function getCaseSteps(input: CaseConfig): CaseStep[] {
   steps.push({
     id: 'bottom',
     title: many ? 'Screw on the bottom plates' : 'Screw on the bottom plate',
-    text: `With the frame still upside down, set ${many ? 'a bottom plate on every case' : 'the bottom plate on'}. The side panels drop into its sockets and the cover edges into its grooves. Fix ${many ? 'each plate' : 'it'} with four M3 x 6 mm screws from underneath, into the spacers in the side panels.`,
+    text: `With the frame still upside down, set ${many ? 'a bottom plate on every case' : 'the bottom plate on'}. The side panels drop into its sockets and the cover edges into its grooves. Fix ${many ? 'each plate' : 'it'} with four M3 x 8 mm screws from underneath, into the spacers in the side panels.`,
     points: [
       ...(middle || fused ? ['Two screws of each plate go into the middle frame. Seat a plate on both sides before you tighten it.'] : []),
       'The four holes in the middle of the plate are for the bus board that powers the modules.',
     ],
-    needs: [`${layout.cases} x Bottom plate`, `${bottom} x M3 x 6 mm socket head screw`, '2.5 mm hex key'],
+    needs: [`${layout.cases} x Bottom plate`, `${bottom} x M3 x 8 mm socket head screw`, '2.5 mm hex key'],
     show: ['side', 'middle', 'rail', ...SPACERS, 'screw-rail', 'cover', 'cable-cover', 'bottom', 'screw-bottom'],
     focus: ['bottom', 'screw-bottom'],
     arrange: 'built',
@@ -236,8 +236,8 @@ export function getCaseSteps(input: CaseConfig): CaseStep[] {
   steps.push({
     id: 'modules',
     title: 'Mount the modules',
-    text: `Turn the case upright. The first module of a row sits next to the 1 HP lip of the left side panel. Fix every module with two M3 x 6 mm screws into the spacers in the rails. The sockets are on a 2 HP grid.${layout.tilted ? ' Add modules and cables a few at a time, and check that the stand does not rock or slide.' : ''}`,
-    needs: ['2 x M3 x 6 mm socket head screw per module', '2 x M3 x 10 mm hex spacer per module'],
+    text: `Turn the case upright. The first module of a row sits next to the 1 HP lip of the left side panel. Fix every module with two M3 x 8 mm screws into the spacers in the rails. The sockets are on a 2 HP grid.${layout.tilted ? ' Add modules and cables a few at a time, and check that the stand does not rock or slide.' : ''}`,
+    needs: ['2 x M3 x 8 mm socket head screw per module', '2 x M3 x 10 mm hex spacer per module'],
     show: [...built, 'bus', 'modules'],
     focus: [],
     arrange: 'built',
