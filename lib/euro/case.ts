@@ -281,29 +281,23 @@ export function getCaseHardware(input: CaseConfig): HardwareLine[] {
       kind: 'spacer', label: 'M3x10 spacer', detail: 'Hex, 5.5 mm wide',
     },
     {
-      qty: railEnds, item: 'M3 x 10 mm socket head screw', use: 'Side panels to the rail ends.',
-      kind: 'screw', label: 'M3x10 screw', detail: 'Socket head', length: 10,
-    },
-    {
-      qty: bottom, item: 'M3 x 6 mm socket head screw', use: 'Bottom plates to the side panels. Add two more for every module you mount.',
-      kind: 'screw', label: 'M3x6 screw', detail: 'Socket head', length: 6,
+      // One screw size for the whole case keeps the order simple
+      qty: railEnds + bottom + stand + braces * 12,
+      item: 'M3 x 8 mm socket head screw',
+      use: [
+        `${railEnds} for the rail ends`,
+        `${bottom} for the bottom plates`,
+        stand ? `${stand} for the stand plates` : '',
+        braces ? `up to ${braces * 12} for the top ${braces > 1 ? 'braces' : 'brace'}` : '',
+      ].filter(Boolean).join(', ') + '. Add two more for every module you mount.',
+      kind: 'screw', label: 'M3x8 screw', detail: 'Socket head', length: 8,
     },
   ];
   if (stand) {
-    lines.push(
-      { qty: stand, item: 'M3 x 8 mm socket head screw', use: 'Stand plates to the side panels.', kind: 'screw', label: 'M3x8 screw', detail: 'Socket head', length: 8 },
-      {
-        qty: 4, item: '12 x 12 mm adhesive rubber foot',
-        use: 'Two under the stand plates, two under the front corners of the lower row. All the same thickness.',
-        kind: 'foot', label: 'Rubber foot', detail: '12 x 12 mm, adhesive',
-      },
-    );
-  }
-  if (braces) {
     lines.push({
-      qty: braces * 12, item: 'M3 x 8 mm socket head screw',
-      use: `Top brace: up to 12 per brace, at least 4. They replace the module screws under the brace.`,
-      kind: 'screw', label: 'M3x8 screw', detail: 'Socket head', length: 8,
+      qty: 4, item: '12 x 12 mm adhesive rubber foot',
+      use: 'Two under the stand plates, two under the front corners of the lower row. All the same thickness.',
+      kind: 'foot', label: 'Rubber foot', detail: '12 x 12 mm, adhesive',
     });
   }
   lines.push({ qty: null, item: 'Superglue', use: 'Holds the spacers in their sockets.', kind: 'glue', label: 'Superglue', detail: '' });
