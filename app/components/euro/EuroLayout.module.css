@@ -8,6 +8,7 @@
   --accent: #c8962d;
   --radius: 16px;
   --page: 1160px;
+  --header-height: 100px;
   --mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
   min-height: 100vh;
@@ -31,14 +32,13 @@
   top: 0;
   z-index: 50;
   background: #fff;
-  border-bottom: 1px solid var(--line);
 }
 
 .headerInner {
   max-width: var(--page);
   margin: 0 auto;
   padding: 0 20px;
-  height: 60px;
+  height: var(--header-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -148,7 +148,7 @@
   .nav {
     display: none;
     position: absolute;
-    top: 60px;
+    top: 100%;
     left: 0;
     right: 0;
     flex-direction: column;

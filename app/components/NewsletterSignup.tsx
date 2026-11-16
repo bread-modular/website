@@ -1,9 +1,15 @@
 'use client';
 
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent, useEffect, useId } from 'react';
 import styles from './NewsletterSignup.module.css';
 
-export default function NewsletterSignup() {
+interface NewsletterSignupProps {
+  variant?: 'default' | 'minimal';
+}
+
+export default function NewsletterSignup({ variant = 'default' }: NewsletterSignupProps) {
+  const minimal = variant === 'minimal';
+  const headingId = useId();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
@@ -53,20 +59,26 @@ export default function NewsletterSignup() {
     }
   };
 
-  const sectionClasses = `${styles.newsletterSection} ${visible ? styles.visible : ''}`;
+  const sectionClasses = `${styles.newsletterSection} ${visible ? styles.visible : ''} ${minimal ? styles.minimal : ''}`;
 
   return (
-    <section className={sectionClasses}>
-      <h2 className={styles.newsletterTitle}>STAY IN THE LOOP</h2>
-      <p className={styles.newsletterDescription}>
-        Subscribe to our newsletter for exclusive updates on new modules, tips, and community events.
-      </p>
+    <section className={sectionClasses} aria-labelledby={headingId}>
+      <div>
+        <h2 id={headingId} className={styles.newsletterTitle}>{minimal ? 'Be there for the first patch.' : 'STAY IN THE LOOP'}</h2>
+        <p className={styles.newsletterDescription}>
+          {minimal
+            ? 'Launch news and progress updates, straight to your inbox.'
+            : 'Subscribe to our newsletter for exclusive updates on new modules, tips, and community events.'}
+        </p>
+      </div>
       
       <form onSubmit={handleSubmit} className={styles.newsletterForm}>
         <div className={styles.inputWrapper}>
           <input
             type="email"
             name="email"
+            autoComplete="email"
+            inputMode="email"
             placeholder="Your email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -86,10 +98,10 @@ export default function NewsletterSignup() {
                 <span className={styles.dot}></span>
                 <span className={styles.dot}></span>
                 <span className={styles.dot}></span>
-                SUBSCRIBING
+                {minimal ? 'Subscribing' : 'SUBSCRIBING'}
               </span>
             ) : (
-              <span>SUBSCRIBE</span>
+              <span>{minimal ? 'Keep me posted' : 'SUBSCRIBE'}</span>
             )}
           </button>
         </div>

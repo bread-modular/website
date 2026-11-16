@@ -230,4 +230,148 @@
     padding-right: 28px;
     min-width: 140px;
   }
-} 
+}
+
+/* Opt-in Eurorack home variant. Original pages keep the existing card. */
+.minimal {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: start;
+  gap: 48px;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  text-align: left;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.minimal::before,
+.minimal .newsletterTitle::after {
+  display: none;
+}
+
+.minimal .newsletterTitle {
+  margin-bottom: 10px;
+  font-size: 1.375rem;
+  font-weight: 550;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.minimal .newsletterDescription {
+  max-width: 320px;
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+}
+
+.minimal .newsletterForm {
+  min-width: 0;
+  max-width: none;
+}
+
+.minimal .inputWrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 0;
+  overflow: visible;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.minimal .emailInput {
+  min-width: 0;
+  flex: 1 1 160px;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #d2d2ce;
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.9375rem;
+}
+
+.minimal .emailInput:focus {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.minimal .submitButton {
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--paper);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 550;
+  letter-spacing: 0;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.minimal .submitButton:hover {
+  transform: none;
+  box-shadow: none;
+  opacity: 0.85;
+}
+
+.minimal .submitButton:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.minimal .submitButton:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.minimal .privacyNote {
+  margin-top: 12px;
+  font-size: 0.6875rem;
+  font-style: normal;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 1000px) {
+  .minimal {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+}
+
+@media (max-width: 760px) {
+  .minimal {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 420px) {
+  .minimal .inputWrapper {
+    flex-direction: column;
+  }
+
+  .minimal .emailInput {
+    flex-basis: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .minimal *,
+  .minimal *::after {
+    animation: none;
+    transition: none;
+  }
+}
