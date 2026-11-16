@@ -60,7 +60,6 @@ export default function Home() {
           </div>
           <figcaption className={styles.rackCaption}>
             <span><strong>One case. Room to grow.</strong> From 42 HP to a 252 HP studio set.</span>
-            <span>Case files available now. Modules in development.</span>
           </figcaption>
         </figure>
       </section>
