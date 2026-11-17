@@ -18,7 +18,7 @@ const ORIGINAL_NAV = [
 ];
 
 const CURRENT_NAV = [
-  { href: '/case', label: 'CASE' },
+  { href: '/eurorack-case', label: 'CASE' },
   { href: '/docs', label: 'DOCS' },
   { href: '/firmwares', label: 'FIRMWARES' },
   { href: '/blog', label: 'BLOG' },

@@ -13,9 +13,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
 
   const paths = [
-    '/', '/case', '/docs', '/firmwares', '/blog',
+    '/', '/eurorack-case', '/docs', '/firmwares', '/blog',
     // Every case layout has its own print list and assembly guide
-    ...CASE_LAYOUTS.filter(layout => layout.id !== DEFAULT_CASE_CONFIG.layout).map(layout => `/case?layout=${layout.id}`),
+    ...CASE_LAYOUTS.filter(layout => layout.id !== DEFAULT_CASE_CONFIG.layout).map(layout => `/eurorack-case?layout=${layout.id}`),
     '/original', '/original/modules', '/courses',
     ...categories.flatMap(category => [
       `/docs/${category.slug}`,

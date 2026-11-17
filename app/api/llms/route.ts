@@ -112,7 +112,7 @@ export async function GET() {
     section('Eurorack', [
       { url: '/', title: 'Bread Modular', desc: 'Eurorack Made Affordable: what is available today.' },
       ...CASE_LAYOUTS.map(layout => ({
-        url: layout.id === DEFAULT_CASE_CONFIG.layout ? '/case' : `/case?layout=${layout.id}`,
+        url: layout.id === DEFAULT_CASE_CONFIG.layout ? '/eurorack-case' : `/eurorack-case?layout=${layout.id}`,
         title: `3D printed Eurorack case: ${layout.name} (${layout.cases} ${layout.cases === 1 ? 'case' : 'cases'}, ${layout.hp} HP)`,
         desc: `${layout.description} Print list, hardware list and step by step assembly guide.`,
       })),

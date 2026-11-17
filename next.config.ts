@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
       { source: '/modules/:path+', destination: '/original/modules/:path+', permanent: true },
       // No Eurorack modules page yet: temporary, so /modules can come back later
       { source: '/modules', destination: '/original/modules', permanent: false },
+      // The case configurator moved from /case (the STL files stay at /case/stl)
+      { source: '/case', destination: '/eurorack-case', permanent: true },
     ];
   },
   async headers() {

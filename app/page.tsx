@@ -50,7 +50,7 @@ export default function Home() {
               Launching in 2027. For now, 3D print our Eurorack cases.
             </p>
             <div className={styles.heroActions}>
-              <Link href="/case" className={ui.button}>Make your 3D printed case <span aria-hidden="true">→</span></Link>
+              <Link href="/eurorack-case" className={ui.button}>Make your 3D printed case <span aria-hidden="true">→</span></Link>
             </div>
           </div>
         </div>

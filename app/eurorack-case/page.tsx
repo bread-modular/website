@@ -18,7 +18,7 @@ interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-// The configuration is in the address (/case?layout=double&front=grill), so
+// The configuration is in the address (/eurorack-case?layout=double&front=grill), so
 // the print list and the assembly guide of that case are in the page's HTML.
 async function readConfig(searchParams: Props['searchParams']): Promise<CaseConfig> {
   const params = new URLSearchParams();
@@ -30,7 +30,7 @@ async function readConfig(searchParams: Props['searchParams']): Promise<CaseConf
 
 // One address per layout for search engines: covers, extras and colour do not make a new page
 function layoutPath(id: LayoutId): string {
-  return id === DEFAULT_CASE_CONFIG.layout ? '/case' : `/case?layout=${id}`;
+  return id === DEFAULT_CASE_CONFIG.layout ? '/eurorack-case' : `/eurorack-case?layout=${id}`;
 }
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
