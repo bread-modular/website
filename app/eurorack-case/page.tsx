@@ -85,7 +85,7 @@ function jsonLd(config: CaseConfig) {
           ...getCaseBom(config).map(line => ({ '@type': 'HowToSupply', name: line.name, requiredQuantity: line.qty })),
           ...getCaseHardware(config).map(line => ({ '@type': 'HowToSupply', name: formatHardware(line) })),
         ],
-        tool: [{ '@type': 'HowToTool', name: '3D printer with a 256 x 256 mm bed' }, { '@type': 'HowToTool', name: '2.5 mm hex key' }],
+        tool: [{ '@type': 'HowToTool', name: '3D printer with a 256 x 256 mm bed' }, { '@type': 'HowToTool', name: 'Screwdriver' }],
         step: getCaseSteps(config).map((step, i) => ({
           '@type': 'HowToStep',
           position: i + 1,
