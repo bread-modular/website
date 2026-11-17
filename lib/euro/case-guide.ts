@@ -3,7 +3,7 @@
 // the 3D preview shows and highlights.
 
 import {
-  RAIL_SOCKETS, caseConfigToQuery, formatHardware, getCaseBom, getCaseHardware, getCaseLayout, getCaseOrder,
+  RAIL_SOCKETS, caseConfigToQuery, groundPlates, formatHardware, getCaseBom, getCaseHardware, getCaseLayout, getCaseOrder,
   normalizeCaseConfig,
   type CaseArrange, type CaseConfig, type CaseTag, type LayoutId,
 } from './case';
@@ -110,10 +110,10 @@ export function getCaseSteps(input: CaseConfig): CaseStep[] {
 
   // 2. Order the hardware
   const order = getCaseOrder(config);
-  const count = (kind: 'spacer' | 'screw', length?: number) => order.find(line => line.kind === kind && line.length === length)?.qty ?? 0;
+  const count = (kind: 'spacer' | 'screw' | 'foot', length?: number) => order.find(line => line.kind === kind && line.length === length)?.qty ?? 0;
   const orderPoints = [
     `${count('spacer')} x M3 hex spacer (standoff): 10 mm long, female thread at both ends, 5.5 mm across the flats. Brass ones work well. The printed sockets are made for 5.5 mm, so check the width before you buy.`,
-    `${count('screw', 8)} x M3 x 8 mm socket head screw: ${[
+    `${count('screw', 8)} x M3 x 8 mm screw: ${[
       `${railEnds} for the rail ends`,
       `${bottom} for the bottom ${many ? 'plates' : 'plate'}`,
       layout.tilted ? '16 for the stand plates' : '',
@@ -121,17 +121,17 @@ export function getCaseSteps(input: CaseConfig): CaseStep[] {
     ].filter(Boolean).join(', ')}. The whole case uses this one screw size.`,
   ];
   orderPoints.push(
-    'For every module you mount: two more spacers and two more M3 x 8 mm screws. Count your modules and add them to the order.',
-    'Socket head screws are also sold as hex socket cap screws (ISO 4762 or DIN 912). An M3 one has a head 5.5 mm wide and 3 mm high, which is what the printed recesses are made for.',
+    'Any screw head is fine.',
+    'M3 hex standoffs with a male thread, to fit the modules. Get enough for your modules.',
+    `${count('foot')} x 3M adhesive rubber foot, 12 x 12 mm, all the same thickness.`,
   );
-  if (layout.tilted) orderPoints.push('4 x adhesive rubber foot, 12 x 12 mm, all the same thickness.');
-  orderPoints.push('Superglue for the spacers, and a 2.5 mm hex key for all the screws.');
+  orderPoints.push('Superglue for the spacers, and a screwdriver that fits your screws.');
   steps.push({
     id: 'hardware',
-    title: 'Order the M3 spacers and screws',
-    text: 'The printed parts are held together by M3 spacers and screws, and they are all standard sizes. Order them while the parts print.',
+    title: 'Order the hardware',
+    text: 'The printed parts are held together by M3 spacers and screws, and everything here is a standard size. Order it while the parts print.',
     points: orderPoints,
-    needs: [...order.map(formatHardware), '2.5 mm hex key'],
+    needs: [...order.map(formatHardware), 'Screwdriver'],
     show: [],
     focus: [],
     arrange: 'hardware',
@@ -141,7 +141,7 @@ export function getCaseSteps(input: CaseConfig): CaseStep[] {
   const spacerPoints = [
     `Rail ends: ${railEnds} spacers, one in every rail end that meets an outer side panel.${middle || fused ? ' The rail ends that go into a middle frame need none.' : ''}`,
     `Bottom sockets: ${bottom} spacers, ${bottomSockets(layout.id)}.`,
-    `Rail tops: one spacer for every module screw, two per module. Each rail has ${RAIL_SOCKETS} sockets, one every 2 HP. Only fill the ones you need.`,
+    `Rail tops: an M3 standoff with a male thread for every module screw. Each rail has ${RAIL_SOCKETS} sockets, one every 2 HP. Only fill the ones you need.`,
   ];
   if (layout.tilted) {
     const where = layout.id === 'studio'
@@ -154,7 +154,7 @@ export function getCaseSteps(input: CaseConfig): CaseStep[] {
     title: 'Glue in the M3 hex spacers',
     text: 'The case is held together by M3 x 10 mm female hex spacers (standoffs) that sit in printed hex sockets. Put a small drop of superglue in a socket, push the spacer in until it sits just below the surface, and let it cure. Keep the glue out of the thread.',
     points: spacerPoints,
-    needs: [formatHardware(hardware[0]), 'Superglue'],
+    needs: [formatHardware(hardware[0]), 'M3 hex standoffs with a male thread', 'Superglue'],
     show: ['side', 'middle', 'rail', ...SPACERS],
     focus: SPACERS,
     arrange: 'table',
@@ -167,7 +167,7 @@ export function getCaseSteps(input: CaseConfig): CaseStep[] {
     title: many ? 'Join the rails and the side panels' : 'Screw the rails to the side panels',
     text: rails.text,
     points: rails.points,
-    needs: [`${layout.cases * 2} x Rail`, `${railEnds} x M3 x 8 mm socket head screw`, '2.5 mm hex key'],
+    needs: [`${layout.cases * 2} x Rail`, `${railEnds} x M3 x 8 mm screw`, 'Screwdriver'],
     show: ['side', 'middle', 'rail', ...SPACERS, 'screw-rail'],
     focus: middle || fused ? ['rail', 'middle', 'screw-rail'] : ['rail', 'screw-rail'],
     arrange: 'built',
@@ -197,7 +197,7 @@ export function getCaseSteps(input: CaseConfig): CaseStep[] {
       ...(middle || fused ? ['Two screws of each plate go into the middle frame. Seat a plate on both sides before you tighten it.'] : []),
       'The four holes in the middle of the plate are for the bus board that powers the modules.',
     ],
-    needs: [`${layout.cases} x Bottom plate`, `${bottom} x M3 x 8 mm socket head screw`, '2.5 mm hex key'],
+    needs: [`${layout.cases} x Bottom plate`, `${bottom} x M3 x 8 mm screw`, 'Screwdriver'],
     show: ['side', 'middle', 'rail', ...SPACERS, 'screw-rail', 'cover', 'cable-cover', 'bottom', 'screw-bottom'],
     focus: ['bottom', 'screw-bottom'],
     arrange: 'built',
@@ -205,14 +205,26 @@ export function getCaseSteps(input: CaseConfig): CaseStep[] {
 
   const built: CaseTag[] = ['side', 'middle', 'rail', ...SPACERS, 'screw-rail', 'cover', 'cable-cover', 'bottom', 'screw-bottom'];
 
-  // 7. Stand
+  // 7. Rubber feet
+  const plates = groundPlates(layout);
+  steps.push({
+    id: 'feet',
+    title: 'Stick on the rubber feet',
+    text: `While the case is still upside down, stick four 3M rubber feet under ${plates > 1 ? 'every bottom plate' : 'the bottom plate'}${layout.tilted ? ` of the lower ${layout.id === 'angled' ? 'case' : 'row'}` : ''}, one near each corner. Every bottom plate that stands on the desk needs them.`,
+    needs: [`${plates * 4} x 3M adhesive rubber foot, 12 x 12 mm`],
+    show: built,
+    focus: ['bottom'],
+    arrange: 'built',
+  });
+
+  // 8. Stand
   if (layout.tilted) {
     const lower = layout.id === 'angled' ? 'case' : 'row';
     const upper = layout.id === 'studio' ? 'upper set' : layout.id === 'angled' ? 'second case' : 'second row';
     const standPoints = [
       'The recesses of a plate face the cases, the screw counterbores face out.',
       'Start all 16 M3 x 8 mm screws loosely, then tighten them evenly by hand. Stop if a plate rocks, a spacer spins or the plastic starts to crush.',
-      `Stick on four rubber feet of the same thickness: one under the rear foot of each plate, one under each front corner of the lower ${lower}.`,
+      'Stick a rubber foot under the rear foot of each plate, the same thickness as the ones under the bottom plates.',
       'The stand is made for a desk. Do not carry the joined cases by the plates.',
     ];
     if (layout.id === 'studio') {
@@ -224,7 +236,7 @@ export function getCaseSteps(input: CaseConfig): CaseStep[] {
       title: 'Bolt on the stand plates',
       text: `Put the lower ${lower} flat on the desk. Hold the ${upper} behind it at 60 degrees and support it: a single plate must not carry it alone. Then place one stand plate on each outer side.`,
       points: standPoints,
-      needs: ['1 x Stand plate, left', '1 x Stand plate, right', '16 x M3 x 8 mm socket head screw', '4 x 12 x 12 mm adhesive rubber foot', '2.5 mm hex key'],
+      needs: ['1 x Stand plate, left', '1 x Stand plate, right', '16 x M3 x 8 mm screw', '2 x 3M adhesive rubber foot, 12 x 12 mm', 'Screwdriver'],
       show: [...built, 'stand', 'screw-stand'],
       focus: ['stand', 'screw-stand'],
       arrange: 'built',
@@ -232,19 +244,19 @@ export function getCaseSteps(input: CaseConfig): CaseStep[] {
     built.push('stand', 'screw-stand');
   }
 
-  // 8. Modules
+  // 9. Modules
   steps.push({
     id: 'modules',
     title: 'Mount the modules',
-    text: `Turn the case upright. The first module of a row sits next to the 1 HP lip of the left side panel. Fix every module with two M3 x 8 mm screws into the spacers in the rails. The sockets are on a 2 HP grid.${layout.tilted ? ' Add modules and cables a few at a time, and check that the stand does not rock or slide.' : ''}`,
-    needs: ['2 x M3 x 8 mm socket head screw per module', '2 x M3 x 10 mm hex spacer per module'],
+    text: `Turn the case upright. The first module of a row sits next to the 1 HP lip of the left side panel. Fix every module with its screws into the standoffs in the rails. The sockets are on a 2 HP grid.${layout.tilted ? ' Add modules and cables a few at a time, and check that the stand does not rock or slide.' : ''}`,
+    needs: ['M3 hex standoffs with a male thread', 'Screwdriver'],
     show: [...built, 'bus', 'modules'],
     focus: [],
     arrange: 'built',
   });
   built.push('bus', 'modules');
 
-  // 9. Top brace
+  // 10. Top brace
   if (braces) {
     steps.push({
       id: 'brace',
@@ -255,7 +267,7 @@ export function getCaseSteps(input: CaseConfig): CaseStep[] {
         'Every tab has to lie on a module panel. Fit a blank panel first where a slot is empty.',
         'The brace has to lie flat. If it rocks, do not pull it down with the screws.',
       ],
-      needs: [`${braces} x Top brace`, `Up to ${braces * 12} x M3 x 8 mm socket head screw`],
+      needs: [`${braces} x Top brace`, `Up to ${braces * 12} x M3 x 8 mm screw`],
       show: [...built, 'brace'],
       focus: ['brace'],
       arrange: 'built',
@@ -263,7 +275,7 @@ export function getCaseSteps(input: CaseConfig): CaseStep[] {
     built.push('brace');
   }
 
-  // 10. Cable comb
+  // 11. Cable comb
   if (holders) {
     steps.push({
       id: 'cable',

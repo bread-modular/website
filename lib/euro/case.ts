@@ -258,6 +258,12 @@ export interface HardwareLine {
 
 export const RAIL_SOCKETS = 21;   // module screw positions per rail, one every 2 HP
 
+// Bottom plates that stand on the desk: on a tilted layout only the lower row does.
+export function groundPlates(layout: CaseLayout): number {
+  if (!layout.tilted) return layout.cases;
+  return layout.id === 'angled' ? 1 : 2;
+}
+
 // Screws, spacers and feet for a configuration. The counts follow the case
 // generator of the hardware repo: a rail end is only screwed at an outer side
 // panel, and every case has four bottom screws.
@@ -268,6 +274,7 @@ export function getCaseHardware(input: CaseConfig): HardwareLine[] {
   const bottom = layout.cases * 4;
   const stand = layout.tilted ? 16 : 0;
   const braces = layout.braces;
+  const plates = groundPlates(layout);
 
   const lines: HardwareLine[] = [
     {
@@ -277,29 +284,34 @@ export function getCaseHardware(input: CaseConfig): HardwareLine[] {
         `${railEnds} in the rail ends`,
         `${bottom} in the bottom sockets`,
         stand ? `${stand} in the stand plate sockets` : '',
-      ].filter(Boolean).join(', ') + '. Add two more for every module you mount.',
+      ].filter(Boolean).join(', ') + '.',
       kind: 'spacer', label: 'M3x10 spacer', detail: 'Hex, 5.5 mm wide',
     },
     {
       // One screw size for the whole case keeps the order simple
       qty: railEnds + bottom + stand + braces * 12,
-      item: 'M3 x 8 mm socket head screw',
+      item: 'M3 x 8 mm screw',
       use: [
         `${railEnds} for the rail ends`,
         `${bottom} for the bottom plates`,
         stand ? `${stand} for the stand plates` : '',
         braces ? `up to ${braces * 12} for the top ${braces > 1 ? 'braces' : 'brace'}` : '',
-      ].filter(Boolean).join(', ') + '. Add two more for every module you mount.',
-      kind: 'screw', label: 'M3x8 screw', detail: 'Socket head', length: 8,
+      ].filter(Boolean).join(', ') + '.',
+      kind: 'screw', label: 'M3x8 screw', detail: 'Any head', length: 8,
+    },
+    {
+      qty: null,
+      item: 'M3 hex standoff with a male thread',
+      use: 'In the rail sockets where your modules go. Get enough for your modules.',
+      kind: 'spacer', label: 'M3 male standoff', detail: 'For the modules',
+    },
+    {
+      qty: plates * 4 + (stand ? 2 : 0),
+      item: '3M adhesive rubber foot, 12 x 12 mm',
+      use: `Four under every bottom plate that stands on the desk${stand ? ', and one under the rear of each stand plate' : ''}. All the same thickness.`,
+      kind: 'foot', label: '3M rubber foot', detail: '12 x 12 mm, adhesive',
     },
   ];
-  if (stand) {
-    lines.push({
-      qty: 4, item: '12 x 12 mm adhesive rubber foot',
-      use: 'Two under the stand plates, two under the front corners of the lower row. All the same thickness.',
-      kind: 'foot', label: 'Rubber foot', detail: '12 x 12 mm, adhesive',
-    });
-  }
   lines.push({ qty: null, item: 'Superglue', use: 'Holds the spacers in their sockets.', kind: 'glue', label: 'Superglue', detail: '' });
   return lines;
 }
