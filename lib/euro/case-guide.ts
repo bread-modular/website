@@ -287,7 +287,7 @@ export function casePrintList(input: CaseConfig, siteUrl: string): string {
   const lines = [
     'Bread Modular - 3D printed Eurorack case',
     `${layout.name} (${layout.tagline.replace(' · ', ', ')})`,
-    `${siteUrl}/case?${caseConfigToQuery(config)}`,
+    `${siteUrl}/eurorack-case?${caseConfigToQuery(config)}`,
     '',
     'Print list',
     ...getCaseBom(config).map(line => `  ${line.qty} x ${line.file}${line.note ? `  (${line.note})` : ''}`),

@@ -40,7 +40,7 @@ export default async function DocsPage() {
             Welcome to the Bread Modular documentation.
             <br/>
             Docs for our Eurorack modules are coming soon. The 3D printed case is ready today:{' '}
-            <Link href="/case" className={ui.textLink}>configure it and download the STL files</Link>.
+            <Link href="/eurorack-case" className={ui.textLink}>configure it and download the STL files</Link>.
           </p>
 
           <h2 className={styles.sectionTitle}>Bread Modular Original</h2>

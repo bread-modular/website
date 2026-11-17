@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import styles from './EuroLayout.module.css';
 
 const NAV = [
-  { href: '/case', label: 'Case' },
+  { href: '/eurorack-case', label: 'Case' },
   { href: '/docs', label: 'Docs' },
   { href: '/firmwares', label: 'Firmwares' },
   { href: '/blog', label: 'Blog' },

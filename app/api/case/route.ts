@@ -39,7 +39,7 @@ export async function GET(req: Request) {
       notes: step.points,
       needs: step.needs,
     })),
-    configurator: `${site}/case?${caseConfigToQuery(config)}`,
+    configurator: `${site}/eurorack-case?${caseConfigToQuery(config)}`,
     options: {
       layout: CASE_LAYOUTS.map(l => ({ id: l.id, name: l.name, cases: l.cases, hp: l.hp, topBraces: l.braces, cable: l.cableHolders > 0 })),
       front: CASE_COVERS.map(c => c.id),

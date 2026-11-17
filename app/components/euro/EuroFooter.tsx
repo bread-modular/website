@@ -12,7 +12,7 @@ export default function EuroFooter() {
         <nav className={styles.footerLinks} aria-label="Footer navigation">
           <div>
             <h3>Eurorack</h3>
-            <Link href="/case">3D printed case</Link>
+            <Link href="/eurorack-case">3D printed case</Link>
             <Link href="/firmwares">Firmwares</Link>
             <Link href="/docs">Docs</Link>
             <Link href="/blog">Blog</Link>

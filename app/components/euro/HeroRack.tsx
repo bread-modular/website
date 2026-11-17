@@ -118,7 +118,7 @@ export default function HeroRack() {
             );
           })}
         </div>
-        <Link href={layout.id === DEFAULT_CASE_CONFIG.layout ? '/case' : `/case?layout=${layout.id}`} className={styles.open}>
+        <Link href={layout.id === DEFAULT_CASE_CONFIG.layout ? '/eurorack-case' : `/eurorack-case?layout=${layout.id}`} className={styles.open}>
           Make this case <span aria-hidden="true">→</span>
         </Link>
       </div>
