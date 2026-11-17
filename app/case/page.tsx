@@ -6,6 +6,7 @@ import {
   type CaseConfig, type LayoutId,
 } from '@/lib/euro/case';
 import { getCaseSteps } from '@/lib/euro/case-guide';
+import { SOCIAL_IMAGE, SOCIAL_SITE } from '@/lib/euro/social';
 import Configurator from './Configurator';
 import ui from '@/app/components/euro/ui.module.css';
 import styles from './page.module.css';
@@ -46,8 +47,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     description,
     keywords: ['3d printed eurorack case', 'eurorack case stl', 'eurorack skiff', 'diy eurorack case', `${layout.hp}hp eurorack case`, 'bread modular'],
     alternates: { canonical: layoutPath(layout.id), types: { 'application/json': '/api/case' } },
-    openGraph: { title, description, type: 'website', url: layoutPath(layout.id) },
-    twitter: { card: 'summary', title, description },
+    openGraph: { ...SOCIAL_SITE, title, description, images: [SOCIAL_IMAGE], type: 'website', url: layoutPath(layout.id) },
+    twitter: { card: 'summary_large_image', title, description, images: [SOCIAL_IMAGE] },
   };
 }
 

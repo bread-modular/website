@@ -3,19 +3,20 @@ import type { Metadata } from 'next';
 import EuroLayout from './components/euro/EuroLayout';
 import HeroRack from './components/euro/HeroRack';
 import NewsletterSignup from './components/NewsletterSignup';
+import { SOCIAL_IMAGE, SOCIAL_SITE } from '@/lib/euro/social';
 import ui from './components/euro/ui.module.css';
 import styles from './home.module.css';
 
 const title = 'Bread Modular - Eurorack Made Affordable';
-const description = 'Bread Modular: Eurorack Made Affordable. A complete system with MIDI native modules. Launching in 2027. For now, 3D print our Eurorack cases from free STL files.';
+const description = 'Bread Modular: Eurorack Made Affordable. A complete system with MIDI native modules.';
 
 export const metadata: Metadata = {
   title,
   description,
   keywords: ['bread modular', 'eurorack', 'eurorack modules', '3d printed eurorack case', 'modular synth', 'synthesizer'],
   alternates: { canonical: '/' },
-  openGraph: { title, description, images: ['/images/home-slide/01.jpg'], type: 'website', url: '/' },
-  twitter: { card: 'summary_large_image', title, description, images: ['/images/home-slide/01.jpg'] },
+  openGraph: { ...SOCIAL_SITE, title, description, images: [SOCIAL_IMAGE], type: 'website', url: '/' },
+  twitter: { card: 'summary_large_image', title, description, images: [SOCIAL_IMAGE] },
 };
 
 const jsonLd = {
