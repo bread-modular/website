@@ -25,7 +25,6 @@ export default function EuroFooter() {
           </div>
           <div>
             <h3>Community</h3>
-            <Link href="https://discord.gg/W72YQKU7mq">Discord</Link>
             <Link href="https://instagram.com/breadmodular">Instagram</Link>
             <Link href="https://youtube.com/@breadmodular">YouTube</Link>
             <Link href="https://github.com/bread-modular/bread-modular">GitHub</Link>

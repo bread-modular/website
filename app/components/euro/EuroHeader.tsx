@@ -16,6 +16,7 @@ const NAV = [
 export default function EuroHeader() {
   const pathname = usePathname() ?? '/';
   const [open, setOpen] = useState(false);
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <header className={styles.header}>
@@ -38,8 +39,8 @@ export default function EuroHeader() {
             <Link
               key={item.href}
               href={item.href}
-              className={pathname === item.href ? styles.navActive : undefined}
-              aria-current={pathname === item.href ? 'page' : undefined}
+              className={isActive(item.href) ? styles.navActive : undefined}
+              aria-current={pathname === item.href ? 'page' : isActive(item.href) ? 'true' : undefined}
               onClick={() => setOpen(false)}
             >
               {item.label}

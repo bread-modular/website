@@ -12,7 +12,7 @@ We [released](/blog/introducing-bread-modular) the first stable version of Bread
 
 > Even though we sell modules, we really want you to build Bread Modular from scratch. That's why we open-sourced it and show you all the steps on [how to build](/docs/getting-started/build-it-yourself) it and source the parts.
 
-We also have a small but growing community on [Discord](https://discord.gg/W72YQKU7mq), and there are already a couple of [interesting projects](/blog/community-updates-march-2025) in progress.
+We also have a small but growing community, and there are already a couple of [interesting projects](/blog/community-updates-march-2025) in progress.
 
 ## Thanks, Reddit!
 

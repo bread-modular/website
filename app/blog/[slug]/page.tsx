@@ -1,10 +1,12 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import Layout from '@/app/components/Layout';
+import EuroLayout from '@/app/components/euro/EuroLayout';
 import MarkdownContent from '@/app/components/media/MarkdownContent';
 import { getBlogPost, getAllBlogPosts, extractFirstImageFromHtml } from '@/lib/blog';
 import { getAllModulesMetadata } from '@/lib/modules';
 import BlogPostNavigation from '@/app/components/BlogPostNavigation';
+import { SOCIAL_IMAGE } from '@/lib/euro/social';
 import styles from './page.module.css';
 
 // Following Next.js 15 typing requirements for params
@@ -25,7 +27,7 @@ export async function generateMetadata({
 
   // Prioritize image from frontmatter, fall back to extracting from content
   const contentImage = post.image || await extractFirstImageFromHtml(post.contentHtml);
-  const imageUrl = contentImage || '/images/bread-modular-system.jpg';
+  const imageUrl = contentImage || SOCIAL_IMAGE.url;
 
   return {
     title: `${post.title} | Bread Modular Blog`,
@@ -75,9 +77,10 @@ export default async function BlogPostPage({
   }
 
   return (
-    <Layout>
+    <EuroLayout>
       <article className={styles.container}>
         <header className={styles.header}>
+          <Link href="/blog" className={styles.backLink}>← Blog</Link>
           <h1 className={styles.title}>{post.title}</h1>
           <div className={styles.meta}>
             <span className={styles.author}>{post.author}</span>
@@ -97,6 +100,6 @@ export default async function BlogPostPage({
 
         <BlogPostNavigation posts={allPosts} currentPost={post} />
       </article>
-    </Layout>
+    </EuroLayout>
   );
 } 
