@@ -2,8 +2,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Metadata } from 'next';
 import { getAllBlogPosts, extractFirstImageFromHtml } from '@/lib/blog';
-import Layout from '@/app/components/Layout';
+import EuroLayout from '@/app/components/euro/EuroLayout';
 import NewsletterSignup from '@/app/components/NewsletterSignup';
+import ui from '@/app/components/euro/ui.module.css';
+import { SOCIAL_IMAGE } from '@/lib/euro/social';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -15,14 +17,14 @@ export const metadata: Metadata = {
     description: 'Latest news, tutorials, and updates from Bread Modular',
     url: '/blog',
     siteName: 'Bread Modular',
-    images: ['/images/bread-modular-system.jpg'],
+    images: [SOCIAL_IMAGE],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Bread Modular Blog',
     description: 'Latest news, tutorials, and updates from Bread Modular',
-    images: ['/images/bread-modular-system.jpg'],
+    images: [SOCIAL_IMAGE],
   },
   alternates: {
     canonical: '/blog',
@@ -59,10 +61,11 @@ export default async function BlogPage() {
   const regularPosts = postsWithImages.slice(1);
 
   return (
-    <Layout>
-      <div className={styles.container}>
+    <EuroLayout>
+      <div className={`${ui.container} ${styles.container}`}>
         <header className={styles.header}>
-          <h1 className={styles.title}>Bread Modular Blog</h1>
+          <p className={ui.eyebrow}>Blog</p>
+          <h1 className={styles.title}>News from the workbench.</h1>
           <p className={styles.subtitle}>
             Stories and insights from the Bread Modular team
           </p>
@@ -177,6 +180,6 @@ export default async function BlogPage() {
           </div>
         </div>
       </div>
-    </Layout>
+    </EuroLayout>
   );
 } 

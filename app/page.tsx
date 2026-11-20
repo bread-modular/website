@@ -1,8 +1,10 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import EuroLayout from './components/euro/EuroLayout';
 import HeroRack from './components/euro/HeroRack';
 import NewsletterSignup from './components/NewsletterSignup';
+import { getAllBlogPosts } from '@/lib/blog';
 import { SOCIAL_IMAGE, SOCIAL_SITE } from '@/lib/euro/social';
 import ui from './components/euro/ui.module.css';
 import styles from './home.module.css';
@@ -34,7 +36,9 @@ const jsonLd = {
   ],
 };
 
-export default function Home() {
+export default async function Home() {
+  const [latestPost] = await getAllBlogPosts();
+
   return (
     <EuroLayout>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
@@ -94,9 +98,30 @@ export default function Home() {
         <nav className={styles.socials} aria-label="More from the community">
           <div>
             <a href="https://youtube.com/@breadmodular" className={styles.textLink}>Tutorials on YouTube <span aria-hidden="true">↗</span></a>
-            <a href="https://discord.gg/W72YQKU7mq" className={styles.textLink}>Join us on Discord <span aria-hidden="true">↗</span></a>
           </div>
         </nav>
+
+        {latestPost && (
+          <section className={styles.latest} aria-labelledby="home-latest">
+            <p className={styles.eyebrow}>From the blog</p>
+            <Link href={`/blog/${latestPost.slug}`} className={styles.latestCard}>
+              {latestPost.image && (
+                <div className={styles.latestImage}>
+                  <Image src={latestPost.image} alt="" fill sizes="(max-width: 760px) 100vw, 420px" />
+                </div>
+              )}
+              <div className={styles.latestBody}>
+                <time dateTime={latestPost.date} className={styles.latestDate}>
+                  {new Date(latestPost.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}
+                </time>
+                <h2 id="home-latest" className={styles.latestTitle}>{latestPost.title}</h2>
+                <p className={styles.sectionText}>{latestPost.summary}</p>
+                <span className={styles.latestMore}>Read the post <span aria-hidden="true">→</span></span>
+              </div>
+            </Link>
+            <Link href="/blog" className={styles.textLink}>All posts <span aria-hidden="true">→</span></Link>
+          </section>
+        )}
 
         <section className={styles.original} aria-labelledby="home-original">
           <div>

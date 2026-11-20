@@ -6,7 +6,7 @@ summary: So far we have shipped about 10 starter kits & people are happy with th
 image: /images/blog/digital-twin-2.png
 ---
 
-So far we have shipped about 10 starter kits & people are happy with them. Let me share some of the images & updates that have been shared in our [Discord](https://discord.gg/W72YQKU7mq).
+So far we have shipped about 10 starter kits & people are happy with them. Let me share some of the images & updates that have been shared by our community.
 
 ![First Bread Modular Order We Shipped](/images/blog/first_order.jpg)
 

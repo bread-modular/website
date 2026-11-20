@@ -82,6 +82,7 @@
 .hero a:focus-visible,
 .updates a:focus-visible,
 .socials a:focus-visible,
+.latest a:focus-visible,
 .original a:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 5px;
@@ -228,6 +229,69 @@
   flex-shrink: 0;
 }
 
+.latest {
+  margin-top: 72px;
+}
+
+.latestCard {
+  display: grid;
+  grid-template-columns: minmax(0, 420px) 1fr;
+  align-items: center;
+  gap: 40px;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  transition: border-color 0.15s;
+}
+
+.latestCard:hover {
+  border-color: var(--ink);
+}
+
+.latestImage {
+  position: relative;
+  aspect-ratio: 1200 / 630;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--paper-soft);
+}
+
+.latestImage img {
+  object-fit: cover;
+}
+
+.latestBody {
+  padding-right: 24px;
+}
+
+.latestDate {
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.latestTitle {
+  margin-top: 10px;
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  line-height: 1.15;
+  font-weight: 550;
+  letter-spacing: -0.035em;
+}
+
+.latestMore {
+  display: inline-block;
+  margin-top: 18px;
+  font-size: 0.875rem;
+  font-weight: 550;
+}
+
+.latest > .textLink {
+  margin-top: 8px;
+}
+
 @media (max-width: 1000px) {
   .heroIntro {
     gap: 32px;
@@ -334,6 +398,21 @@
     gap: 0 20px;
   }
 
+  .latest {
+    margin-top: 44px;
+  }
+
+  .latestCard {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .latestBody {
+    padding: 0 8px 8px;
+  }
+
   .original {
     margin-top: 44px;
     padding-top: 28px;
@@ -345,7 +424,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .textLink,
-  .instagramLink {
+  .instagramLink,
+  .latestCard {
     transition: none;
   }
 }
