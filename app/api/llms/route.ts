@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { CASE_LAYOUTS, DEFAULT_CASE_CONFIG } from '@/lib/euro/case';
+import { FIRMWARES } from '@/lib/euro/firmwares';
 
 // Simple YAML frontmatter parser
 function parseFrontmatter(content: string): { title: string, desc?: string } {
@@ -117,7 +118,8 @@ export async function GET() {
         desc: `${layout.description} Print list, hardware list and step by step assembly guide.`,
       })),
       { url: '/api/case', title: 'Case print list API (JSON)', desc: 'Query: layout, front, back, cable. Returns the parts to print with STL download URLs, the hardware and the assembly steps.' },
-      { url: '/firmwares', title: 'Firmwares', desc: 'Firmwares for the digital Eurorack modules (coming soon).' },
+      { url: '/firmwares', title: 'Firmwares', desc: 'Settings pages for the firmwares of the digital Eurorack modules, in the browser over USB.' },
+      ...FIRMWARES.map(firmware => ({ url: `/firmwares/${firmware.id}`, title: `${firmware.module} ${firmware.name} firmware`, desc: firmware.description })),
     ]),
     '# Bread Modular Original Documentation',
     '',

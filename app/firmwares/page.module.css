@@ -26,3 +26,219 @@
   flex-wrap: wrap;
   gap: 10px;
 }
+
+.head {
+  padding-bottom: 28px;
+}
+
+.head a:hover {
+  color: var(--ink);
+}
+
+/* Firmware selection */
+
+.picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.option,
+.optionActive {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.option:hover {
+  border-color: var(--ink-faint);
+}
+
+.optionActive {
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+  background: var(--paper-soft);
+}
+
+.option strong,
+.optionActive strong {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.option small,
+.optionActive small {
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+}
+
+.optionModule {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.pickHint {
+  margin: 16px 0 40px;
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+}
+
+.howTo {
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+}
+
+/* Wider than the page: the four strips and the side panel fit side by side */
+.wide {
+  max-width: 1440px;
+  margin: 32px auto 0;
+  padding: 0 20px;
+}
+
+/* The firmware's settings page. Its own colours stay in its shadow root; the
+   fullscreen bar takes them from the app (surface, line and text). */
+
+.app,
+.appFullscreen {
+  display: flex;
+  flex-direction: column;
+}
+
+.app {
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+.appBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.appTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.appTitle strong {
+  font-weight: 600;
+}
+
+.appTitle small {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.appBox {
+  height: clamp(560px, calc(100svh - 160px), 880px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #121211;
+}
+
+.appHost {
+  height: 100%;
+}
+
+.appLoading {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: #8f8e85;
+  font-size: 0.875rem;
+}
+
+.appFullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: #121211;
+}
+
+.appFullscreen .appBar {
+  flex: 0 0 auto;
+  padding: 6px 10px 6px 14px;
+  background: #1a1a19;
+  border-bottom: 1px solid #34342f;
+  color: #f0efec;
+}
+
+.appFullscreen .appTitle small,
+.appFullscreen .optionModule {
+  color: #8f8e85;
+}
+
+.appFullscreen .appBox {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.exitButton {
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid #34342f;
+  border-radius: 5px;
+  background: #232321;
+  color: #f0efec;
+  font: inherit;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.exitButton:hover {
+  border-color: #8f8e85;
+}
+
+/* What it does */
+
+.features {
+  margin-bottom: 48px;
+  max-width: 720px;
+}
+
+.features h2 {
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.features ul {
+  margin-top: 12px;
+  padding-left: 20px;
+  list-style: disc;
+  color: var(--ink-soft);
+}
+
+.features li + li {
+  margin-top: 6px;
+}
+
+@media (max-width: 600px) {
+  .appTitle small {
+    display: none;
+  }
+}
+
+.appBar > button {
+  flex: 0 0 auto;
+}
