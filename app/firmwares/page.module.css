@@ -239,6 +239,30 @@
   }
 }
 
+/* Phones: the app takes the whole width and the screen under the header (its
+   phone layout is made for the full screen), the hint goes above the button.
+   Phones on their side too, like the app's own phone layout. */
+@media (max-width: 760px), (pointer: coarse) and (max-height: 520px) {
+  .wide {
+    padding: 0;
+  }
+
+  .app .appBar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0 20px;
+  }
+
+  .app .appBox {
+    height: calc(100svh - var(--header-height));
+    min-height: 320px;
+    border-width: 1px 0;
+    border-radius: 0;
+    scroll-margin-top: var(--header-height);
+  }
+}
+
 .appBar > button {
   flex: 0 0 auto;
 }
