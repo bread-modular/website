@@ -2,11 +2,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import EuroLayout from '@/app/components/euro/EuroLayout';
 import ui from '@/app/components/euro/ui.module.css';
+import FirmwarePicker from './FirmwarePicker';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
   title: 'Firmwares - Bread Modular',
-  description: 'Firmwares for Bread Modular Eurorack modules are on the way.',
+  description: 'Settings pages for the firmwares of the digital Bread Modular Eurorack modules. They run in your browser and talk to the module over USB.',
   alternates: { canonical: '/firmwares' },
 };
 
@@ -15,10 +16,13 @@ export default function Firmwares() {
     <EuroLayout>
       <div className={ui.container}>
         <header className={ui.pageHead}>
-          <span className={ui.badge}>Coming soon</span>
+          <span className={ui.badge}>Modules launch in 2027</span>
           <h1>Firmwares.</h1>
-          <p>Firmwares for the digital Eurorack modules are on the way. This is where you will find and install them.</p>
+          <p>Settings pages for the firmwares of the digital Eurorack modules. They run in your browser and talk to the module over USB. Pick a firmware to open it.</p>
         </header>
+
+        <FirmwarePicker />
+        <p className={styles.pickHint}>No module yet? Open a firmware and press <strong>Demo</strong> to try every control.</p>
 
         <section className={styles.original} aria-labelledby="original-apps">
           <div>
