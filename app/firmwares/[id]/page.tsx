@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import EuroLayout from '@/app/components/euro/EuroLayout';
 import ui from '@/app/components/euro/ui.module.css';
-import { FIRMWARES, getFirmware } from '@/lib/euro/firmwares';
+import { FIRMWARES, firmwareTitle, getFirmware } from '@/lib/euro/firmwares';
 import FirmwarePicker from '../FirmwarePicker';
 import FirmwareApp from '../FirmwareApp';
 import styles from '../page.module.css';
@@ -18,7 +18,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const firmware = getFirmware(id);
   if (!firmware) return {};
-  const title = `${firmware.module} ${firmware.name} firmware - Bread Modular`;
+  const title = firmware.link === 'audio'
+    ? `${firmwareTitle(firmware)} for the ${firmware.module} module - Bread Modular`
+    : `${firmwareTitle(firmware)} firmware - Bread Modular`;
   return {
     title,
     description: firmware.description,
@@ -37,7 +39,7 @@ export default async function FirmwarePage({ params }: { params: Promise<{ id: s
       <div className={ui.container}>
         <header className={`${ui.pageHead} ${styles.head}`}>
           <p className={ui.eyebrow}><Link href="/firmwares">Firmwares</Link> / {firmware.module}</p>
-          <h1>{firmware.module} {firmware.name}.</h1>
+          <h1>{firmwareTitle(firmware)}.</h1>
           <p>{firmware.description}</p>
         </header>
 
@@ -46,8 +48,17 @@ export default async function FirmwarePage({ params }: { params: Promise<{ id: s
 
       <div className={styles.wide}>
         <FirmwareApp firmware={firmware}>
-          Plug the module&apos;s USB-C port into your computer and press <strong>Connect</strong>. It needs a browser
-          with Web Serial, such as Chrome or Edge. No module? Press <strong>Demo</strong>.
+          {firmware.link === 'audio' ? (
+            <>
+              Plug the module&apos;s USB-C port into your computer, press <strong>Connect</strong> and allow the audio
+              input. Best in Chrome or Edge, which can pick the output too. No module? Press <strong>Demo</strong>.
+            </>
+          ) : (
+            <>
+              Plug the module&apos;s USB-C port into your computer and press <strong>Connect</strong>. It needs a browser
+              with Web Serial, such as Chrome or Edge. No module? Press <strong>Demo</strong>.
+            </>
+          )}
         </FirmwareApp>
       </div>
 

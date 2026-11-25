@@ -13,6 +13,7 @@ function Loading() {
 // Each firmware's settings page, loaded only when that firmware is opened
 const APPS: Record<string, React.ComponentType<{ className?: string }>> = {
   '32bit-master': dynamic(() => import('./apps/32bit-master'), { ssr: false, loading: Loading }),
+  'audio-lab': dynamic(() => import('./apps/audio-lab'), { ssr: false, loading: Loading }),
 };
 
 // A firmware's settings page in the site. Fullscreen covers the whole site, like
